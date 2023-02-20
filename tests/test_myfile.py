@@ -1,6 +1,6 @@
 import pytest
 
-from <<package-name>>.myfile import MyClass
+from rl_exercises.myfile import MyClass
 
 
 def test_oreos():
