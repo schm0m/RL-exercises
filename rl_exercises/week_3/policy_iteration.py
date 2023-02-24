@@ -64,11 +64,11 @@ def run_policy_iteration(
         if done:
             new_state = env.reset()
 
+        state = new_state
+
     final_reward = evaluate_policy(pi, env)
 
-    print(
-        f"Your policy achieved a final accumulated reward of {final_reward} after {i} update steps."
-    )
+    print(f"Your policy achieved a final accumulated reward of {final_reward} after {i} update steps.")
 
     return pi, i, final_reward
 

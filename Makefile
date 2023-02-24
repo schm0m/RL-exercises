@@ -65,7 +65,7 @@ test:
 	$(PYTEST) ${TESTS_DIR}
 
 test-week-2:
-    $(PYTEST) ${TESTS_DIR}/week_2
+	$(PYTEST) $(PYTEST)/week_2
 
 clean-build:
 	$(PYTHON) setup.py clean

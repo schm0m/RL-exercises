@@ -26,8 +26,7 @@ def evaluate(env: gym.Env, policy: Callable[[np.ndarray], int], episodes=100):
             episode_rewards[-1] += reward
             episode_steps += 1
             if done:
-                pbar.set_postfix(
-                    {"episode reward": episode_rewards[-1], "episode step": episode_steps})
+                pbar.set_postfix({"episode reward": episode_rewards[-1], "episode step": episode_steps})
         pbar.update(1)
     env.close()
     return np.mean(episode_rewards)
@@ -35,11 +34,11 @@ def evaluate(env: gym.Env, policy: Callable[[np.ndarray], int], episodes=100):
 
 if __name__ == "__main__":
     print(compiler_gym.COMPILER_GYM_ENVS)
-    custom_benchmark = make_benchmark(os.path.join(os.path.abspath(
-        os.path.dirname(__file__)), "custom_benchmarks", "rot13.cpp"))
+    custom_benchmark = make_benchmark(
+        os.path.join(os.path.abspath(os.path.dirname(__file__)), "custom_benchmarks", "rot13.cpp")
+    )
     benchmark = "cbench-v1/dijkstra"
-    env = gym.make("llvm-autophase-ic-v0", benchmark=benchmark,
-                   reward_space="IrInstructionCountNorm")
+    env = gym.make("llvm-autophase-ic-v0", benchmark=benchmark, reward_space="IrInstructionCountNorm")
     env = TimeLimit(env, max_episode_steps=100)
     policy = create_policy(env)
     return_mean = evaluate(env, policy)

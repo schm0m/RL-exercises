@@ -1,6 +1,4 @@
 import unittest
-import copy
-
 import gym
 
 from deep_q_learning import make_Q, q_learning
@@ -18,7 +16,7 @@ def check_nets(model1, model2):
 class TestDeepQLearning(unittest.TestCase):
     def test_deep_q_learning(self):
         env = gym.make("LunarLander-v2")
-        
+
         Q = make_Q(env)
 
         # Copy Q

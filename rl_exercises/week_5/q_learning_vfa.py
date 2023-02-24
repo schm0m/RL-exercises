@@ -6,7 +6,9 @@ import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
+# This could be useful to you:
+# import torch.nn.functional as F
 import torch.optim as optim
 
 
@@ -49,9 +51,7 @@ def vfa_update(Q: nn.Module, optimizer: optim.Optimizer, states, actions, reward
     """
     # Convert data into torch tensors
 
-
     # Compute MSE loss
-
 
     # Optimize the model
 
@@ -98,9 +98,10 @@ def q_learning(
         exploration_rate = max(exploration_rate_decay * exploration_rate, min_exploration_rate)
 
         if episode % (num_episodes / 100) == 0:
-            print(f"Episode {episode}:  Mean Reward: {np.mean(rewards[-int(num_episodes / 100):])}  Exploration rate: {exploration_rate:.4f}")
-            
-    print(f"{num_episodes:6d}: Mean Reward: ", np.mean(rewards[-int(num_episodes / 100):]))
+            print(f"Episode {episode}:  Mean Reward: {np.mean(rewards[-int(num_episodes / 100):])}")
+            print(f"Exploration rate: {exploration_rate:.4f}")
+
+    print(f"{num_episodes:6d}: Mean Reward: ", np.mean(rewards[-int(num_episodes / 100) :]))
     return rewards, Q
 
 

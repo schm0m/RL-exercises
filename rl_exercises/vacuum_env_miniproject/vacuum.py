@@ -1,9 +1,11 @@
 import gym
 
+
 class VacuumEnv(gym.Env):
     """
     So far, a non-functional env
     """
+
     def __init__(self):
         """
         Use this function to initialize the environment

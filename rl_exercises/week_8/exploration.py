@@ -294,7 +294,7 @@ def train(
     # Initialize env and display starting state and env info
     env = make_env(env_id=env_id, max_episode_steps=max_episode_steps)
     observation, info = env.reset(seed=seed)
-    frame = env.render()
+    # frame = env.render()
     # plt.imshow(frame)
     # plt.show()
     print("Obs shape", env.observation_space.shape, "N actions", env.action_space.n)

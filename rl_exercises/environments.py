@@ -8,7 +8,6 @@ import time
 from io import StringIO
 from typing import Tuple
 
-import gym.envs
 import numpy as np
 from gym.envs.toy_text.discrete import DiscreteEnv
 
@@ -17,6 +16,7 @@ LEFT = 0
 UP = 1
 RIGHT = 2
 DOWN = 3
+
 
 class MarsRover:
     """Simple Environment for a Mars Rover that can move in a 1D Space"""
@@ -53,9 +53,7 @@ class MarsRover:
         # Determine move given an action and transition probabilities for environment
         action = int(action)
         self.current_steps += 1
-        follow_action = (
-            np.random.random() < self.transition_probabilities[self.position][action]
-        )
+        follow_action = np.random.random() < self.transition_probabilities[self.position][action]
         if not follow_action:
             action = 1 - action
 
@@ -72,7 +70,7 @@ class MarsRover:
         # Get reward
         reward = self.rewards[self.position]
         return self.position, reward, self.current_steps >= self.horizon
-    
+
 
 class GridCore(DiscreteEnv):
     metadata = {"render.modes": ["human", "ansi"]}

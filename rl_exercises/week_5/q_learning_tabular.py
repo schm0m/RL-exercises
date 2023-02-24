@@ -49,7 +49,7 @@ def q_learning(
     exploration_rate: float = 0.5,
     exploration_rate_decay: float = 0.9,
     min_exploration_rate: float = 0.01,
-    gamma: float = 0.9
+    gamma: float = 0.9,
 ) -> Tuple[List[float], DefaultDict[Tuple[Any, int], float]]:
     Q = defaultdict(lambda: np.random.uniform(1, -1))
 
@@ -67,11 +67,12 @@ def q_learning(
             obs, reward, terminated, truncated, info = env.step(action)
 
             next_state = to_discrete_state(obs)
-            optimal_next_action = policy(env, Q, next_state, exploration_rate=exploration_rate)  # <- Greedy or not greedy?
+            # optimal_next_action = policy(
+            #    env, Q, next_state, exploration_rate=exploration_rate
+            # )  # <- Greedy or not greedy?
 
             # TODO: Implement Q-Learning Update
-            alpha = 1
-            
+            # alpha = 1
 
             state = next_state
 

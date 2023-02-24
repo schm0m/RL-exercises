@@ -2,9 +2,13 @@ import gym
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
+
+# This could be useful to you:
+# import torch.nn.functional as F
 import torch.optim as optim
-from torch.distributions import Categorical
+
+# This is potentially a helpful class:
+# from torch.distributions import Categorical
 
 
 from typing import List, Tuple
@@ -72,9 +76,7 @@ policy = Policy(env.observation_space, env.action_space)
 optimizer = optim.Adam(policy.parameters(), lr=1e-2)
 
 
-def compute_returns(
-    rewards: List[int], discount_factor: float = DISCOUNT_FACTOR
-) -> List[float]:
+def compute_returns(rewards: List[int], discount_factor: float = DISCOUNT_FACTOR) -> List[float]:
     """Compute discounted returns
 
     Parameters
@@ -115,10 +117,10 @@ def policy_improvement(log_probs: torch.Tensor, rewards: List[int]) -> float:
     assert len(log_probs) == len(rewards)
 
     # TODO compute the returns
-    returns = ...
+    # returns = ...
 
     # TODO compute advantages using returns
-    advantages = ...
+    # advantages = ...
 
     log_probs = torch.stack(log_probs)
     optimizer.zero_grad()
@@ -147,7 +149,7 @@ def act(state: np.ndarray) -> Tuple[torch.Tensor, torch.Tensor]:
         computed action and log probability of the action
     """
     # TODO pass the state through the policy network
-    probs = ...
+    # probs = ...
 
     # TODO create the outupt into a categorical distribution and sample and action from it
     action = ...
@@ -201,6 +203,9 @@ def policy_gradient(num_episodes: int) -> List[int]:
 
         # Policy improvement step
         loss = policy_improvement(*zip(*trajectory))
+
+        # Do something with that loss
+        loss.backward()
 
         if episode % (num_episodes / 100) == 0:
             print("Mean Reward: ", np.mean(rewards[-int(num_episodes / 100) :]))

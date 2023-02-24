@@ -1,6 +1,8 @@
 from __future__ import annotations
-import random
-from collections import deque
+
+# Both of these can be useful to you:
+# import random
+# from collections import deque
 
 import gym
 import numpy as np
@@ -14,7 +16,6 @@ DISCOUNT_FACTOR = 0.99
 BATCH_SIZE = 64
 
 """Implement DQN"""
-
 
 
 def make_Q(env: gym.Env) -> nn.Module:
@@ -42,7 +43,7 @@ def make_Q(env: gym.Env) -> nn.Module:
     return Q
 
 
-def policy(Q: nn.Module, env: gym.Env, state: np.ndarray | torch.Tensor, exploration_rate: float = 0.) -> int:
+def policy(Q: nn.Module, env: gym.Env, state: np.ndarray | torch.Tensor, exploration_rate: float = 0.0) -> int:
     """Epsilon-greedy Policy
 
     Based on the Q function select an action in an epsilon-greedy way.
@@ -71,7 +72,15 @@ def policy(Q: nn.Module, env: gym.Env, state: np.ndarray | torch.Tensor, explora
     return action
 
 
-def vfa_update(Q: nn.Module, optimizer: optim.Optimizer, states: list[np.array], actions: list[int], rewards: list[float], dones: list[bool], next_states: list[np.array]) -> float:
+def vfa_update(
+    Q: nn.Module,
+    optimizer: optim.Optimizer,
+    states: list[np.array],
+    actions: list[int],
+    rewards: list[float],
+    dones: list[bool],
+    next_states: list[np.array],
+) -> float:
     """Value Function Update for a Batch of Transitions
 
     Use MSE loss.
@@ -105,9 +114,7 @@ def vfa_update(Q: nn.Module, optimizer: optim.Optimizer, states: list[np.array],
     next_states = torch.from_numpy(np.array(next_states)).float()
 
     q_values = torch.gather(Q(states), dim=-1, index=actions).squeeze()
-    target_q_values = (
-        rewards + (1 - dones) * DISCOUNT_FACTOR * Q(next_states).max(dim=-1)[0].detach()
-    )
+    target_q_values = rewards + (1 - dones) * DISCOUNT_FACTOR * Q(next_states).max(dim=-1)[0].detach()
     loss = F.mse_loss(q_values, target_q_values)
 
     optimizer.zero_grad()
@@ -116,7 +123,9 @@ def vfa_update(Q: nn.Module, optimizer: optim.Optimizer, states: list[np.array],
     return loss.item()
 
 
-def q_learning(env: gym.Env, num_episodes: int, exploration_rate: float = 0.1, Q: nn.Module | None = None) -> tuple[nn.Module, list[float]]:
+def q_learning(
+    env: gym.Env, num_episodes: int, exploration_rate: float = 0.1, Q: nn.Module | None = None
+) -> tuple[nn.Module, list[float]]:
     """Deep Q-Learning
 
     Parameters
@@ -133,15 +142,15 @@ def q_learning(env: gym.Env, num_episodes: int, exploration_rate: float = 0.1, Q
     Returns
     -------
     tuple[nn.Module, list[float]]
-        Q, cumulative rewards per episode 
+        Q, cumulative rewards per episode
     """
     if Q is None:
         Q = make_Q(env)
 
     optimizer = optim.Adam(Q.parameters(), lr=5e-4)
-    
+
     # TODO Create replay buffer with a maximum size of 100000
-    
+    replay_buffer = ...
 
     rewards: list[float] = []
     for episode in range(num_episodes):
@@ -156,19 +165,16 @@ def q_learning(env: gym.Env, num_episodes: int, exploration_rate: float = 0.1, Q
 
             next_state = obs
 
-            #TODO Add transition to replay buffer 
-            
-            
+            # TODO Add transition to replay buffer
+
             state = next_state
 
             rewards[-1] += reward
 
             if len(replay_buffer) >= BATCH_SIZE:
-                # TODO Select batch from replay buffer with size BATCH_SIZE 
-                
-
+                # TODO Select batch from replay buffer with size BATCH_SIZE
                 # TODO Perform a value function update
-                
+                optimizer.step()
 
             if done:
                 break
@@ -180,7 +186,7 @@ def q_learning(env: gym.Env, num_episodes: int, exploration_rate: float = 0.1, Q
 
 def evaluate(Q: nn.Module, env: gym.Env, n_episodes: int = 1) -> list[float]:
     """Collect rewards on test episodes
-    
+
     Parameters
     ----------
     Q : nn.Module
@@ -195,21 +201,20 @@ def evaluate(Q: nn.Module, env: gym.Env, n_episodes: int = 1) -> list[float]:
     list[float]
         cumulative rewards on test episods
     """
-    
     cumulative_rewards = []
     for i in range(n_episodes):
         cum_rew = 0
         obs = env.reset()
         done = False
         while not done:
-            action = policy(Q, env, obs, exploration_rate=0.)  # greedy
+            action = policy(Q, env, obs, exploration_rate=0.0)  # greedy
             obs, reward, done, info = env.step(action)
             cum_rew += reward
             env.render(mode="human")
             if done:
                 break
         cumulative_rewards.append(cum_rew)
-                
+
     env.close()
     return cumulative_rewards
 
@@ -226,4 +231,3 @@ if __name__ == "__main__":
     plt.ylabel("return")
     plt.title("Training")
     plt.show()
-

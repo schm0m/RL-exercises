@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Callable, DefaultDict, Hashable, List, Tuple
+from typing import Callable, DefaultDict, Hashable, List, Tuple
 
 import gym
 import numpy as np
@@ -33,7 +33,6 @@ def sarsa(
     rewards = []
     lens = []
 
-    train_steps_list: list[Any] = []
     num_performed_steps = 0
 
     for i_episode in range(num_episodes + 1):
@@ -47,6 +46,8 @@ def sarsa(
             num_performed_steps += 1
 
             # TODO: Implement sarsa
+            state, reward, done = policy(state, ...)
+
             cumulative_reward += 0
             episode_length += 1
             done = True

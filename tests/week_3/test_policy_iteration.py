@@ -36,10 +36,7 @@ class TestPolicyIteration(unittest.TestCase):
             self.assertTrue(
                 all(
                     [
-                        np.any(
-                            np.where(new_qs[state] == new_qs[state].max())
-                            == new_pi[state]
-                        )
+                        np.any(np.where(new_qs[state] == new_qs[state].max()) == new_pi[state])
                         for state in np.arange(len(new_qs))
                     ]
                 )

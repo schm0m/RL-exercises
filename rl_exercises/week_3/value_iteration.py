@@ -44,15 +44,16 @@ def run_value_iteration(
         new_state, reward, done = env.step(action)
 
         # TODO: Use Value iteration to update Value function
+        update_value_function(v, state, ...)
 
         if done:
             new_state = env.reset()
 
+        state = new_state
+
     final_reward = evaluate_agent(v, env)
 
-    print(
-        f"Your agent achieved a final accumulated reward of {final_reward} after {i} update steps."
-    )
+    print(f"Your agent achieved a final accumulated reward of {final_reward} after {i} update steps.")
 
     return v, i, final_reward
 

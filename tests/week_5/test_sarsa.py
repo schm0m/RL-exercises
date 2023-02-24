@@ -81,11 +81,13 @@ class TestSARSA(unittest.TestCase):
         #     Q[i] = np.random.random(n_actions)
         # print(Q)
 
-        Q.update({
-            0: np.asarray([0.8734294, 0.96854066, 0.86919454, 0.53085569, 0.23272833]),
-            1: np.asarray([0.0113988, 0.43046882, 0.40235136, 0.52267467, 0.4783918]),
-            2: np.asarray([0.55535647, 0.54338602, 0.76089558, 0.71237457, 0.6196821]),
-        })
+        Q.update(
+            {
+                0: np.asarray([0.8734294, 0.96854066, 0.86919454, 0.53085569, 0.23272833]),
+                1: np.asarray([0.0113988, 0.43046882, 0.40235136, 0.52267467, 0.4783918]),
+                2: np.asarray([0.55535647, 0.54338602, 0.76089558, 0.71237457, 0.6196821]),
+            }
+        )
 
         # Evaluate policy with no exploration
         policy = make_epsilon_greedy_policy(Q, 0, n_actions)
@@ -114,5 +116,5 @@ class TestSARSA(unittest.TestCase):
         self.assertRaises(Exception, lambda: self.evaluate_probabilites(lambda: p, p))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

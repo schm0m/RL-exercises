@@ -13,9 +13,7 @@ class TestPolicyGradient(unittest.TestCase):
     def test_policy_improvement(self):
         log_prob = torch.tensor(-2.0)
         log_prob.requires_grad = True
-        self.assertAlmostEqual(
-            policy_improvement([log_prob, log_prob / 2.0], [1, 1]), 0.707, 3
-        )
+        self.assertAlmostEqual(policy_improvement([log_prob, log_prob / 2.0], [1, 1]), 0.707, 3)
 
 
 if __name__ == "__main__":
