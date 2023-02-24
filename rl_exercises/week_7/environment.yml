@@ -1,0 +1,13 @@
+name: rl-exercises
+channels:
+  - defaults
+dependencies:
+  - pip>=21.2
+  - python>=3.8
+  - pytorch
+  - pip:
+    - pytest
+    - pycodestyle
+    - numpy
+    - gymnasium
+    - matplotlib

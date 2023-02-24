@@ -1,0 +1,14 @@
+name: rl-exercises
+channels:
+  - defaults
+dependencies:
+  - pip>=21.2
+  - python>=3.8
+  - pip:
+    - pytest
+    - pycodestyle
+    - numpy
+    - minigrid
+    - minigrid
+    - seaborn
+    - torch

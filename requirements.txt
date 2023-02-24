@@ -1,0 +1,12 @@
+stable-baselines3
+gym[box2d]==0.21.0
+jupyterlab
+tensorboard
+smac
+hydra-core
+hydra-submitit-launcher
+hydra-colorlog
+rich
+matplotlib
+seaborn
+pandas

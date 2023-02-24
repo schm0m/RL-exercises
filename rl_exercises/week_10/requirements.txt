@@ -1,0 +1,7 @@
+numpy
+minigrid
+seaborn
+pandas
+torch
+pytest
+pycodestyle

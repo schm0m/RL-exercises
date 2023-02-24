@@ -1,0 +1,79 @@
+\documentclass{exam}
+\usepackage{amsmath, amsfonts}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage[super]{nth}
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\usepackage[hyperfootnotes=false]{hyperref}
+
+\usepackage[usenames,dvipsnames]{color}
+\newcommand{\note}[1]{
+	\noindent~\\
+	\vspace{0.25cm}
+	\fcolorbox{Red}{Orange}{\parbox{0.99\textwidth}{#1\\}}
+	%{\parbox{0.99\textwidth}{#1\\}}
+	\vspace{0.25cm}
+}
+
+
+%\input{../macros}
+%\renewcommand{\hide}[1]{#1}
+
+\qformat{\thequestion. \textbf{\thequestiontitle}\hfill}
+\bonusqformat{\thequestion. \textbf{\thequestiontitle}\hfill}
+
+\pagestyle{headandfoot}
+
+%%%%%% MODIFY FOR EACH SHEET!!!! %%%%%%
+\newcommand{\duedate}{11.11.2022 (16:00)}
+\newcommand{\due}{{\bf This assignment is due on \duedate.} }
+\firstpageheader
+{Due: \duedate}
+{{\bf\lecture}\\ \assignment{1}}
+{\lectors\\ \semester}
+
+\runningheader
+{Due: \duedate}
+{\assignment{1}}
+{\semester}
+%%%%%% MODIFY FOR EACH SHEET!!!! %%%%%%
+
+\firstpagefooter
+{}
+{\thepage}
+{}
+
+\runningfooter
+{}
+{\thepage}
+{}
+
+\headrule
+\pointsinrightmargin
+\bracketedpoints
+\marginpointname{pt.}
+
+
+\begin{document}
+\section*{Exercise: SARSA}
+
+\noindent
+The exercises in this course will teach you how to implement important RL algorithms and how every part of the RL pipeline works.
+Find the assignment here: \url{https://classroom.github.com/a/eSFLTy3w}.
+
+\begin{questions}
+	\titledquestion{Model-free Control with SARSA}
+	You will complete the code stubs in \emph{sarsa.py} to implement the SARSA algorithm from the lecture. You should include epsilon greedy exploration, as exploration is an important part of model-free learning algorithms. As always, use the methods provided as guidance as to what is queried in the tests, but feel free to extend our suggestions in any way you like.
+	
+	\titledquestion{Hyperparameters of SARSA}
+	Many concepts of SARSA also apply in more powerful RL algorithms, for example the effect of its hyperparameters. Therefore you now have an opportunity to experiment with different hyperparameter values and how they influence how successful the algorithm runs. If you want to know more about SARSA, try answering these questions and report the results in the exercise:
+	\begin{itemize}
+		\item Does setting the learning rate to $0.8$ increase or decrease the number of training steps?
+		\item For which value of $\epsilon$ do you get the best result, $0.01$, $0.1$ or $0.9$?
+		\item Which works better for you, initializing Q to all $0$ or initializing it randomly?
+	\end{itemize}
+\end{questions}
+
+\end{document}

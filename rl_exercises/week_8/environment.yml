@@ -1,0 +1,15 @@
+name: rl-exercises
+channels:
+  - defaults
+dependencies:
+  - pip>=21.2
+  - python=3.8
+  - swig>=3.0 # Required for box2d on Windows
+  - conda-forge::box2d-py>=2.3.8
+  - pytorch
+  - pip:
+    - pytest
+    - pycodestyle
+    - numpy
+    - gym==0.21.0
+    - pyglet==1.5.27
