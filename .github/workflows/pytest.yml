@@ -7,18 +7,12 @@ on:
   # Triggers with push to main
   push:
     branches:
-      - main
-      - development
+      - solutions
 
   # Triggers with push to a PR aimed at main
   pull_request:
     branches:
-      - main
-      - development
-
-  schedule:
-    # Every day at 7AM UTC
-    - cron: '0 07 * * *'
+      - solutions
 
 env:
 

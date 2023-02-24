@@ -1,23 +1,13 @@
-# Week 4: Model-free Control
-This week you will implement you first real model-free learning algorithm, SARSA, as well as conduct some experiments concerning its hyperparameters.
+# Week 5: Q-Learning
 
-## Setup
-**You need to update the environment for this exercise!**
+This week you will implement Q-Learning, another model-free RL algorithm. By using linear function approximation, it is able to scale to infinitely large state spaces.
 
-### First setup
-1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-2. Open Anaconda-console (Miniconda prompt)
-3. Create a new conda-environment using the `environment.yml`-file:
-   * ``conda env create -f "environment.yml"``
-4. Activate conda-environment:
-   * ``conda activate rl-exercises``
+### 1. Tabular Q-Learning
+Implement the Q-Learning update step in q learning tabular.py and try different state discretizations (BINS) and learning rates (LEARNING RATE). How does the number of states and learning rate affect the training of the RL algorithm?
 
-### Update Environment
-If you already created an environment and want to update it using this `environment.yml` you can use following command:
-````shell
-conda activate rl-exercises
-conda env update --file "environment.yml" --prune
-````
+### 2. Q-Learning with Linear Value Function Approximation
+Implement Q-Learning with Linear Value Function Approximation. First create make Q that takes an environment as input and creates a PyTorch Model. 
+Then implement the value function training step in q learning vfa.py using the Q module and the optimizer. How does the training differ from the tabular case? How sensitive is the algorithm to the weight initialization?
+Update the hyperparameters and the model to achieve a mean reward of more than 50 for the CartPole environment.
+For the open questions, please write your answers in ‘answers.txt‘. We will grade those manually.
 
-By appending ``--prune`` all existing packages which are not listed in `environment.yml` are removed. 
-If you want to keep them, you can remove this flag.

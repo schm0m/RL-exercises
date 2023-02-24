@@ -1,22 +1,15 @@
-# Week 5: Q-Learning
+# Week 7: Policy Gradient
 
-This week you will implement Q-Learning, another model-free RL algorithm. By using linear function approximation, it is able to scale to infinitely large state spaces.
+This week you will implement the REINFORCE policy gradient algorithm in order to learn a stochastic policy for the CartPole environment.
 
-## Environment
-### First setup
-1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-2. Open Anaconda-console (Miniconda prompt)
-3. Create a new conda-environment using the `environment.yml`-file:
-   * ``conda env create -f "environment.yml"``
-4. Activate conda-environment:
-   * ``conda activate rl-exercises``
-
-### Update Environment
-If you already created an environment and want to update it using this `environment.yml` you can use following command:
-````shell
-conda activate rl-exercises
-conda env update --file "environment.yml" --prune
-````
-
-By appending ``--prune`` all existing packages which are not listed in `environment.yml` are removed. 
-If you want to keep them, you can remove this flag.
+### 1. Policy Gradient Implementation
+- Complete the Policy class in the code with 2 Linear units to map the states to probabilities over actions.
+- Implement compute returns method to compute the discounted returns Gt for each state in a trajectory.
+- Implement the policy improvement step to update the policy given the rewards and probabilities from the last trajectory.
+- Use the policy in the act method to sample action and return its log probability.
+### 2. Questions
+- How does the length of the trajectories affect the training?
+- How could a baseline be implemented to stabilize the training?
+- Does the same network architecture and learning rate work for LunarLander-v2?
+- How is the sample complexity (how many steps it takes to solve the environment) of this algorithm related to the DQN from the last exercise?
+Please write your answers in answers.txt

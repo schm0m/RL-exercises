@@ -1,23 +1,34 @@
 # RL_exercises
+Welcome to the RL exercises repository! You will work with this repository for the duration of the course, so please take your time to familiarize yourself with its structure.
 
+## Repository Structure
+Each week's task and code stubs can be found in `rl_exercises`. This is where you code and where you should store the result for each week.
 
+The `tests` directory contains all tests for all weeks in their respective subfolders. You can run all tests (though you probably never want to do that) using the command `make test` and the weekly tests with `make test-week-<week-id>`. This is what we use in the autograding as well.
+
+Lastly, in the root directory we have the files `train_agent.py` and `evaluate_agent.py`. We will build these up in weeks 2-10 to contain all of the algorithms and options you implement. These two scripts is what we use to test your code and generate results.
 
 ## Installation
-```
-git clone https://github.com/automl-edu/RL_exercises.git
-cd RL_exercises
-conda create -n rl_exercises python=3.8
-conda activate rl_exercises
+1. Clone this repository:
+    * ``git clone https://github.com/automl-edu/RL_exercises.git``
+2. Install the open-source-distribution [anaconda](https://www.anaconda.com/products/individual).
+3. Create a new conda-environment using the `environment.yml`-file:
+    * ``conda env create -f "environment.yml"``
+4. Activate the new conda env:
+    * ``conda activate rl_exercises``
+5. Install this repository:
+    * ``make install-dev``
 
-# Install for usage
-pip install .
+## Code Quality Hacks
+There are a few useful commands in this repository you should probably use.
+- `make format` will format all your code using the formatter black. This will make both your and our experience better.
+- `make check-flake8` will run the linter flake8 that can show you simple style inconsistencies like trailing lines, syntax errors or issues like unused variables. Use it regularly to make sure your code quality stays high and you don't accidentally introduce errors.
+- `make check` will check your code for formatting, linting, typing and docstyle. We recommend running this from time to time. It will also be checked when you commit your code.
 
-# Install for development
-make install-dev
-```
-
-## Minimal Example
-
-```
-# Your code here
-```
+## Relevant Packages
+We use some packages and frameworks in these exercises you might not be familiar with. Here are some useful introduction links in case you run into trouble:
+- We use [*Git*](http://rogerdudler.github.io/git-guide/), specifically GitHub and GitHub Classroom, for these exercises. Please make sure you're familiar with the basic commands, you will use them a lot! 
+- [*Hydra*](https://hydra.cc/) is an argument parser that helps us keep an overview of arguments and offers additional functionality like running [sweeps](https://hydra.cc/docs/intro/#multirun) of the same script with a range of arguments, [submit to compute clusters](https://hydra.cc/docs/plugins/submitit_launcher/) or hyperparameter tuning using [Bayesian Optimization](https://github.com/automl-private/hydra-smac-sweeper) or [alternate methods](https://github.com/facebookresearch/how-to-autorl).
+- [*PyTorch*](https://pytorch.org/) is what we use for deep RL later in the exercises. You likely won't need a deep knowledge of the package, but understanding the basic functionality is useful. They have a [DQN example for RL](https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html) which is also the point in the lecture where we start using deep learning.
+- [*JupyterLab*](https://jupyter.org/) enables interactive coding. We will use this mainly for visualizing agent behaviour and performance.
+- Our [*Pre-commit conditions*](https://pre-commit.com/) contain good practice helpers for your code - including linting, formatting and typing. We're not trying to annoy you with these, we want to ensure a high code standard and encourage you to adopt general best practices. The command `make pre-commit` will check if you're ready to commit.

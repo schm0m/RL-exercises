@@ -75,28 +75,5 @@ clean-build:
 build:
 	$(PYTHON) setup.py sdist
 
-# Publish to testpypi
-# Will echo the commands to actually publish to be run to publish to actual PyPi
-# This is done to prevent accidental publishing but provide the same conveniences
-publish: clean build
-	read -p "Did you update the version number?"
-	
-	$(PIP) install twine
-	$(PYTHON) -m twine upload --repository testpypi ${DIST}/*
-	@echo
-	@echo "Test with the following:"
-	@echo "* Create a new virtual environment to install the uplaoded distribution into"
-	@echo "* Run the following:"
-	@echo
-	@echo "        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ ${NAME}"
-	@echo
-	@echo "* Run this to make sure it can import correctly, plus whatever else you'd like to test:"
-	@echo
-	@echo "        python -c 'import ${PACKAGE_NAME}'"
-	@echo
-	@echo "Once you have decided it works, publish to actual pypi with"
-	@echo
-	@echo "    python -m twine upload dist/*"
-
 # Clean up any builds in ./dist as well as doc, if present
 clean: clean-build 

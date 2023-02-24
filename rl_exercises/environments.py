@@ -1,12 +1,16 @@
 """
-Taken from https://github.com/automl/TabularTempoRL/
+GridCore Env taken from https://github.com/automl/TabularTempoRL/
 """
-import numpy as np
+from __future__ import annotations
+
 import sys
+import time
 from io import StringIO
 from typing import Tuple
+
+import gym.envs
+import numpy as np
 from gym.envs.toy_text.discrete import DiscreteEnv
-import time
 
 # Actions
 LEFT = 0
@@ -14,18 +18,81 @@ UP = 1
 RIGHT = 2
 DOWN = 3
 
+class MarsRover:
+    """Simple Environment for a Mars Rover that can move in a 1D Space"""
+
+    def __init__(
+        self,
+        transition_probabilities=np.ones((5, 2)),
+        rewards: list[float] = [1, 0, 0, 0, 10],
+        horizon: int = 10,
+    ):
+        """
+        :param transition_probabilities: [Nx2] Array for N positions and 2 actions each.
+        :param rewards: [Nx1] Array for rewards. rewards[pos] determines the reward for a given position `pos`.
+        :param horizon: Number of total steps for this environment until it is done (e.g. battery drained)
+        """
+        self.rewards = rewards
+        self.transition_probabilities = transition_probabilities
+        self.current_steps = 0
+        self.horizon = horizon
+        self.position: int = 2
+
+    def reset(self):
+        self.current_steps = 0
+        self.position = 2
+        return self.position
+
+    def step(self, action: int) -> tuple[int, float, bool]:
+        """
+        Executes an action and return next_state, reward and whether the environment is done (horizon reached)
+
+        :param action: Defines action. Has to be either 0 (go left) or 1 (go right)
+        :return: tuple[next_state=position, reward, is_done]
+        """
+        # Determine move given an action and transition probabilities for environment
+        action = int(action)
+        self.current_steps += 1
+        follow_action = (
+            np.random.random() < self.transition_probabilities[self.position][action]
+        )
+        if not follow_action:
+            action = 1 - action
+
+        # Move and update position
+        if action == 0:
+            if self.position > 0:
+                self.position -= 1
+        elif action == 1:
+            if self.position < 4:
+                self.position += 1
+        else:
+            raise RuntimeError(f"{action} is not a valid action (needs to be 0 or 1)")
+
+        # Get reward
+        reward = self.rewards[self.position]
+        return self.position, reward, self.current_steps >= self.horizon
+    
 
 class GridCore(DiscreteEnv):
-    metadata = {'render.modes': ['human', 'ansi']}
+    metadata = {"render.modes": ["human", "ansi"]}
     action_to_name = ["Left", "Up", "Right", "Down"]
 
-    def __init__(self, shape: Tuple[int] = (5, 10), start: Tuple[int] = (0, 0),
-                 goal: Tuple[int] = (0, 9), max_steps: int = 300,
-                 percentage_reward: bool = False, no_goal_rew: bool = False):
+    def __init__(
+        self,
+        shape: Tuple[int, int] = (5, 10),
+        start: Tuple[int, int] = (0, 0),
+        goal: Tuple[int, int] = (0, 9),
+        max_steps: int = 300,
+        percentage_reward: bool = False,
+        no_goal_rew: bool = False,
+    ):
+
         try:
             self.shape = self._shape
         except AttributeError:
             self.shape = shape
+
         self.nS: int = np.prod(self.shape, dtype=int).item()
         self.nA = 4
         self.start = start
@@ -49,7 +116,7 @@ class GridCore(DiscreteEnv):
         s, r, d, i = super(GridCore, self).step(a)
         if self._steps >= self.max_steps:
             d = True
-            i['early'] = True
+            i["early"] = True
         self.total_steps += 1
         return s, r, d, i
 
@@ -85,15 +152,15 @@ class GridCore(DiscreteEnv):
     def map_with_inbetween_goal(self, s, pos, in_between_goal):
         return self.map_output(s, pos)
 
-    def render(self, mode='human', close=False, in_control=None, in_between_goal=None):
+    def render(self, mode="human", close=False, in_control=None, in_between_goal=None):
         self._render(mode, close, in_control, in_between_goal)
 
-    def _render(self, mode='human', close=False, in_control=None, in_between_goal=None):
+    def _render(self, mode="human", close=False, in_control=None, in_between_goal=None):
         if close:
             return
-        outfile = StringIO() if mode == 'ansi' else sys.stdout
-        if mode == 'human':
-            print('\033[2;0H')
+        outfile = StringIO() if mode == "ansi" else sys.stdout
+        if mode == "human":
+            print("\033[2;0H")
 
         for s in range(self.nS):
             position = np.unravel_index(s, self.shape)
@@ -111,7 +178,7 @@ class GridCore(DiscreteEnv):
                 output += "\n"
             outfile.write(output)
         outfile.write("\n")
-        if mode == 'human':
+        if mode == "human":
             if in_control:
                 time.sleep(0.2)
             else:
@@ -119,7 +186,7 @@ class GridCore(DiscreteEnv):
 
 
 class FallEnv(GridCore):
-    _pits = []
+    _pits: list[tuple[int, int]] | list[list[int]] = []
 
     def _calculate_transition_prob(self, current, delta, prob):
         transitions = []
@@ -136,13 +203,13 @@ class FallEnv(GridCore):
                     reward = 1.0
                 is_done = True
             elif new_state in self._pits:
-                reward = -1.
+                reward = -1.0
                 is_done = True
             transitions.append((p, new_state, reward, is_done))
         return transitions
 
     def _init_transition_probability(self):
-        self.afp = 0.  # todo: hotfix, check with Andre how to properly remove afp
+        self.afp = 0.0  # todo: hotfix, check with Andre how to properly remove afp
         for idx, p in enumerate(self._pits):
             self._pits[idx] = np.ravel_multi_index(p, self.shape)
         # Calculate transition probabilities
@@ -150,20 +217,21 @@ class FallEnv(GridCore):
         for s in range(self.nS):
             position = np.unravel_index(s, self.shape)
             P[s] = {a: [] for a in range(self.nA)}
-            other_prob = self.afp / 3.
+            other_prob = self.afp / 3.0
 
-            tmp = [[UP, DOWN, LEFT, RIGHT],
-                   [DOWN, LEFT, RIGHT, UP],
-                   [LEFT, RIGHT, UP, DOWN],
-                   [RIGHT, UP, DOWN, LEFT]]
-            tmp_dirs = [[[-1, 0], [1, 0], [0, -1], [0, 1]],
-                        [[1, 0], [0, -1], [0, 1], [-1, 0]],
-                        [[0, -1], [0, 1], [-1, 0], [1, 0]],
-                        [[0, 1], [-1, 0], [1, 0], [0, -1]]]
-            tmp_pros = [[1 - self.afp, other_prob, other_prob, other_prob],
-                        [1 - self.afp, other_prob, other_prob, other_prob],
-                        [1 - self.afp, other_prob, other_prob, other_prob],
-                        [1 - self.afp, other_prob, other_prob, other_prob], ]
+            tmp = [[UP, DOWN, LEFT, RIGHT], [DOWN, LEFT, RIGHT, UP], [LEFT, RIGHT, UP, DOWN], [RIGHT, UP, DOWN, LEFT]]
+            tmp_dirs = [
+                [[-1, 0], [1, 0], [0, -1], [0, 1]],
+                [[1, 0], [0, -1], [0, 1], [-1, 0]],
+                [[0, -1], [0, 1], [-1, 0], [1, 0]],
+                [[0, 1], [-1, 0], [1, 0], [0, -1]],
+            ]
+            tmp_pros = [
+                [1 - self.afp, other_prob, other_prob, other_prob],
+                [1 - self.afp, other_prob, other_prob, other_prob],
+                [1 - self.afp, other_prob, other_prob, other_prob],
+                [1 - self.afp, other_prob, other_prob, other_prob],
+            ]
             for acts, dirs, probs in zip(tmp, tmp_dirs, tmp_pros):
                 P[s][acts[0]] = self._calculate_transition_prob(position, dirs, probs)
         return P
@@ -193,43 +261,101 @@ class FallEnv(GridCore):
 
 
 class Bridge6x10Env(FallEnv):
-    _pits = [[0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
-             [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7],
-             [4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7],
-             [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7]]
+    _pits = [
+        [0, 2],
+        [0, 3],
+        [0, 4],
+        [0, 5],
+        [0, 6],
+        [0, 7],
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [1, 5],
+        [1, 6],
+        [1, 7],
+        [4, 2],
+        [4, 3],
+        [4, 4],
+        [4, 5],
+        [4, 6],
+        [4, 7],
+        [5, 2],
+        [5, 3],
+        [5, 4],
+        [5, 5],
+        [5, 6],
+        [5, 7],
+    ]
     _shape = (6, 10)
 
 
 class Pit6x10Env(FallEnv):
-    _pits = [[0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7],
-             [1, 2], [1, 3], [1, 4], [1, 5], [1, 6], [1, 7],
-             [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7]]
+    _pits = [
+        [0, 2],
+        [0, 3],
+        [0, 4],
+        [0, 5],
+        [0, 6],
+        [0, 7],
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [1, 5],
+        [1, 6],
+        [1, 7],
+        [2, 2],
+        [2, 3],
+        [2, 4],
+        [2, 5],
+        [2, 6],
+        [2, 7],
+    ]
     # [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7]]
     _shape = (6, 10)
 
 
 class ZigZag6x10(FallEnv):
-    _pits = [[0, 2], [0, 3],
-             [1, 2], [1, 3],
-             [2, 2], [2, 3],
-             [3, 2], [3, 3],
-             [5, 7], [5, 6],
-             [4, 7], [4, 6],
-             [3, 7], [3, 6],
-             [2, 7], [2, 6],
-             ]
+    _pits = [
+        [0, 2],
+        [0, 3],
+        [1, 2],
+        [1, 3],
+        [2, 2],
+        [2, 3],
+        [3, 2],
+        [3, 3],
+        [5, 7],
+        [5, 6],
+        [4, 7],
+        [4, 6],
+        [3, 7],
+        [3, 6],
+        [2, 7],
+        [2, 6],
+    ]
     _shape = (6, 10)
 
 
 class ZigZag6x10H(FallEnv):
-    _pits = [[0, 2], [0, 3],
-             [1, 2], [1, 3],
-             [2, 2], [2, 3],
-             [3, 2], [3, 3],
-             [5, 7], [5, 6],
-             [4, 7], [4, 6],
-             [3, 7], [3, 6],
-             [2, 7], [2, 6],
-             [4, 4], [5, 2]
-             ]
+    _pits = [
+        [0, 2],
+        [0, 3],
+        [1, 2],
+        [1, 3],
+        [2, 2],
+        [2, 3],
+        [3, 2],
+        [3, 3],
+        [5, 7],
+        [5, 6],
+        [4, 7],
+        [4, 6],
+        [3, 7],
+        [3, 6],
+        [2, 7],
+        [2, 6],
+        [4, 4],
+        [5, 2],
+    ]
     _shape = (6, 10)

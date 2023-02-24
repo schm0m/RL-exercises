@@ -1,20 +1,12 @@
 # Week 2: Policy and Value Iteration
 This week you will implement the fundamental algorithms of policy and value iteration. You'll see how your agent's behaviour changes over time and hopefully have your first successful training runs.
 
-## Setup
+### 1. Policy Iteration for the MarsRover
+In the env.py file you’ll find the first environment we’ll work with: the MarsRover. 
+You have seen it as an example in the lecture: the agent can move left or right with each step and should ideally move to the rightmost state. In this first exercise, the environment will be deterministic, that means the rover will always execute the given action. 
+Your task is to complete the given code stub in policy iteration.py with the algorithm from the lecture.
 
-1. Install [Miniconda](https://docs.conda.io/en/latest/miniconda.html)
-2. Open Anaconda-console (Miniconda prompt)
-3. Create a new conda-environment using the `environment.yml`-file:
-   * ``conda env create -f "environment.yml"``
-4. Activate conda-environment:
-   * ``conda activate rl-exercises``
-
-If you already created an environment and want to update it using this `environment.yml` you can use following command:
-````shell
-conda activate rl-exercises
-conda env update --file "environment.yml" --prune
-````
-
-By appending ``--prune`` all existing packages which are not listed in `environment.yml` are removed. 
-If you want to keep them, you can remove this flag.
+### 2. Value Iteration for the probibalistic MarsRover
+For this second exercise, we modify the MarsRover environment, now the rover may or may not execute the requested action, the probability is 50%. 
+You will complete the code in value iteration.py in order
+to evaluate a policy on this variation of our environment.
