@@ -64,7 +64,6 @@ def policy(Q: nn.Module, env: gym.Env, state: np.ndarray | torch.Tensor, explora
     int
         action
     """
-
     if np.random.uniform(0, 1) < exploration_rate:
         return env.action_space.sample()
     q_values = Q(torch.from_numpy(state).float()).detach().numpy()

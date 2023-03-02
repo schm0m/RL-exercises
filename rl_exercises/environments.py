@@ -1,6 +1,4 @@
-"""
-GridCore Env taken from https://github.com/automl/TabularTempoRL/
-"""
+"""GridCore Env taken from https://github.com/automl/TabularTempoRL/"""
 from __future__ import annotations
 
 import sys
@@ -39,6 +37,7 @@ class MarsRover:
         self.position: int = 2
 
     def reset(self):
+        """Reset environment"""
         self.current_steps = 0
         self.position = 2
         return self.position

@@ -2,9 +2,7 @@ import gym
 
 
 class VacuumEnv(gym.Env):
-    """
-    So far, a non-functional env
-    """
+    """So far, a non-functional env"""
 
     def __init__(self):
         """
@@ -15,16 +13,12 @@ class VacuumEnv(gym.Env):
         self.reward_range = None
 
     def reset(self):
-        """
-        Reset the environment
-        """
+        """Reset the environment"""
         state = []
         return state
 
     def step(self, action):
-        """
-        This should move the vacuum
-        """
+        """This should move the vacuum"""
         state = action
         reward = 0
         done = True
@@ -32,7 +26,5 @@ class VacuumEnv(gym.Env):
         return state, reward, done, meta_info
 
     def close(self):
-        """
-        Make sure environment is closed
-        """
+        """Make sure environment is closed"""
         return True

@@ -16,14 +16,31 @@ def update_policy(
     """
     Single step for Policy iteration
 
-    :param qs: 2D-Array of size (n, 2): State-Action Value function
-    :param pi: 1D-Array of size n with integers defining the best action given a state
-    :param state: Current state/position index
-    :param new_state: New state/position index
-    :param action: Selected action which leads to state -> new_state
-    :param reward: Reward for this action
-    :param gamma: Discount factor
-    :return:
+    Parameters
+    ----------
+    qs: [Nx2]-Array
+        Q function
+    pi: np.array
+        Policy
+    state: int
+        Current state/position index
+    new_state: int
+        New state/position index
+    action: int
+        Selected action
+    reward: float
+        Reward for this action
+    gamma: float
+        Discount factor
+
+    Returns
+    -------
+    new_qs
+        Updated Q function
+    new_pi
+        Update policy
+    converged
+        Convergence Signal
     """
     # TODO: complete this method
     new_qs = np.copy(qs)
@@ -39,10 +56,25 @@ def run_policy_iteration(
     horizon: int = 10,
 ) -> tuple[np.ndarray, int, float]:
     """
-    :param transition_probabilities: [Nx2] Array for N positions and 2 actions each.
-    :param rewards: [Nx1] Array for rewards. rewards[pos] determines the reward for a given position `pos`.
-    :param horizon: Number of total steps for this environment until it is done (e.g. battery drained)
-    :return: Tuple[Policy, number of update steps, reward]
+    Run Policy Iteration
+
+    Parameters
+    ----------
+    transition_probabilities: [Nx2]-Array
+        Environment Transition Probabilities
+    rewards: list[float]
+        Reward structure for environment
+    horizon: int
+        Environment horizon
+
+    Returns
+    -------
+    policy
+        policy
+    i
+        Number of iterations
+    final_reward
+        Total reward
     """
     env = MarsRover(transition_probabilities, rewards, horizon)
     n = len(env.rewards)
@@ -74,6 +106,21 @@ def run_policy_iteration(
 
 
 def evaluate_policy(pi: list[int] | np.ndarray, env: MarsRover) -> float:
+    """
+    Evaluate Policy
+
+    Parameters
+    ----------
+    pi: list[int], np.array
+        Policy to evaluate
+    env: MarsRover
+        Evaluation environment
+
+    Returns
+    -------
+    r_acc
+        accumulated rewards
+    """
     state = env.reset()
     done = False
     r_acc: float = 0

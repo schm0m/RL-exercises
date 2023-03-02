@@ -63,7 +63,6 @@ class Policy(nn.Module):
         torch.Tensor
             Probabilites over actions
         """
-
         # TODO pass the input through each layer
 
         # TODO compute the softmax to normalize the probabilities
@@ -98,7 +97,8 @@ def compute_returns(rewards: List[int], discount_factor: float = DISCOUNT_FACTOR
 
 
 def policy_improvement(log_probs: torch.Tensor, rewards: List[int]) -> float:
-    """Compute REINFORCE policy gradient and perform gradient ascent step
+    """
+    Compute REINFORCE policy gradient and perform gradient ascent step
 
     Parameters
     ----------
@@ -112,7 +112,6 @@ def policy_improvement(log_probs: torch.Tensor, rewards: List[int]) -> float:
     float
         loss computed using the log probabilities and advantages
     """
-
     # we need log probabilites for each reward in the list
     assert len(log_probs) == len(rewards)
 

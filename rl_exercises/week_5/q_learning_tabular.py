@@ -37,6 +37,25 @@ def to_discrete_state(obs: Tuple[float, float, float, float]) -> Tuple[float, fl
 
 
 def policy(env: gym.Env, Q: DefaultDict[Tuple[Any, int], float], state, exploration_rate: float) -> int:
+    """
+    Act given a Q function
+
+    Parameters
+    ----------
+    env: gym.Env
+        The environment to act in
+    Q: DefaultDict[Tuple[Any, int], float]
+        The Q function
+    state: np.array
+        The current state
+    exploration_rate: float
+        Exploration epsilon
+
+    Returns
+    -------
+    action_id
+        ID of the action to take
+    """
     if np.random.uniform(0, 1) < exploration_rate:
         return env.action_space.sample()
     q_values = [Q[(state, action)] for action in range(env.action_space.n)]
@@ -51,6 +70,29 @@ def q_learning(
     min_exploration_rate: float = 0.01,
     gamma: float = 0.9,
 ) -> Tuple[List[float], DefaultDict[Tuple[Any, int], float]]:
+    """
+    TODO: Implement Q Learning
+
+    Parameters
+    ----------
+    env: gym.Env
+        Training Environment
+    num_episodes: int
+        Number of Training Episodes
+    exploration_rate: float
+        Epsilon
+    exploration_rate_decay: float
+        Epsilon Decay Rate
+    min_exploration_rate: float
+        Minimum Epsilon
+
+    Returns
+    -------
+    rewards
+        Training rewards
+    Q
+        Trained Q function
+    """
     Q = defaultdict(lambda: np.random.uniform(1, -1))
 
     rewards: list[float] = []

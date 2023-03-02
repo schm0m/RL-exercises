@@ -60,9 +60,7 @@ def sarsa(
 
 
 def choose_action(probability_distribution: np.ndarray) -> int:
-    """
-    Given a `probability_distribution` (shape=n_actions) choose an action according to these probabilities
-    """
+    """Given a `probability_distribution` (shape=n_actions) choose an action according to these probabilities"""
     return 0
 
 

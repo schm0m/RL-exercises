@@ -13,6 +13,7 @@ from stable_baselines3.common.monitor import Monitor
 # Use yaml config ../configs/bipedal_walker.yaml
 @hydra.main("../configs", "bipedal_walker", version_base="1.1")
 def main(cfg: DictConfig) -> float:
+    """Run Training"""
     printr(cfg)
 
     # Create environment

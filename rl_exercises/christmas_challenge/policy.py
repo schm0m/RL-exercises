@@ -3,6 +3,19 @@ import numpy as np
 
 
 def create_policy(env: gym.Env):
+    """
+    Create Policy
+
+    Parameters
+    ----------
+    env: gym.Env
+        Training Environment
+
+    Returns
+    -------
+    policy
+        Initialiyed Policy
+    """
     print(
         f"""Creating policy for environment {env}
         with observation space {env.observation_space}

@@ -5,6 +5,7 @@ import seaborn as sns
 
 
 def animate(frames):
+    """Animate Render"""
     import matplotlib.animation as animation
 
     fig, ax = plt.subplots()
@@ -25,6 +26,7 @@ def animate(frames):
 
 
 def plot(results: dict[str, tuple]):
+    """Plot training results"""
     # ------------------------------------------------------------------
     # Plot
     # ------------------------------------------------------------------

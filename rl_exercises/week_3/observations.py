@@ -3,6 +3,7 @@ from environments import MarsRover
 
 # TODO: complete this method
 def observe():
+    """Oberserve the MarsRover move"""
     MarsRover()
     print("Nothing to see here")
 

@@ -17,6 +17,16 @@ from plotting import animate
 
 
 def epsilon_decay(episode: int, epsilon: float) -> float:
+    """
+    Decay epsilon value across episodes
+
+    Parameters
+    ----------
+    episode : int
+        Current episode
+    epsilon : float
+        Base epsilon
+    """
     # TODO check formula
     eps = epsilon * np.exp(-0.1 * episode)
     return eps
@@ -64,9 +74,7 @@ class QFunction(nn.Module):
 
 
 class Policy(object):
-    """
-    Policy for Exploration with ε(z)-greedy
-    """
+    """Policy for Exploration with ε(z)-greedy"""
 
     def __init__(
         self,
@@ -289,6 +297,49 @@ def train(
     buffer_size: int = 50000,
     gamma: float = 0.999,
 ):
+    """
+    Train a Policy
+
+    Parameters
+    ----------
+    policy_class: 
+        Policy Class to Train
+    env_id: str 
+        Environment ID
+    max_env_steps: int
+        Maximum number of steps
+    max_episode_steps: int
+        Maximum number of steps per episode
+    n_eval_episodes: int
+        Number of evaluation episodes
+    epsilon: float
+        Epsilon for exploration
+    batch_size: int
+        Batch Size
+    seed: int | None
+        Random seed
+    learning_rate: float
+        Learning Rate
+    buffer_size: int
+        Replay Buffer Size
+    gamma: float
+        Discount Factor
+
+    Returns
+    -------
+    visited_positions 
+        Positions the agent saw in training
+    losses
+        Losses during training
+    cum_rewards
+        Cummulative rewards
+    env
+        Environment
+    actions
+        Actions taken during training
+    dones
+        Episode ending signals
+    """
     torch.manual_seed(seed)
 
     # Initialize env and display starting state and env info

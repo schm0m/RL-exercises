@@ -13,6 +13,23 @@ from policy import create_policy
 
 
 def evaluate(env: gym.Env, policy: Callable[[np.ndarray], int], episodes=100):
+    """
+    Evaluate a given Policy on an Environment
+
+    Parameters
+    ----------
+    env: gym.Env
+        Environment to evaluate on
+    policy: Callable[[np.ndarray], int]
+        Policy to evaluate
+    episodes: int
+        Evaluation episodes
+
+    Returns
+    -------
+    mean_rewards
+        Mean evaluation rewards
+    """
     episode_rewards: List[float] = []
     pbar = tqdm(total=episodes)
     for _ in range(episodes):
