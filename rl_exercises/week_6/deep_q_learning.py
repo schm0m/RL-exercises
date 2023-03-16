@@ -4,7 +4,7 @@ from __future__ import annotations
 # import random
 # from collections import deque
 
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -154,13 +154,13 @@ def q_learning(
     rewards: list[float] = []
     for episode in range(num_episodes):
         rewards.append(0)
-        obs = env.reset()
+        obs, _ = env.reset()
         state = obs
 
         for t in range(MAX_EPISODE_LENGTH):
             action = policy(Q, env, state, exploration_rate)
 
-            obs, reward, done, _ = env.step(action)
+            obs, reward, terminated, truncated, _ = env.step(action)
 
             next_state = obs
 
@@ -175,7 +175,7 @@ def q_learning(
                 # TODO Perform a value function update
                 optimizer.step()
 
-            if done:
+            if terminated or truncated:
                 break
 
         if episode % (num_episodes / 100) == 0:
@@ -203,15 +203,14 @@ def evaluate(Q: nn.Module, env: gym.Env, n_episodes: int = 1) -> list[float]:
     cumulative_rewards = []
     for i in range(n_episodes):
         cum_rew = 0
-        obs = env.reset()
+        obs, _ = env.reset()
         done = False
         while not done:
             action = policy(Q, env, obs, exploration_rate=0.0)  # greedy
-            obs, reward, done, info = env.step(action)
+            obs, reward, terminated, truncated, _ = env.step(action)
             cum_rew += reward
             env.render(mode="human")
-            if done:
-                break
+            done = terminated or truncated
         cumulative_rewards.append(cum_rew)
 
     env.close()

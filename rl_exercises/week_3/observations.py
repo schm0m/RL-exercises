@@ -1,4 +1,4 @@
-from environments import MarsRover
+from mars_rover_env import MarsRover
 
 
 # TODO: complete this method

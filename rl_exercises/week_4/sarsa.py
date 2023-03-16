@@ -1,10 +1,8 @@
 from collections import defaultdict
 from typing import Callable, DefaultDict, Hashable, List, Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
-
-from env import FallEnv
 
 
 # Most of this code is Code provided by Fabio Ferreira & Andre Biedenkapp
@@ -38,7 +36,7 @@ def sarsa(
     for i_episode in range(num_episodes + 1):
         # The policy we're following
         policy = make_epsilon_greedy_policy(Q, epsilon, env.action_space.n)
-        state = env.reset()
+        state, _ = env.reset()
         done = False
         episode_length = 0
         cumulative_reward = 0
@@ -46,11 +44,11 @@ def sarsa(
             num_performed_steps += 1
 
             # TODO: Implement sarsa
-            state, reward, done = policy(state, ...)
+            state, reward, truncated, terminated, _ = policy(state, ...)
 
             cumulative_reward += 0
             episode_length += 1
-            done = True
+            done = truncated or terminated
         rewards.append(cumulative_reward)
         lens.append(episode_length)
 
@@ -119,6 +117,6 @@ def td_update(
 
 
 if __name__ == "__main__":
-    env = FallEnv()
+    env = gym.make("MiniGrid-Empty-5x5-v0")
 
     r, l, q = sarsa(env, 1000)

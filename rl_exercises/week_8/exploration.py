@@ -238,7 +238,7 @@ def evaluate(policy: Policy, env: gym.Env, render: bool = False, seed: int | Non
     list[float]
         Reward per step.
     """
-    observation, info = env.reset(seed=seed)
+    observation, _ = env.reset(seed=seed)
     action: int = 0
     reward: float = 0
     truncated, terminated = False, False
@@ -246,7 +246,7 @@ def evaluate(policy: Policy, env: gym.Env, render: bool = False, seed: int | Non
     frames = []
     while not (truncated or terminated):
         action = policy(state=observation)
-        observation, reward, terminated, truncated, info = env.step(action)
+        observation, reward, terminated, truncated, _ = env.step(action)
         rewards.append(reward)
         if render:
             frame = env.render()
@@ -344,7 +344,7 @@ def train(
 
     # Initialize env and display starting state and env info
     env = make_env(env_id=env_id, max_episode_steps=max_episode_steps)
-    observation, info = env.reset(seed=seed)
+    observation, _ = env.reset(seed=seed)
     # frame = env.render()
     # plt.imshow(frame)
     # plt.show()
@@ -374,7 +374,7 @@ def train(
     while step < max_env_steps:
         # Reset
         losses_per_episode: list[float] = []
-        observation, info = env.reset(seed=seed)
+        observation, _ = env.reset(seed=seed)
         terminated: bool = False  # reached final state
         truncated: bool = False  # e.g. terminated by time limit
         while not terminated and not truncated:
@@ -383,7 +383,7 @@ def train(
             # Select action
             action = policy(state=observation, exploration_rate=eps)
             # Step env
-            next_observation, reward, terminated, truncated, info = env.step(action)
+            next_observation, reward, terminated, truncated, _ = env.step(action)
             step += 1
             done = terminated | truncated
 

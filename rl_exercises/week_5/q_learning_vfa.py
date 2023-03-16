@@ -140,13 +140,13 @@ def q_learning(
     vfa_update_data = []
     for episode in range(num_episodes):
         rewards.append(0)
-        obs, info = env.reset()
+        obs, _ = env.reset()
         state = obs
 
         for t in range(MAX_EPISODE_LENGTH):
             action = policy(env, Q, state, exploration_rate)
 
-            obs, reward, terminated, truncated, info = env.step(action)
+            obs, reward, terminated, truncated, _ = env.step(action)
 
             next_state = obs
             vfa_update_data.append((state, action, reward, terminated, next_state))
@@ -159,7 +159,7 @@ def q_learning(
                 vfa_update(Q, optimizer, *zip(*vfa_update_data))
                 vfa_update_data.clear()
 
-            if terminated:
+            if terminated or truncated:
                 break
 
         exploration_rate = max(exploration_rate_decay * exploration_rate, min_exploration_rate)

@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 
 
 class VacuumEnv(gym.Env):
@@ -15,15 +15,17 @@ class VacuumEnv(gym.Env):
     def reset(self):
         """Reset the environment"""
         state = []
-        return state
+        info = {}
+        return state, info
 
     def step(self, action):
         """This should move the vacuum"""
         state = action
         reward = 0
-        done = True
-        meta_info = {}
-        return state, reward, done, meta_info
+        terminated = True
+        truncated = True
+        info = {}
+        return state, reward, terminated, truncated, info
 
     def close(self):
         """Make sure environment is closed"""

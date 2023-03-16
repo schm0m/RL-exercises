@@ -1,0 +1,5 @@
+defaults:
+  - agent: sb3
+  
+training_steps: 0
+env_name: Pendulum-v1

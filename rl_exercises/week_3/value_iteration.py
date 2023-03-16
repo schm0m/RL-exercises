@@ -1,6 +1,6 @@
 from __future__ import annotations
 import numpy as np
-from env import MarsRover
+from mars_rover_env import MarsRover
 
 
 # TODO: complete this method
@@ -66,7 +66,7 @@ def run_value_iteration(
     n = len(rewards)
 
     done = False
-    state = env.reset()
+    state, _ = env.reset()
 
     v = np.zeros(n)
 
@@ -75,13 +75,13 @@ def run_value_iteration(
         i += 1
         print(f"This is step {i}")
         action = 1
-        new_state, reward, done = env.step(action)
+        new_state, reward, done, _, _ = env.step(action)
 
         # TODO: Use Value iteration to update Value function
         update_value_function(v, state, ...)
 
         if done:
-            new_state = env.reset()
+            new_state, _ = env.reset()
 
         state = new_state
 
@@ -114,12 +114,12 @@ def evaluate_agent(v: list[float] | np.ndarray, env: MarsRover) -> float:
     final_reward
         Final accumulated reward
     """
-    state = env.reset()
+    state, _ = env.reset()
     done = False
     r_acc: float = 0
     while not done:
         action = np.argmax([v[max(state - 1, 0)], v[min(state + 1, 4)]])
-        new_state, reward, done = env.step(action)
+        state, reward, done, _, _ = env.step(action)
         r_acc += reward
     return r_acc
 

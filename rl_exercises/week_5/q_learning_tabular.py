@@ -99,14 +99,14 @@ def q_learning(
     print(f"Performing Q-learning with {NUM_STATES:d} states")
     for episode in range(num_episodes):
         rewards.append(0)
-        obs, info = env.reset()
+        obs, _ = env.reset()
         state = to_discrete_state(obs)
 
         for t in range(MAX_EPISODE_LENGTH):
             action = policy(env, Q, state, exploration_rate)  # non-greedy/exploring action
             # env.render()
 
-            obs, reward, terminated, truncated, info = env.step(action)
+            obs, reward, terminated, truncated, _ = env.step(action)
 
             next_state = to_discrete_state(obs)
             # optimal_next_action = policy(
@@ -119,7 +119,7 @@ def q_learning(
             state = next_state
 
             rewards[-1] += reward
-            if terminated:
+            if terminated or truncated:
                 break
 
         exploration_rate = max(exploration_rate_decay * exploration_rate, min_exploration_rate)

@@ -1,4 +1,4 @@
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -176,7 +176,7 @@ def policy_gradient(num_episodes: int) -> List[int]:
     for episode in range(num_episodes):
         rewards.append(0)
         trajectory = []
-        state = env.reset()
+        state, _ = env.reset()
 
         for t in range(MAX_EPISODE_LENGTH):
             # Enable for rendering the environment
@@ -187,7 +187,7 @@ def policy_gradient(num_episodes: int) -> List[int]:
             action, log_prob = act(state)
 
             # Take a step in the environment using this action
-            next_state, reward, done, _ = env.step(action.item())
+            next_state, reward, terminated, truncated, _ = env.step(action.item())
 
             # Append the log probability and reward to the trajectory
             trajectory.append((log_prob, reward))
@@ -197,7 +197,7 @@ def policy_gradient(num_episodes: int) -> List[int]:
             # accumulate the reward for the given episode
             rewards[-1] += reward
 
-            if done:
+            if terminated or truncated:
                 break
 
         # Policy improvement step

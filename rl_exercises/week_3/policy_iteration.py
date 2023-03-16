@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
-from env import MarsRover
+from mars_rover_env import MarsRover
 
 
 def update_policy(
@@ -80,7 +80,7 @@ def run_policy_iteration(
     n = len(env.rewards)
 
     done = False
-    state = env.reset()
+    state, _ = env.reset()
 
     pi = np.random.randint(0, 2, n)
 
@@ -89,12 +89,12 @@ def run_policy_iteration(
         i += 1
         print(f"This is step {i}")
         action = pi[state]
-        new_state, reward, done = env.step(action)
+        new_state, reward, done, _, _ = env.step(action)
 
         # TODO: Use Policy iteration to update policy
 
         if done:
-            new_state = env.reset()
+            new_state, _ = env.reset()
 
         state = new_state
 
@@ -121,12 +121,12 @@ def evaluate_policy(pi: list[int] | np.ndarray, env: MarsRover) -> float:
     r_acc
         accumulated rewards
     """
-    state = env.reset()
+    state, _ = env.reset()
     done = False
     r_acc: float = 0
     while not done:
         action = pi[state]
-        new_state, reward, done = env.step(action)
+        state, reward, done, _, _ = env.step(action)
         r_acc += reward
     return r_acc
 
