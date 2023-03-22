@@ -1,6 +1,15 @@
 # RL_exercises
 Welcome to the RL exercises repository! You will work with this repository for the duration of the course, so please take your time to familiarize yourself with its structure.
 
+## Excercises
+Each week, you'll have a task that corresponds to that week's lecture. Each task is made up of 3 levels and additional material for you to reference. You do **not** need to complete every level each week, instead think of them like this:
+
+1. Level 1: The basics from the lecture. This is mandatory and will be tested via autograding. Level 1 will mainly help you understand the basics of the week's topic better.
+2. Level 2: Here we want to increase your understanding of how the algorithms we implement work in practice. This level will often ask you to run or design additional experiments, brainstorm improvements or compare results between environments and methods. Level 2 will build your intuition on how to solve RL environments in practice.
+3. Level 3: This level is mainly for those who are very motivated and want to dive deeper into the current topic. We will ask you to implement more advanced ideas from the lecture or the literature, sometimes only with a paper for guidance. Level 3 will prepare you for implementing and extending ongoing research - this also means it's a lot of work! While we believe you should attempt Level 2 most weeks, it is perfectly fine to only select one or two weeks to tackle Level 3.
+
+Apart from the levels, we will also link material of different sorts for each week. These are not mandatory, often go beyond the lecture and will not be the topic of your exams. There are two sorts of material we provide: academic material you can use as a reference to read deeper into a topic and guidance on practical aspects of RL. You can use both at your discretion, they are intended as resources in case you need to debug your method or possibly need a more advanced method in the first place.
+
 ## Repository Structure
 Each week's task and code stubs can be found in `rl_exercises`. This is where you code and where you should store the result for each week.
 
