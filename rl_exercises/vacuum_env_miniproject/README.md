@@ -7,3 +7,12 @@ This could include extra dirty spots in the room, different apartment layouts, b
 To test if you design works as expected, you should try to run an agent on your environment from time to time. 
 Ideally, it will learn slower or not at all whenever you add a new difficulty. 
 If your design decisions are flawed the may even make the task easier or much too hard, so make sure to check. Good Luck and have fun!
+
+TODO: put it after value iteration, give it some structure
+
+## Level 2
+Beautify, e.g. rendering
+Possibly add utility wrappers
+
+## Level 3 
+Make it contextual

@@ -1,7 +1,10 @@
 # Week 6: Deep Q-Learning
 
 This week you will extend Q-Learning with linear function approximation to even more complex environments by implementing a Deep Q-Network (DQN).
+TODO: make clear that from now on we want them to run multiple seed
+TODO: describe batches and include a rough replay buffer sizes
 
+## Level 1
 ### Deep Q Learning
 This week’s exercise aims to develop an intuition about how adding deep learning to value function approximation impacts the learning process. You have been provided with a Q-Learning procedure that uses a shallow neural network as a function approximator for LunarLander-v2 environment. Your tasks are the following:
 - Complete the DQN implementation in deep q learning.py by adding a deep network as a function approximator and a replay buffer to store and sample transitions from.
@@ -11,3 +14,10 @@ This week’s exercise aims to develop an intuition about how adding deep learni
 *Note*: The tests provided in for this exercise are only an indicator of whether the plots and answers were generated or not, and whether the Q network learned something or not. We will look into the plots
 and the answers to determine the quality of the submitted solutions.
 Please record your answers in answers.txt
+
+## Level 2
+TODO: describe proper evaluation including rliable
+This will be great for your project presentations
+
+## Level 3
+TODO: describe an exercise to implement Prioritized Replay Buffer

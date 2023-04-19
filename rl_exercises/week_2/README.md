@@ -12,6 +12,7 @@ Exercises have to be handed in teams of up to 3 students. When you have found yo
 ### 2. Get familiar with git and GitHub Classroom
 To show that you are familiar with the standard git add, commit and push steps, add a file called members.txt to your repository. The file should contain the names of all members in the following way:
 
+TODO: Let them use the names as arguments to have hydra in there
 member 1: name1
 member 2: name2
 member 3: name3

@@ -2,6 +2,7 @@
 
 This week you will implement Q-Learning, another model-free RL algorithm. By using linear function approximation, it is able to scale to infinitely large state spaces.
 
+## Level 1
 ### 1. Tabular Q-Learning
 Implement the Q-Learning update step in q learning tabular.py and try different state discretizations (BINS) and learning rates (LEARNING RATE). How does the number of states and learning rate affect the training of the RL algorithm?
 
@@ -11,3 +12,10 @@ Then implement the value function training step in q learning vfa.py using the Q
 Update the hyperparameters and the model to achieve a mean reward of more than 50 for the CartPole environment.
 For the open questions, please write your answers in ‘answers.txt‘. We will grade those manually.
 
+## Level 2
+Implement double Q-learning. Do you see any improvements? Is overestimation going down? Visualize your Q-values to check.
+Is decaying epsilon greedy a better extension?
+TODO: improve this description, describe decaying epsilon better
+
+## Level 3
+TODO: describe an exercise to make this distributional 
