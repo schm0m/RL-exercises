@@ -5,17 +5,20 @@ from gymnasium.wrappers import TimeLimit
 import compiler_gym
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3 import SAC
+from typing import  List
+from tqdm import tqdm
 
 
 @hydra.main("rl_exercises/configs", "base", version_base="1.1")
 def train(cfg):
     env = make_env(cfg.env_name)
     if cfg.agent == 'sb3':
-        return train_sb3_sac(cfg)
+        return train_sb3_sac(env, cfg)
     else:
         # TODO: add your agent options here
         raise NotImplementedError
     
+    #TODO: make agent
     agent = None
     buffer = getattr(agent.buffer, cfg.buffer_cls)(cfg.buffer_kwargs)
     state, info = env.reset()
@@ -41,11 +44,12 @@ def train(cfg):
             eval_performance = evaluate(env, policy, cfg.n_eval_episodes)
             print(f"Eval reward after {step} steps was {eval_performance}.")
     
+    agent.save(cfg.outpath)
     final_eval = evaluate(env, policy, cfg.n_eval_episodes)
     print(final_eval)
     return final_eval
 
-def train_sb3_sac(cfg):
+def train_sb3_sac(env, cfg):
     # Create agent
     model = SAC("MlpPolicy", env, verbose=cfg.verbose, tensorboard_log=cfg.log_dir, seed=cfg.seed)
 
@@ -61,8 +65,41 @@ def train_sb3_sac(cfg):
     performance = np.mean(means)
     return performance
 
-def evaluate(env, policy, n_episodes):
-    raise NotImplementedError
+def evaluate(env: gym.Env, agent, episodes=100):
+    """
+    Evaluate a given Policy on an Environment
+
+    Parameters
+    ----------
+    env: gym.Env
+        Environment to evaluate on
+    policy: Callable[[np.ndarray], int]
+        Policy to evaluate
+    episodes: int
+        Evaluation episodes
+
+    Returns
+    -------
+    mean_rewards
+        Mean evaluation rewards
+    """
+    episode_rewards: List[float] = []
+    pbar = tqdm(total=episodes)
+    for _ in range(episodes):
+        obs, info = env.reset()
+        episode_rewards.append(0)
+        done = False
+        episode_steps = 0
+        while not done:
+            action, _ = agent.predict(obs, info)
+            obs, reward, terminated, truncated, _ = env.step(action)
+            episode_rewards[-1] += reward
+            episode_steps += 1
+            if terminated or truncated:
+                pbar.set_postfix({"episode reward": episode_rewards[-1], "episode step": episode_steps})
+        pbar.update(1)
+    env.close()
+    return np.mean(episode_rewards)
 
 def make_env(env_name):
     if "compiler" in env_name:
