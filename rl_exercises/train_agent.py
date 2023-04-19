@@ -17,12 +17,12 @@ def train(cfg):
         raise NotImplementedError
     
     agent = None
-    TODO: make buffer/trajectory
+    buffer = getattr(agent.buffer, cfg.buffer_cls)(cfg.buffer_kwargs)
     state, info = env.reset()
 
     num_episodes = 0
     for step in range(cfg.training_steps):
-        action = agent.predict(state)
+        action, info = agent.predict(state, info)
         next_state, reward, terminated, truncated, info = env.step(action)
 
         if buffer is not None:
