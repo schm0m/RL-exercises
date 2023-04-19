@@ -55,7 +55,6 @@ setuptools.setup(
         "torch",
         "tqdm",
         "matplotlib",
-        "compiler_gym",
         "minigrid",
         "stable-baselines3",
         "seaborn",

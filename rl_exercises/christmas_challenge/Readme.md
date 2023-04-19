@@ -14,12 +14,17 @@ You can find other benchmarks [here](https://compilergym.com/llvm/index.html#dat
 
 **The episodes have no step limit by default, so remember to use the `TimeLimit` wrapper!**
 
+## Installation
+For this challenge you need to install `compiler_gym` which you can do with
+```bash
+pip install -U compiler_gym
+```
+If this does not work for you, try these [instructions](https://github.com/facebookresearch/CompilerGym/blob/development/INSTALL.md).
+
+
 ## Getting Started
 
 ```bash
-conda env create -f environment.yaml
-conda activate rlcc
-
 # test your setup
 python evaluate.py
 ```
