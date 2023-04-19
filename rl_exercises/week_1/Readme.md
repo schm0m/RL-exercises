@@ -1,4 +1,4 @@
-# rl-ws22-ex01
+# RL Training Demo
 RL Training Demo with Popular Libraries.
 
 We train and optimize a BipedalWalker.
@@ -19,3 +19,29 @@ tensorboard --logdir .
 
 ## Replay
 See the notebook.
+
+
+
+The goal of this first exercise is to set up teams and learn about git and the workflow for future exercises. 
+If you have not already set up this repository to try out last week's demo, please make sure to do so now!
+
+### 1. Form teams of up to 3 students
+Most exercises will require you to implement some of the techniques you learn during the course. Git is one of the most widely used version control systems and allows you to easily collaborate with others on code from the same repository.
+
+Exercises have to be handed in teams of up to 3 students. When you have found your partners, open the GitHub Classroom Link provided via StudIP, create a group (you will have to name the group yourself) and both join that group. This will allow you to clone the template repository in which you can add your solutions to this exercise sheet.
+
+*Note*: Make sure you and your team-mate are happy with each other. GitHub Classroom does not allow to change your groups mid semester.
+
+### 2. Get familiar with git and GitHub Classroom
+To show that you are familiar with the standard git add, commit and push steps, add a file called members.txt to your repository. The file should contain the names of all members in the following way:
+
+TODO: Let them use the names as arguments to have hydra in there
+member 1: name1
+member 2: name2
+member 3: name3
+
+Afterwards you can push to submit.
+We make use of GitHub Classrooms autograde functionality. 
+Essentially, for most exercise sheets we will require you to pass unit tests which are automatically evaluated whenever you push to GitHub. 
+To demonstrate this process, for this exercise we run a test that expects the above file to be present and to contain three lines as above (make sure to replace name1, name2 and name3. If your group has less than 3 students, just add any name you like).
+You will be informed if the tests executed successfully or not, but to be sure you should run 'make test-week-2' before pushing your solution.

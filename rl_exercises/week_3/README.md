@@ -1,22 +1,18 @@
-# Week 2: Policy and Value Iteration
-This week you will implement the fundamental algorithms of policy and value iteration. You'll see how your agent's behaviour changes over time and hopefully have your first successful training runs.
+# Mini-Project: The Vacuum Environment
+This week you will have no tests and no set guidelines. 
+Your task will be to complete the code stub you will find in the vacuum.py file and build an environment to control an automatic vacuum cleaner. 
+Your environment should adhere to the OpenAI gym format, though you don’t need to render anything. 
+Start by implementing the basic requirements that should be learned (e.g. moving) before adding options for greater difficulty. 
+This could include extra dirty spots in the room, different apartment layouts, breakable vacuum cleaners or even additional functions like dusting. 
+To test if you design works as expected, you should try to run an agent on your environment from time to time. 
+Ideally, it will learn slower or not at all whenever you add a new difficulty. 
+If your design decisions are flawed the may even make the task easier or much too hard, so make sure to check. Good Luck and have fun!
 
-TODO: add that they should add their stuff to the central train & eval script
-TODO: add short hydra reference
-
-## Level 1
-### 1. Policy Iteration for the MarsRover
-In the env.py file you’ll find the first environment we’ll work with: the MarsRover. 
-You have seen it as an example in the lecture: the agent can move left or right with each step and should ideally move to the rightmost state. In this first exercise, the environment will be deterministic, that means the rover will always execute the given action. 
-Your task is to complete the given code stub in policy iteration.py with the algorithm from the lecture.
-
-### 2. Value Iteration for the probibalistic MarsRover
-For this second exercise, we modify the MarsRover environment, now the rover may or may not execute the requested action, the probability is 50%. 
-You will complete the code in value iteration.py in order
-to evaluate a policy on this variation of our environment.
+TODO: put it after value iteration, give it some structure
 
 ## Level 2
-What happens if you only have access to step() instead of the dynamics and reward? Do both methods still work? This setting will be what we'll work with for the rest of the semester.
+Beautify, e.g. rendering
+Possibly add utility wrappers
 
-## Level 3
-Implement Generalized Policy Iteration from the Sutton & Barto book. It is different from your Level 2 solution? Can you match Policy & Value Iteration?
+## Level 3 
+Make it contextual

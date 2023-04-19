@@ -10,8 +10,11 @@ def train(cfg):
         # TODO: add your agent options here
         raise NotImplementedError
     
-    for _ in range(cfg.training_steps):
+    for step in range(cfg.training_steps):
         pass
+        
+        if step % cfg.eval_every_n_steps == 0:
+            evaluate(env, policy, cfg.n_eval_episodes)
 
 def evaluate(env, policy, n_episodes):
     pass
