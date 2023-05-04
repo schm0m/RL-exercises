@@ -11,7 +11,11 @@ As always, use the methods provided as guidance as to what is queried in the tes
 ### Hyperparameter Optimization for SARSA
 Many concepts of SARSA also apply in more powerful RL algorithms, for example the effect of its hyperparameters. 
 Therefore you now have an opportunity to experiment with different hyperparameter values and how they influence how successful the algorithm runs. 
-Use the SMAC hydra sweeper you can find here (TODO: add public link) to tune your algorithm. How much does performance increase?
+Use the [Hydra SMAC sweeper](TODO: Caro to provide the public link) to tune your algorithm. Try answering the following questions:
+- What is the overall performance improvement with tuned hyperparaemters?
+- What is the impact of learning rate on the number of training steps? 
+- What is the value of $\epsilon$ for which you get the best performance?
+
 
 ## Level 3
 TODO: describe a TD(\lambda) exercise here
