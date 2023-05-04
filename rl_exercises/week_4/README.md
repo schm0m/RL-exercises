@@ -18,4 +18,5 @@ Use the [Hydra SMAC sweeper](TODO: Caro to provide the public link) to tune your
 
 
 ## Level 3
-TODO: describe a TD(\lambda) exercise here
+### Implementing TD($\lambda$)
+In the same format as the SARSA code, implement the TD($\lambda(n)$) algorithm on the Gridcore environment. Make $n$ a configurable parameter signifying the number of lookahead steps. Try to ablate the peformance for multiple values of $n$ and verify the theoretical claims in the lecture. 
