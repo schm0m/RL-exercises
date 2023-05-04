@@ -7,6 +7,9 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3 import SAC
 from typing import  List
 from tqdm import tqdm
+from functools import partial
+
+from rl_exercises.week_6 import DQN, EpsilonGreedyPolicy
 
 
 @hydra.main("rl_exercises/configs", "base", version_base="1.1")
@@ -14,6 +17,10 @@ def train(cfg):
     env = make_env(cfg.env_name)
     if cfg.agent == 'sb3':
         return train_sb3_sac(env, cfg)
+    elif cfg.agent == "dqn":
+        policy_class = eval(cfg.policy_class)
+        policy = partial(policy_class, **cfg.policy_kwargs)
+        agent = DQN(env, policy, **cfg.agent_kwargs)
     else:
         # TODO: add your agent options here
         raise NotImplementedError
