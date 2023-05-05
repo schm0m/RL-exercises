@@ -58,18 +58,6 @@ class SARSA(object):
 
         # TODO: Implement a Epsilon-Greedy policy
 
-        if np.random.random() > 1 - epsilon:
-            p = np.random.random(self.n_actions)
-        else:
-            p = np.zeros(self.n_actions)
-            p[np.where(Q[state] == np.max(Q[state]))] = 1
-
-        # Make a probability distribution
-        probs = p / np.sum(p)
-
-        # Choose action from a probability distribution
-        np.random.choice(range(len(p)), p=probs)
-
         return 0
 
     def update(
@@ -88,22 +76,22 @@ class SARSA(object):
         Q : DefaultDict[int, np.ndarray]
             List of Q values
         state : int
-            [description]
+            Current state
         action : int
-            [description]
+            action output by the policy
         reward : float
-            [description]
+            reward for the transition
         next_state : int
-            [description]
+            next state to be trainsitioned into
         next_action : int
-            [description]
+            Next action for lookahead
         done : bool
-            [description]
+            done flag
 
         Returns
         -------
         float
-            [description]
+            New Q value for the state action pair
         """
-        delta = self.alpha * ((reward + self.gamma * Q[next_state][next_action] * (not done)) - Q[state][action])
-        return Q[state][action] + delta
+        # TODO: Impelment the TD update
+        return Q[state][action] + ...
