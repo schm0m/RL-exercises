@@ -9,7 +9,6 @@ import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 import torch.optim as optim
 from rl_exercises.agent import AbstractAgent, AbstractBuffer
 
@@ -101,12 +100,14 @@ class ReplayBuffer(AbstractBuffer):
 
 class DQN(AbstractAgent):
     """DQN Agent Class."""
+
     def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
         self.env = env
         self.Q = self.make_Q()
         self.policy = policy(self.env, self.Q)
         self.learning_rate = learning_rate
         self.gamma = gamma
+        self.optimizer = ...
 
     def make_Q(self) -> nn.Module:
         """Create Q-Function from env.
@@ -122,22 +123,25 @@ class DQN(AbstractAgent):
             State-Value Function
         """
         # TODO create a deep network as a function approximator
-
-        Q = ...
+        Q = nn.Sequential([
+            ("input_layer", nn.Linear(self.env.observation_space.low.shape[0], 64)), 
+            ..., 
+            ("output_layer", self.env.action_space.n)
+        ])
 
         return Q
-    
+ 
     def predict(self, state, info) -> Any:
         return self.policy(state)
 
-    # TODO us: implement
     def save(self, path) -> Any:
-        train_state = {"parameters": , "optimizer_state": }
-        save(train_state)
+        train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}
+        torch.save(train_state, path)
 
-    # TODO us: implement
-    def load(*args, **kwargs) -> Any:
-        ...
+    def load(self, path) -> Any:
+        checkpoint = torch.load(path)
+        self.Q.load_state_dict(checkpoint["parameters"])
+        self.optimizer.load_state_dict(checkpoint["optimizer_state"])
 
     def update(
         self,
