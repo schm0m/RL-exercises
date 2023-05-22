@@ -64,8 +64,8 @@ format: format-black
 test:
 	$(PYTEST) ${TESTS_DIR}
 
-test-week-2:
-	$(PYTEST) $(PYTEST)/week_2
+test-week-1:
+	$(PYTEST) $(PYTEST)/week_1
 
 clean-build:
 	$(PYTHON) setup.py clean
