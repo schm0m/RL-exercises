@@ -1,6 +1,6 @@
 import unittest
 import numpy as np
-from value_iteration import run_value_iteration, update_value_function
+from rl_exercises.week_2.value_iteration import run_value_iteration, update_value_function
 
 
 class TestValueIteration(unittest.TestCase):

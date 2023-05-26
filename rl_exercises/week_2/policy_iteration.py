@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import numpy as np
-from mars_rover_env import MarsRover
+from rl_exercises.week_2.mars_rover_env import MarsRover
 
 
 def update_policy(
