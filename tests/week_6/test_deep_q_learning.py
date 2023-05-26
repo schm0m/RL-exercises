@@ -1,7 +1,7 @@
 import unittest
 import gym
 
-from deep_q_learning import make_Q, q_learning
+from rl_exercises.week_6.deep_q_learning import make_Q, q_learning
 
 
 def check_nets(model1, model2):
