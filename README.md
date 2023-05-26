@@ -41,3 +41,13 @@ We use some packages and frameworks in these exercises you might not be familiar
 - [*PyTorch*](https://pytorch.org/) is what we use for deep RL later in the exercises. You likely won't need a deep knowledge of the package, but understanding the basic functionality is useful. They have a [DQN example for RL](https://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html) which is also the point in the lecture where we start using deep learning.
 - [*JupyterLab*](https://jupyter.org/) enables interactive coding. We will use this mainly for visualizing agent behaviour and performance.
 - Our [*Pre-commit conditions*](https://pre-commit.com/) contain good practice helpers for your code - including linting, formatting and typing. We're not trying to annoy you with these, we want to ensure a high code standard and encourage you to adopt general best practices. The command `make pre-commit` will check if you're ready to commit.
+
+
+
+## Installation of Solutions
+```bash
+
+git clone git@github.com:automl-edu/RL-exercises-solution.git solutions
+cd solutions
+pip install -e .
+```
