@@ -1,5 +1,5 @@
 import torch
-from policy_gradient import compute_returns, policy_improvement
+from rl_exercises.week_7.policy_gradient import compute_returns, policy_improvement
 import unittest
 
 
