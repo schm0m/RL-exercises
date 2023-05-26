@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import numpy as np
 import torch
 
-from exploration import policy_classes
+from rl_exercises.week_8.exploration import policy_classes
 
 
 class MockActionSpace(Mock):
