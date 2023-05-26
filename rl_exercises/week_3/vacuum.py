@@ -8,9 +8,9 @@ class VacuumEnv(gym.Env):
         """
         Use this function to initialize the environment
         """
-        self.action_space = None
-        self.observation_space = None
-        self.reward_range = None
+        self.action_space: gym.spaces.Space = None
+        self.observation_space: gym.spaces.Space = None
+        self.reward_range: gym.spaces.Space = None
 
     def reset(self):
         """Reset the environment"""
