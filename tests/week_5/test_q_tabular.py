@@ -3,7 +3,7 @@ import unittest
 import gymnasium as gym
 import numpy as np
 
-from q_learning_tabular import q_learning
+from rl_exercises.week_5.q_learning_tabular import q_learning
 
 
 class TestQLearningTabular(unittest.TestCase):

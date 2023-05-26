@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch import optim
 
-from q_learning_vfa import make_Q, q_learning, vfa_update
+from rl_exercises.week_5.q_learning_vfa import make_Q, q_learning, vfa_update
 
 
 class TestQLearning(unittest.TestCase):
