@@ -4,8 +4,8 @@ from collections import defaultdict
 
 import numpy as np
 
-from env import FallEnv
-from sarsa import choose_action, make_epsilon_greedy_policy, sarsa, td_update
+from rl_exercises.environments import FallEnv
+from rl_exercises.week_4.sarsa import choose_action, make_epsilon_greedy_policy, sarsa, td_update
 
 
 class TestSARSA(unittest.TestCase):
