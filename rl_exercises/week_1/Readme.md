@@ -1,12 +1,13 @@
 # RL Training Demo
-RL Training Demo with Popular Libraries.
+Here we show you how to train an agent on an environment using popular librariers.
+We train and optimize a BipedalWalker (gymnasium) using a Soft Actor-Critic (SAC, https://arxiv.org/abs/1801.01290).
 
-We train and optimize a BipedalWalker.
+For this we provide a notebook and a training script you are welcome to checkout.
 
-For more info see the notebook.
+TODO update dependencies
 
 ## Train
-For training, activate your conda env and run the following in this dir:
+If you want to use the traininc script, activate your conda env and run the following in this dir:
 ```bash
 python train.py
 ```
