@@ -4,7 +4,7 @@ from omegaconf import DictConfig
 import numpy as np
 from rich import print as printr
 
-import gym
+import gymnasium
 from stable_baselines3 import SAC
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
@@ -17,7 +17,7 @@ def main(cfg: DictConfig) -> float:
     printr(cfg)
 
     # Create environment
-    env = gym.make(cfg.env_id)
+    env = gymnasium.make(cfg.env_id)
 
     # Create agent
     model = SAC("MlpPolicy", env, verbose=cfg.verbose, tensorboard_log=cfg.log_dir, seed=cfg.seed)
@@ -29,7 +29,7 @@ def main(cfg: DictConfig) -> float:
     model.save(cfg.model_fn)
 
     # Evaluate
-    env = Monitor(gym.make(cfg.env_id))
+    env = Monitor(gymnasium.make(cfg.env_id))
     means, stds = evaluate_policy(model, env, n_eval_episodes=cfg.n_eval_episodes)
     performance = np.mean(means)
 
