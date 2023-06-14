@@ -51,12 +51,11 @@ setuptools.setup(
     python_requires=">=3.8",
     install_requires=[
         "numpy", 
-        "gymnasium",
+        "gymnasium[box2d]",
         "torch",
         "tqdm",
         "matplotlib",
         "minigrid",
-        "stable-baselines3",
         "seaborn",
         "pandas",
         "rich",
