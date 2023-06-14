@@ -19,7 +19,7 @@ Lastly, in the root directory we have the files `train_agent.py` and `evaluate_a
 
 ## Installation
 1. Clone this repository:
-    * ``git clone https://github.com/automl-edu/RL_exercises.git``
+    * ``git clone https://github.com/automl-edu/RL-exercises.git``
 2. Install the open-source-distribution [anaconda](https://www.anaconda.com/products/individual).
 3. Create a new conda-environment using the `environment.yml`-file:
     * ``conda env create -f "environment.yml"``
