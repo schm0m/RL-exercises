@@ -175,3 +175,6 @@ class DQN(AbstractAgent):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+
+        return loss
+    
