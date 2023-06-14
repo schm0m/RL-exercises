@@ -1,2 +1,2 @@
 # @package _global_
-agent_class: PPO
+agent_class: DQN
