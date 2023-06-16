@@ -63,7 +63,11 @@ class EpsilonGreedyPolicy(object):
 class SARSAAgent(AbstractAgent):
     """SARSA algorithm"""
 
-    def __init__(self, env: gym.Env, policy, num_episodes: int, gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1):
+    def __init__(self, 
+            env: gym.Env, 
+            policy, 
+            num_episodes: int, 
+            gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1) -> None:
         """Initialize the SARSA agent
 
         Parameters
@@ -97,12 +101,38 @@ class SARSAAgent(AbstractAgent):
         self.Q: DefaultDict[int, np.ndarray] = defaultdict(lambda: np.zeros(self.n_actions))
 
 
+    def predict(self, state) -> Any:
+        """Predict the action for a given state
+        """
+        
+        # TODO 
+        return self.policy(state)
+
+    def save(self, path) -> Any:
+        """Save the Q table
+
+        Parameters
+        ----------
+        path : 
+            Path to save the Q table
+
+        """
+        np.save(path, self.Q)
+
+    def load(self, path) -> Any:
+        """Load the Q table
+
+        Parameters
+        ----------
+        path : 
+            Path to saved the Q table
+
+        """
+        self.Q = np.load(path)
+
+
     def update(
-        Q: DefaultDict[int, np.ndarray],
-        state: int,
-        action: int,
-        reward: float,
-        next_state: int,
+        transition: list[np.array],
         next_action: int,
         done: bool,
     ) -> float:
@@ -110,16 +140,8 @@ class SARSAAgent(AbstractAgent):
 
         Parameters
         ----------
-        Q : DefaultDict[int, np.ndarray]
-            List of Q values
-        state : int
-            Current state
-        action : int
-            action output by the policy
-        reward : float
-            reward for the transition
-        next_state : int
-            next state to be trainsitioned into
+        transition : list[np.array]
+            Transition to train on -- (state, action, reward, next_state)
         next_action : int
             Next action for lookahead
         done : bool
@@ -131,4 +153,6 @@ class SARSAAgent(AbstractAgent):
             New Q value for the state action pair
         """
         # TODO: Impelment the TD update
-        return Q[state][action] + ...
+        new_Q = self.Q[transition[0]][transition[1]] + ...
+        self.Q[transition[0]][transition[1]] = new_Q
+        return new_Q

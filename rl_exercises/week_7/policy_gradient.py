@@ -1,26 +1,19 @@
+from __future__ import annotations
+from typing import List, Tuple, Any
+
 import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
-
-# This could be useful to you:
-# import torch.nn.functional as F
 import torch.optim as optim
 
-# This is potentially a helpful class:
+# NOTE This could be useful to you:
+# import torch.nn.functional as F
+
+# NOTE This is potentially a helpful class:
 # from torch.distributions import Categorical
 
-
-from typing import List, Tuple
-
-MAX_EPISODE_LENGTH = 1000
-DISCOUNT_FACTOR = 0.99
-SEED = 0
-MIN_BATCH_SIZE = 128
-
-env = gym.make("CartPole-v1")
-env.seed(SEED)
-torch.manual_seed(SEED)
+from rl_exercises.agent import AbstractAgent, AbstractBuffer
 
 
 class Policy(nn.Module):
@@ -71,145 +64,101 @@ class Policy(nn.Module):
         return probs
 
 
-policy = Policy(env.observation_space, env.action_space)
-optimizer = optim.Adam(policy.parameters(), lr=1e-2)
+# policy = Policy(env.observation_space, env.action_space)
+# optimizer = optim.Adam(policy.parameters(), lr=1e-2)
 
 
-def compute_returns(rewards: List[int], discount_factor: float = DISCOUNT_FACTOR) -> List[float]:
-    """Compute discounted returns
+class REINFORCE(AbstractAgent):
+    def __init__(self, env, learning_rate, gamma) -> None:
 
-    Parameters
-    ----------
-    rewards : List[int]
-        rewards accumulated during trajectory sampling
-    discount_factor : float, optional
-        dsicount factor for computation, by default DISCOUNT_FACTOR
+        self.env = env
+        self.policy = Policy(self.env.state_space, self.env.action_space)
+        self.learning_rate = learning_rate
+        self.gamma = gamma
+        self.optimizer = ...
 
-    Returns
-    -------
-    List[float]
-        List of discounted returns
-    """
-    returns = []
-    # TODO Compute the returns_to_go by discounting rewardsand add them sequentially to the list
+    def predict(self, state: np.ndarray) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Use policy to sample an action and return probability for gradient update
 
-    return returns
+        Parameters
+        ----------
+        state : List[float]
+            State of the environment -- 4D array
 
+        Returns
+        -------
+        Tuple[torch.Tensor, torch.Tensor]
+            computed action and log probability of the action
+        """
+        # TODO pass the state through the policy network
+        probs = ...
 
-def policy_improvement(log_probs: torch.Tensor, rewards: List[int]) -> float:
-    """
-    Compute REINFORCE policy gradient and perform gradient ascent step
+        # TODO create the outupt into a categorical distribution and sample and action from it
+        action = ...
 
-    Parameters
-    ----------
-    log_probs : torch.Tensor
-        log probabilites of actions taken during the sampling procedure
-    rewards : List[int]
-        list of rewards for each of those actions
+        # TODO compute the log probabilitiy of the action
+        log_prob = ...
 
-    Returns
-    -------
-    float
-        loss computed using the log probabilities and advantages
-    """
-    # we need log probabilites for each reward in the list
-    assert len(log_probs) == len(rewards)
+        return action, log_prob
 
-    # TODO compute the returns
-    # returns = ...
+    def save(self, path) -> Any:
+        train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}
+        torch.save(train_state, path)
+        pass
 
-    # TODO compute advantages using returns
-    # advantages = ...
+    def load(self, path) -> Any:
+        checkpoint = torch.load(path)
+        self.policy.load_state_dict(checkpoint["parameters"])
+        self.optimizer.load_state_dict(checkpoint["optimizer_state"])
 
-    log_probs = torch.stack(log_probs)
-    optimizer.zero_grad()
+    def compute_returns(self, rewards: List[int]) -> List[float]:
+        """Compute discounted returns
 
-    # TODO Compute the loss as the sum of log probs weighted by advantages
+        Parameters
+        ----------
+        rewards : List[int]
+            rewards accumulated during trajectory sampling
+        Returns
+        -------
+        List[float]
+            List of discounted returns
+        """
+        returns = []
 
-    loss = ...
+        # Compute the returns_to_go by discounting rewardsand add them sequentially to the list
+        ...
 
-    loss.backward()
-    optimizer.step()
+        return returns
 
-    return loss.item()
+    def update(self, training_batch: list[np.array], log_probs: torch.Tensor) -> float:
+        """Perform Policy Improvement using a batch op transitions from a rollout
 
+        Parameters
+        ----------
+        training_batch : list[np.array]
+            Transition to train on -- (state, action, reward, next_state)
+        log_probs : torch.Tensor
+            Log proabilities of the actions taken during the rollout
 
-def act(state: np.ndarray) -> Tuple[torch.Tensor, torch.Tensor]:
-    """Use policy to sample an action and return probability for gradient update
+        Returns
+        -------
+        loss    : float
+            Loss of the policy network
+        """
 
-    Parameters
-    ----------
-    state : List[float]
-        State of the environment -- 4D array
+        rewards = torch.from_numpy(np.array(training_batch[2])).float()
 
-    Returns
-    -------
-    Tuple[torch.Tensor, torch.Tensor]
-        computed action and log probability of the action
-    """
-    # TODO pass the state through the policy network
-    # probs = ...
+        # TODO compute the returns
+        returns = torch.tensor(self.compute_returns(rewards))  # ...
 
-    # TODO create the outupt into a categorical distribution and sample and action from it
-    action = ...
+        # TODO compute advantages using returns and normalized them
+        advantages = ...
 
-    # TODO compute the log probabilitiy of the action
-    log_prob = ...
+        # TODO Compute loss as the sum of log probs weighted by advantages
+        self.optimizer.zero_grad()
+        loss = ...  # ..
 
-    return action, log_prob
-
-
-def policy_gradient(num_episodes: int) -> List[int]:
-    """Compute Policy gradient for a given number of episodes
-
-    Parameters
-    ----------
-    num_episodes : int
-        Number of episodes for which the REINFORCE loop needs to run
-
-    Returns
-    -------
-    List[int]
-        List of accumulated rewards for each episode
-    """
-    rewards = []
-    for episode in range(num_episodes):
-        rewards.append(0)
-        trajectory = []
-        state, _ = env.reset()
-
-        for t in range(MAX_EPISODE_LENGTH):
-            # Enable for rendering the environment
-            # if episode % (num_episodes / 100) == 0:
-            #     env.render()
-
-            # Generate an action and its log_probability given a state
-            action, log_prob = act(state)
-
-            # Take a step in the environment using this action
-            next_state, reward, terminated, truncated, _ = env.step(action.item())
-
-            # Append the log probability and reward to the trajectory
-            trajectory.append((log_prob, reward))
-
-            state = next_state
-
-            # accumulate the reward for the given episode
-            rewards[-1] += reward
-
-            if terminated or truncated:
-                break
-
-        # Policy improvement step
-        loss = policy_improvement(*zip(*trajectory))
-
-        # Do something with that loss
         loss.backward()
+        self.optimizer.step()
 
-        if episode % (num_episodes / 100) == 0:
-            print("Mean Reward: ", np.mean(rewards[-int(num_episodes / 100) :]))
-    return rewards
-
-
-if __name__ == "__main__":
-    policy_gradient(1000)
+        return loss
