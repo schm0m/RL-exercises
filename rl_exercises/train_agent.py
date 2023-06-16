@@ -117,6 +117,7 @@ def evaluate(env: gym.Env, agent, episodes=100):
             episode_rewards[-1] += reward
             episode_steps += 1
             if terminated or truncated:
+                done = True
                 pbar.set_postfix({"episode reward": episode_rewards[-1], "episode step": episode_steps})
         pbar.update(1)
     env.close()
@@ -129,7 +130,7 @@ def make_env(env_name, env_kwargs={}):
         env = TimeLimit(env, max_episode_steps=100)
     elif env_name == "MarsRover":
         env = MarsRover(**env_kwargs)
-        env = TimeLimit(env, max_episode_steps=env.horizon)
+        # env = TimeLimit(env, max_episode_steps=env.horizon)
     else:
         env = gym.make(env_name, **env_kwargs)
     env = Monitor(env)
