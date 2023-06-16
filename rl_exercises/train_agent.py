@@ -16,8 +16,10 @@ from typing import  List
 from tqdm import tqdm
 from functools import partial
 
-from rl_exercises.week_6 import DQN, EpsilonGreedyPolicy
 from rl_exercises.week_2.policy_iteration import PolicyIteration
+from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
+from rl_exercises.week_5 import TabularQAgent, VFAQAgent, EpsionGreedyPolicy
+from rl_exercises.week_6 import DQN
 
 
 @hydra.main("configs", "base", version_base="1.1")
@@ -26,12 +28,13 @@ def train(cfg):
     printr(cfg)
     if cfg.agent == 'sb3':
         return train_sb3_sac(env, cfg)
-    elif cfg.agent == "dqn":
-        policy_class = eval(cfg.policy_class)
-        policy = partial(policy_class, **cfg.policy_kwargs)
-        agent = DQN(env, policy, **cfg.agent_kwargs)
     elif cfg.agent == "policy_iteration":
         agent = eval(cfg.agent_class)(env=env, **cfg.agent_kwargs)
+    elif cfg.agent in ["tabular_q_learning", "linear_q_learning", "dqn"]:
+        policy_class = eval(cfg.policy_class)
+        policy = partial(policy_class, **cfg.policy_kwargs)
+        agent_class = eval(cfg.agent_class)
+        agent = agent_class(env, policy, **cfg.agent_kwargs)
     else:
         # TODO: add your agent options here
         raise NotImplementedError

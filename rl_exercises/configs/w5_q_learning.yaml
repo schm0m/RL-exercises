@@ -1,0 +1,5 @@
+defaults:
+  - ..agent: tabular_q_learning
+
+env_name: CartPole-v1
+max_episode_length: 200

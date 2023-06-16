@@ -5,11 +5,65 @@ from typing import Callable, DefaultDict, Hashable, List, Tuple
 import gymnasium as gym
 import numpy as np
 
+from rl_exercises.agent import AbstractAgent
 
-class SARSA(object):
+
+class EpsilonGreedyPolicy(object):
+    """A Policy doing Epsilon Greedy Exploration."""
+    
+    def __init__(
+        self,
+        Q: DefaultDict,
+        env: gym.Env,
+        epsilon: float,
+        seed: int = None,
+    ) -> None:
+        """Init
+
+        Parameters
+        ----------
+        Q : nn.Module
+            State-Value function
+        env : gym.Env
+            Environment
+        epsilon: float
+            Exploration rate
+        seed : int, optional
+            Seed, by default None
+        """
+        self.Q = Q
+        self.env = env
+        self.epsilon = epsilon
+        self.rng = np.random.default_rng(seed=seed)
+    
+    def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
+        """Select action
+
+        Parameters
+        ----------
+        state : np.array
+            State
+        exploration_rate : float, optional
+            exploration rate (epsilon), by default 0.0
+        eval: bool
+            evaluation mode - if true, exploration should be turned off.
+
+        Returns
+        -------
+        int
+            action
+        """
+        if np.random.uniform(0, 1) < self.epsilon:
+            return self.env.action_space.sample()
+        q_values = [self.Q[(state, action)] for action in range(self.env.action_space.n)]
+        action = np.argmax(q_values).item()
+        return action
+
+#FIXME: I don't follow the AbstractAgent class
+class SARSAAgent(AbstractAgent):
     """SARSA algorithm"""
 
-    def __init__(self, env: gym.Env, num_episodes: int, gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1):
+    def __init__(self, env: gym.Env, policy, num_episodes: int, gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1):
         """Initialize the SARSA agent
 
         Parameters
@@ -36,29 +90,12 @@ class SARSA(object):
         self.gamma = gamma
         self.alpha = alpha
         self.epsilon = epsilon
-
+        self.policy = policy
         self.n_actions = self.env.action_space.n
 
         # create Q structure
         self.Q: DefaultDict[int, np.ndarray] = defaultdict(lambda: np.zeros(self.n_actions))
 
-    def __call__(self, state: np.array, epsilon: float) -> int:
-        """Implement an episolon greedy policy
-
-        Parameters
-        ----------
-        probability_distribution : np.ndarray
-            Probability distribution array
-
-        Returns
-        -------
-        int
-            Index of chosen action
-        """
-
-        # TODO: Implement a Epsilon-Greedy policy
-
-        return 0
 
     def update(
         Q: DefaultDict[int, np.ndarray],

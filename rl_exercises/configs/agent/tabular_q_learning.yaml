@@ -1,0 +1,7 @@
+# @package _global_
+agent_class: TabularQAgent
+
+gamma: 1.0
+learning_rate: 0.2
+epsilon: 0.1
+num_bins: 20
