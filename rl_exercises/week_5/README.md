@@ -4,10 +4,10 @@ This week you will implement Q-Learning, another model-free RL algorithm. By usi
 
 ## Level 1
 ### 1. Tabular Q-Learning
-Implement the Q-Learning update step in q learning tabular.py and try different state discretizations (bins) and learning rates. How does the number of states and the learning rate affect the training of the RL algorithm?
+Implement the Q-Learning update step in q learning `tabular.py` and try different state discretizations (bins) and learning rates. How does the number of states and the learning rate affect the training of the RL algorithm?
 
 ### 2. Q-Learning with Linear Value Function Approximation
-Implement Q-Learning with Linear Value Function Approximation. First, complete the 'make_Q' function of the agent class to create a PyTorch Model. 
+Implement Q-Learning with Linear Value Function Approximation. First, complete the `make_Q` function of the agent class to create a PyTorch Model. 
 Then implement the value function update step in using the Q module and the optimizer. How does the training differ from the tabular case? How sensitive is the algorithm to the weight initialization?
 Update the hyperparameters and the model to achieve a mean reward of more than 50 for the CartPole environment.
 
