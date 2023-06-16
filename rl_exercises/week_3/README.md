@@ -4,16 +4,15 @@ Your task will be to complete the code stub you will find in the `vacuum.py` fil
 Your environment should adhere to the gymnasium format, though you don’t need to render anything. 
 Start by implementing the basic requirements that should be learned (e.g. moving) before adding options for greater difficulty. 
 This could include extra dirty spots in the room, different apartment layouts, breakable vacuum cleaners or even additional functions like dusting. 
-To test if your design works as expected, you should try to run an agent on your environment from time to time. 
+To test if your design works as expected, you should try to run an agent (you can use stable baselines3 for this like in week 1's example) on your environment from time to time. Don't forget to wrap your environment in `gymnasium.wrappers.TimeLimit` if you want your env to be resetted after n steps.
 Ideally, it will learn slower or not at all whenever you add a new difficulty. 
 If your design decisions are flawed this may make the task easier or much too hard, so make sure to check. Good luck and have fun!
 
 
 ## Level 2
-DISCUSS: [Carolin] IMO Rendering is not too interesting bc it might be time consuming to implement. What is meant by utility wrappers?
-
-Beautify, e.g. rendering
-Possibly add utility wrappers
+Add a rendering mechanism for your environment. Rendering is an important concept for environments, it makes the agent's behavior easily interpretable by humans. There are different rendering frameworks. You can take inspiration from the rendering example from [CartPole](https://github.com/Farama-Foundation/Gymnasium/blob/main/gymnasium/envs/classic_control/cartpole.py). 
+Now, when you added your rendering, wrap your environment in a monitor wrapper rendering the env from time to time and train the agent of your choice. You can use stable-baselines3 for this, week 1's example also shows how to render.
+Visualize the abilities of your agent at different points in training. Does your agent improve?
 
 ## Level 3 
 Of course, in reality our vacuum cleaner should be able to handle any room and maybe have different strategies for different rooms and situations.
