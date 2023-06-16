@@ -11,7 +11,7 @@ This week you will implement the REINFORCE policy gradient algorithm in order to
 TODO: describe & discuss the tricks we need to make this work
 
 ## Level 2
-### 2. Questions
+### Questions
 - How does the length of the trajectories affect the training?
 - How could a baseline be implemented to stabilize the training?
 - Does the same network architecture and learning rate work for LunarLander-v2?
@@ -19,5 +19,8 @@ TODO: describe & discuss the tricks we need to make this work
 Please write your answers in answers.txt
 
 ## Level 3
-TODO describe: Implement A2C
+### Implement A2C
+A2C is an actor-critic method i.e. a hybrid architecture combining value-based and Policy-Based methods that helps to stabilize the training by reducing the variance using. The actor is a policy-based method thatcontrols how the agetn behaves, while the critic is a value-based method that measures how good the taken action is. By baselining the policy-gradient using the citic's value, A2C stabilizes the learning.
+Please follow the API provided to you to implement an A2C agent and evaluate it on the given environment.
+
 Resource: https://towardsdatascience.com/understanding-actor-critic-methods-931b97b6df3f
