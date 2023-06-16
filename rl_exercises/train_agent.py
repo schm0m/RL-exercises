@@ -18,7 +18,7 @@ from functools import partial
 
 from rl_exercises.week_2.policy_iteration import PolicyIteration
 from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
-from rl_exercises.week_5 import TabularQAgent, VFAQAgent, EpsionGreedyPolicy
+from rl_exercises.week_5 import TabularQAgent, VFAQAgent, EpsilonGreedyPolicy
 from rl_exercises.week_6 import DQN
 
 
