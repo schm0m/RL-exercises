@@ -4,8 +4,6 @@ We train and optimize a BipedalWalker (gymnasium) using a Soft Actor-Critic (SAC
 
 For this we provide a notebook and a training script you are welcome to checkout.
 
-TODO update dependencies
-
 ## Train
 If you want to use the traininc script, activate your conda env and run the following in this dir:
 ```bash
@@ -41,10 +39,11 @@ which you can add your solutions to this exercise sheet.
 To show that you are familiar with the standard git add, commit and push steps, add a file called `rl_exercises/members.txt` to your repository.
 The file should contain the names of all members in the following way:
 
-TODO: Let them use the names as arguments to have hydra in there
+```
 member 1: name1
 member 2: name2
 member 3: name3
+```
 
 Afterwards you can push to submit.
 We make use of GitHub Classrooms autograde functionality. 
