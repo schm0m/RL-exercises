@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, DefaultDict, List, Tuple
+from typing import Any
 
 import gymnasium as gym
 import numpy as np
@@ -11,186 +11,130 @@ import torch.nn as nn
 # import torch.nn.functional as F
 import torch.optim as optim
 
-
-MAX_EPISODE_LENGTH = 200
-LEARNING_RATE = 0.1
-DISCOUNT_FACTOR = 1
-BATCH_SIZE = 64
+from rl_exercises.agent import AbstractAgent
 
 
-def make_Q(env: gym.Env) -> nn.Module:
-    """
-    TODO: Create Q-Function from env.
-
-    The Q-function is of class `nn.Module`.
-
-    Use `env.observation_space.shape` to get the shape of the input data.
-    Use `env.action_space.n` to get number of possible actions for this environment.
-
-    Parameters
-    ----------
-    env: gym.Env
-        The environment the Q function is meant for
+class EpsilonGreedyPolicy(object):
+    """A Policy doing Epsilon Greedy Exploration."""
     
-    Returns
-    -------
-    Q
+    def __init__(
+        self,
+        Q: nn.Module,
+        env: gym.Env,
+        epsilon: float,
+        seed: int = None,
+    ) -> None:
+        """Init
+
+        Parameters
+        ----------
+        Q : nn.Module
+            State-Value function
+        env : gym.Env
+            Environment
+        epsilon: float
+            Exploration rate
+        seed : int, optional
+            Seed, by default None
+        """
+        self.Q = Q
+        self.env = env
+        self.epsilon = epsilon
+        self.rng = np.random.default_rng(seed=seed)
+    
+    def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
+        """Select action
+
+        Parameters
+        ----------
+        state : np.array
+            State
+        exploration_rate : float, optional
+            exploration rate (epsilon), by default 0.0
+        eval: bool
+            evaluation mode - if true, exploration should be turned off.
+
+        Returns
+        -------
+        int
+            action
+        """
+        if np.random.uniform(0, 1) < self.epsilon:
+            return self.env.action_space.sample()
+        q_values = self.Q(torch.from_numpy(state).float()).detach().numpy()
+        action = np.argmax(q_values)
+        return action
+
+
+class VFAQAgent(AbstractAgent):
+    """DQN Agent Class."""
+
+    def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
+        self.env = env
+        self.Q = self.make_Q()
+        self.policy = policy(self.env, self.Q)
+        self.learning_rate = learning_rate
+        self.gamma = gamma
+        self.optimizer = ...
+
+    def make_Q(self) -> nn.Module:
+        """
+        The Q-function is of class `nn.Module`.
+
+        Use `env.observation_space.shape` to get the shape of the input data.
+        Use `env.action_space.n` to get number of possible actions for this environment.
+
+        Parameters
+        ----------
+        env: gym.Env
+            The environment the Q function is meant for
+        
+        Returns
+        -------
+        Q
         An intialized policy
-    """
-    Q = ...
-    return Q
+        """
+        # TODO: Create Q-Function from env.
+        Q = ...
+        return Q
+ 
+    def predict(self, state, info) -> Any:
+        return self.policy(state)
 
+    def save(self, path) -> Any:
+        train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}
+        torch.save(train_state, path)
 
-def policy(env: gym.Env, Q: nn.Module, state: np.array, exploration_rate: float):
-    """
-    Act given a Q function
+    def load(self, path) -> Any:
+        checkpoint = torch.load(path)
+        self.Q.load_state_dict(checkpoint["parameters"])
+        self.optimizer.load_state_dict(checkpoint["optimizer_state"])
 
-    Parameters
-    ----------
-    env: gym.Env
-        The environment to act in
-    Q: nn.Module
-        The Q function
-    state: np.array
-        The current state
-    exploration_rate: float
-        Exploration epsilon
+    def update(
+        self,
+        training_batch: list[np.array],
+    ) -> float:
+        """
+        Value Function Update for a Batch of Transitions.
 
-    Returns
-    -------
-    action_id
-        ID of the action to take
-    """
-    if np.random.uniform(0, 1) < exploration_rate:
-        return env.action_space.sample()
-    q_values = Q(torch.from_numpy(state).float()).detach().numpy()
-    return np.argmax(q_values)
+        Use MSE loss.
 
+        Parameters
+        ----------
+        training_batch : list[np.array]
+            Batch to train on
 
-def vfa_update(Q: nn.Module, optimizer: optim.Optimizer, states: np.array, actions: np.array, rewards: np.array, dones: np.array, next_states: np.array) -> float:
-    """
-    TODO: Implement Value Function Training Step
+        Returns
+        -------
+        float
+            Loss
+        """
+        # TODO: Implement Value Function Update Step
+        # Convert data into torch tensors
 
-    Parameters
-    ----------
-    Q: nn.Module
-        Q function to update
-    optimizer: optim.Optimizer
-        Optimiyer to use
-    states: np.array
-        State Batch
-    actions: np.array
-        Action Batch
-    rewards: np.array
-        Reward Batch
-    dones: np.array
-        Termination Signal Batch
-    next_states: np.array
-        Next State Batch
+        # Compute MSE loss
 
-    Returns
-    -------
-    loss
-        Update loss
-    """
-    # Convert data into torch tensors
+        # Optimize the model
 
-    # Compute MSE loss
-
-    # Optimize the model
-
-    loss = 0
-    return float(loss)
-
-
-def q_learning(
-    env: gym.Env,
-    num_episodes: int,
-    exploration_rate: float = 0.5,
-    exploration_rate_decay: float = 0.9,
-    min_exploration_rate: float = 0.01,
-) -> Tuple[List[float], DefaultDict[Tuple[Any, int], float]]:
-    """
-    TODO: Implement Q Learning
-
-    Parameters
-    ----------
-    env: gym.Env
-        Training Environment
-    num_episodes: int
-        Number of Training Episodes
-    exploration_rate: float
-        Epsilon
-    exploration_rate_decay: float
-        Epsilon Decay Rate
-    min_exploration_rate: float
-        Minimum Epsilon
-
-    Returns
-    -------
-    rewards
-        Training rewards
-    Q
-        Trained Q function
-    """
-    Q = make_Q(env)
-    optimizer = optim.SGD(Q.parameters(), lr=LEARNING_RATE)
-
-    rewards = []
-    vfa_update_data = []
-    for episode in range(num_episodes):
-        rewards.append(0)
-        obs, _ = env.reset()
-        state = obs
-
-        for t in range(MAX_EPISODE_LENGTH):
-            action = policy(env, Q, state, exploration_rate)
-
-            obs, reward, terminated, truncated, _ = env.step(action)
-
-            next_state = obs
-            vfa_update_data.append((state, action, reward, terminated, next_state))
-
-            state = next_state
-
-            rewards[-1] += reward
-
-            if len(vfa_update_data) >= BATCH_SIZE:
-                vfa_update(Q, optimizer, *zip(*vfa_update_data))
-                vfa_update_data.clear()
-
-            if terminated or truncated:
-                break
-
-        exploration_rate = max(exploration_rate_decay * exploration_rate, min_exploration_rate)
-
-        if episode % (num_episodes / 100) == 0:
-            print(f"Episode {episode}:  Mean Reward: {np.mean(rewards[-int(num_episodes / 100):])}")
-            print(f"Exploration rate: {exploration_rate:.4f}")
-
-    print(f"{num_episodes:6d}: Mean Reward: ", np.mean(rewards[-int(num_episodes / 100) :]))
-    return rewards, Q
-
-
-def plot_rewards(rewards):
-    """
-    Plot Training Rewards
-
-    Parameters
-    ----------
-    rewards: np.array
-        Training Rewards
-    """
-    import matplotlib.pyplot as plt
-
-    plt.plot(rewards, ".", label="Rewards")
-    plt.xlabel("Episode")
-    plt.ylabel("Reward")
-    plt.tight_layout()
-    plt.show()
-
-
-if __name__ == "__main__":
-    env = gym.make("CartPole-v1")
-    rew, q = q_learning(env, 10000)
-    plot_rewards(rew)
+        loss = 0
+        return float(loss)

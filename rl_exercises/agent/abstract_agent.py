@@ -9,7 +9,7 @@ class AbstractAgent(object):
         pass
 
     @abstractmethod
-    def predict(*args, **kwargs) -> Any:
+    def predict(*args, **kwargs) -> tuple[Any, dict]:
         ...
 
     @abstractmethod

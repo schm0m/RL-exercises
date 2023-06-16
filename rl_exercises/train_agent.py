@@ -1,33 +1,48 @@
 import hydra
 import numpy as np
+from rich import print as printr
 import gymnasium as gym
+import rl_exercises
 from gymnasium.wrappers import TimeLimit
-import compiler_gym
+import warnings
+try:
+    import compiler_gym
+except:
+    warnings.warn("Could not import compiler_gym. Probably it is not installed.")
 from stable_baselines3.common.monitor import Monitor
+from rl_exercises.environments import MarsRover
 from stable_baselines3 import SAC
 from typing import  List
 from tqdm import tqdm
 from functools import partial
 
-from rl_exercises.week_6 import DQN, EpsilonGreedyPolicy
+from rl_exercises.week_2.policy_iteration import PolicyIteration
+from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
+from rl_exercises.week_5 import TabularQAgent, VFAQAgent, EpsionGreedyPolicy
+from rl_exercises.week_6 import DQN
 
 
-@hydra.main("rl_exercises/configs", "base", version_base="1.1")
+@hydra.main("configs", "base", version_base="1.1")
 def train(cfg):
     env = make_env(cfg.env_name)
+    printr(cfg)
     if cfg.agent == 'sb3':
         return train_sb3_sac(env, cfg)
-    elif cfg.agent == "dqn":
+    elif cfg.agent == "policy_iteration":
+        agent = eval(cfg.agent_class)(env=env, **cfg.agent_kwargs)
+    elif cfg.agent in ["tabular_q_learning", "linear_q_learning", "dqn"]:
         policy_class = eval(cfg.policy_class)
         policy = partial(policy_class, **cfg.policy_kwargs)
-        agent = DQN(env, policy, **cfg.agent_kwargs)
+        agent_class = eval(cfg.agent_class)
+        agent = agent_class(env, policy, **cfg.agent_kwargs)
     else:
         # TODO: add your agent options here
         raise NotImplementedError
     
-    #TODO: make agent
-    agent = None
-    buffer = getattr(agent.buffer, cfg.buffer_cls)(cfg.buffer_kwargs)
+
+    buffer_cls = getattr(rl_exercises.agent.buffer, cfg.buffer_cls, None)
+    if buffer_cls is not None:
+        buffer = buffer_cls(cfg.buffer_kwargs)
     state, info = env.reset()
 
     num_episodes = 0
@@ -35,8 +50,7 @@ def train(cfg):
         action, info = agent.predict(state, info)
         next_state, reward, terminated, truncated, info = env.step(action)
 
-        if buffer is not None:
-            buffer.add(state, action, reward, next_state, (truncated or terminated), info)
+        buffer.add(state, action, reward, next_state, (truncated or terminated), info)
 
         if len(buffer) > cfg.batch_size or (cfg.update_after_episode_end and (terminated or truncated)):
             batch = buffer.sample(cfg.batch_size)
@@ -48,11 +62,11 @@ def train(cfg):
             state = env.reset()
 
         if step % cfg.eval_every_n_steps == 0:
-            eval_performance = evaluate(env, policy, cfg.n_eval_episodes)
+            eval_performance = evaluate(env, agent, cfg.n_eval_episodes)
             print(f"Eval reward after {step} steps was {eval_performance}.")
     
     agent.save(cfg.outpath)
-    final_eval = evaluate(env, policy, cfg.n_eval_episodes)
+    final_eval = evaluate(env, agent, cfg.n_eval_episodes)
     print(final_eval)
     return final_eval
 
@@ -108,13 +122,16 @@ def evaluate(env: gym.Env, agent, episodes=100):
     env.close()
     return np.mean(episode_rewards)
 
-def make_env(env_name):
+def make_env(env_name, env_kwargs={}):
     if "compiler" in env_name:
         benchmark = "cbench-v1/dijkstra"
         env = gym.make("llvm-autophase-ic-v0", benchmark=benchmark, reward_space="IrInstructionCountNorm", apply_api_compatibility=True)
         env = TimeLimit(env, max_episode_steps=100)
+    elif env_name == "MarsRover":
+        env = MarsRover(**env_kwargs)
+        env = TimeLimit(env, max_episode_steps=env.horizon)
     else:
-        env = gym.make(env_name)
+        env = gym.make(env_name, **env_kwargs)
     env = Monitor(env)
     return env
 
