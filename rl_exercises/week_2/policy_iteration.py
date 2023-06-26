@@ -8,13 +8,7 @@ from rich import print as printr
 
 
 class PolicyIteration(AbstractAgent):
-    def __init__(
-            self, 
-            env: MarsRover,
-            gamma: float = 0.9, 
-            seed: int = 333,
-            **kwargs
-        ) -> None:
+    def __init__(self, env: MarsRover, gamma: float = 0.9, seed: int = 333, **kwargs) -> None:
         if hasattr(env, "unwrapped"):
             env = env.unwrapped
         self.env = env
@@ -27,7 +21,7 @@ class PolicyIteration(AbstractAgent):
         assert self.n_actions == 2, str(self.n_actions)
 
         # Get the MDP from the env
-        self.S = states =  np.arange(0, self.n_obs)
+        self.S = states = np.arange(0, self.n_obs)
         self.A = actions = np.arange(0, self.n_actions)
         self.P = transition_probabilites = self.env.transition_probabilities
         self.R = rewards = self.env.rewards
@@ -48,17 +42,17 @@ class PolicyIteration(AbstractAgent):
         for s in range(R_sa.shape[0]):
             for a in range(R_sa.shape[1]):
                 delta_s = -1 if a == 0 else 1
-                s_index = max(0, min(self.n_obs-1, s + delta_s))
+                s_index = max(0, min(self.n_obs - 1, s + delta_s))
                 printr(s_index, self.R)
-                R_sa[s,a] = self.R[s_index]
-        
+                R_sa[s, a] = self.R[s_index]
+
         return R_sa
 
     def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:
         action = self.pi[observation]
         info = {}
         return action, info
-    
+
     def update(self, *args, **kwargs) -> None:
         if not self.policy_fitted:
             printr("Initial policy: ", self.pi)
@@ -72,7 +66,9 @@ class PolicyIteration(AbstractAgent):
             self.policy_fitted = True
 
 
-def do_policy_evaluation(Q: np.ndarray, pi: np.ndarray, MDP: tuple(np.ndarray, np.ndarray, np.ndarray, np.ndarray, float)) -> tuple(np.ndarray, np.ndarray):
+def do_policy_evaluation(
+    Q: np.ndarray, pi: np.ndarray, MDP: tuple(np.ndarray, np.ndarray, np.ndarray, np.ndarray, float)
+) -> tuple(np.ndarray, np.ndarray):
     S, A, P, R_sa, gamma = MDP
 
     epsilon = 1e-8
@@ -83,9 +79,9 @@ def do_policy_evaluation(Q: np.ndarray, pi: np.ndarray, MDP: tuple(np.ndarray, n
             a = pi[s]
             action = -1 if a == 0 else 1  # TODO choose according to probability
             s_next = s + action
-            s_next = max(min(s_next, len(P) - 1), 0) 
+            s_next = max(min(s_next, len(P) - 1), 0)
             # print(s, a, s_next)
-            Q[s, a] = R_sa[s, a] + gamma * np.sum( P[s_next] * Q[s_next])
+            Q[s, a] = R_sa[s, a] + gamma * np.sum(P[s_next] * Q[s_next])
         converged = np.all(np.linalg.norm(Q - Q_old, 1) < epsilon)
 
     return Q
@@ -101,7 +97,9 @@ def do_policy_improvement(Q: np.ndarray, pi: np.ndarray) -> tuple(np.ndarray, bo
     return pi, converged
 
 
-def do_policy_iteration(Q: np.array, pi: np.array, MDP: tuple(np.ndarray, np.ndarray, np.ndarray, np.ndarray, float)) -> tuple(np.ndarray, np.ndarray):
+def do_policy_iteration(
+    Q: np.array, pi: np.array, MDP: tuple(np.ndarray, np.ndarray, np.ndarray, np.ndarray, float)
+) -> tuple(np.ndarray, np.ndarray):
     converged = False
     while not converged:
         Q = do_policy_evaluation(Q, pi, MDP)

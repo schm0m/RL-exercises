@@ -8,6 +8,7 @@ from typing import Any, SupportsFloat, Tuple
 
 import numpy as np
 import gymnasium
+
 # from gymnasium.envs.toy_text.discrete import DiscreteEnv
 
 # Actions
@@ -19,7 +20,7 @@ DOWN = 3
 
 class MarsRover(gymnasium.Env):
     """Simple Environment for a Mars Rover that can move in a 1D Space
-    
+
     Actions
     -------
     Discrete, 2:
@@ -66,6 +67,54 @@ class MarsRover(gymnasium.Env):
         self.observation_space = gymnasium.spaces.Discrete(n=n)
         self.action_space = gymnasium.spaces.Discrete(n=2)
 
+        self.S = states = np.arange(0, n)
+        self.A = actions = np.arange(0, 2)
+        self.transition_matrix = self.T = self.get_transition_matrix(
+            S=self.S, A=self.A, P=self.transition_probabilities
+        )
+
+    def get_reward_per_action(self):
+        R_sa = np.zeros((len(self.S), len(self.A)))  # same shape as P
+        for s in range(R_sa.shape[0]):
+            for a in range(R_sa.shape[1]):
+                delta_s = -1 if a == 0 else 1
+                s_index = max(0, min(len(self.S) - 1, s + delta_s))
+                R_sa[s, a] = self.rewards[s_index]
+
+        return R_sa
+
+    def get_next_state(self, s: int, a: int, S: np.array) -> int:
+        delta_s = -1 if a == 0 else 1
+        s_next = s + delta_s
+        s_next = max(min(s_next, len(S) - 1), 0)
+        return s_next
+
+    def get_transition_matrix(self, S: np.array, A: np.array, P: np.array) -> np.array:
+        T = np.zeros((len(S), len(A), len(S)))
+        for s in S:
+            for a in A:
+                s_next = self.get_next_state(s, a, S)
+                probability = P[s, a]
+                T[s, a, s_next] = probability
+
+        T_ = np.array(
+            [
+                [1, 0, 0, 0, 0],
+                [0, 1, 0, 0, 0],
+                [1, 0, 0, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 1, 0, 0, 0],
+                [0, 0, 0, 1, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 1],
+                [0, 0, 0, 1, 0],
+                [0, 0, 0, 0, 1],
+            ]
+        ).reshape((len(S), len(A), len(S)))
+
+        assert np.all(T == T_)
+        return T
+
     def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
         """Reset the environment.
 
@@ -88,9 +137,9 @@ class MarsRover(gymnasium.Env):
 
         observation = self.position
         info = {}
-        
+
         return observation, info
-    
+
     def step(self, action: Any) -> tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]:
         """
         Executes an action and return next_state, reward and whether the environment is done (horizon reached)

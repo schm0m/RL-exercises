@@ -6,7 +6,11 @@ You should add your solutions to the central train and eval script.
 
 Run your solution with
 ```bash
+# Policy Iteration
 python rl_exercises/train_agent.py +week/w2=policy_iteration
+
+# Value Iteration
+python rl_exercises/train_agent.py +week/w2=value_iteration
 ```
 
 ## Level 1

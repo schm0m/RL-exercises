@@ -1,128 +1,104 @@
 from __future__ import annotations
+from typing import Any
+
 import numpy as np
-from rl_exercises.week_2.mars_rover_env import MarsRover
+from rl_exercises.environments import MarsRover
+from rl_exercises.agent import AbstractAgent
+
+from rich import print as printr
 
 
-# TODO: complete this method
+class ValueIteration(AbstractAgent):
+    def __init__(self, env: MarsRover, gamma: float = 0.9, seed: int = 333, **kwargs) -> None:
+        if hasattr(env, "unwrapped"):
+            env = env.unwrapped
+        self.env = env
+        self.seed = seed
+
+        super().__init__(**kwargs)
+
+        self.n_obs = self.env.observation_space.n
+        self.n_actions = self.env.action_space.n
+        assert self.n_actions == 2, str(self.n_actions)
+
+        # Get the MDP from the env
+        self.S = states = np.arange(0, self.n_obs)
+        self.A = actions = np.arange(0, self.n_actions)
+        self.T = self.env.transition_matrix
+        self.R = rewards = self.env.rewards
+        self.gamma = gamma
+        self.R_sa = self.env.get_reward_per_action()
+
+        # Policy
+        rng = np.random.default_rng(seed=self.seed)
+
+        # Value Function
+        self.V = np.zeros_like(self.S)
+
+        self.policy_fitted: bool = False
+
+    def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:
+        if not self.policy_fitted:
+            self.update()
+        action = self.pi(observation)
+        info = {}
+        return action, info
+
+    def update(self, *args, **kwargs) -> None:
+        if not self.policy_fitted:
+            self.V, self.pi = do_value_iteration(
+                V=self.V,
+                MDP=(self.S, self.A, self.T, self.R_sa, self.gamma),
+            )
+            printr("V: ", self.V)
+            printr("Final policy: ", self.pi)
+            self.policy_fitted = True
+
+
+def do_value_iteration(
+    V: np.array, MDP: tuple(np.ndarray, np.ndarray, np.ndarray, np.ndarray, float)
+) -> tuple(np.ndarray, np.ndarray):
+    converged = False
+    while not converged:
+        V, converged = update_value_function(
+            V=V,
+            MDP=MDP,
+        )
+
+    pi = determine_pi(V=V)
+
+    return V, pi
+
+
+def determine_pi(V: np.array) -> callable:
+    def pi(s):
+        v_left = V[max(s - 1, 0)]
+        v_right = V[min(s + 1, 0)]
+        equal = v_left == v_right
+        action = np.random.random_integers(0, 1) if equal else np.argmax([v_left, v_right])
+        return action
+
+    return pi
+
+
 def update_value_function(
-    v: np.ndarray, state: int, new_state: int, reward: float, gamma: float = 0.9
+    V: np.array, MDP: tuple(np.ndarray, np.ndarray, np.ndarray, np.ndarray, float), epsilon: float = 1e-8
 ) -> tuple[np.ndarray, bool]:
-    """
-    Single step for Value iteration
+    S, A, T, R_sa, gamma = MDP
+    delta = 0
+    for s in S:
+        v = V[s]
+        vs = []
+        for a in A:
+            v_new = 0
+            r = R_sa[s, a]
+            for s_next in S:
+                p = T[s, a, s_next]
+                v_new += p * (r + gamma * V[s_next])
+            vs.append(v_new)
 
-    Parameters
-    ----------
-    v: [Nx2]-Array
-        State Value function
-    state: int
-        Current state/position index
-    new_state: int
-        New state/position index
-    reward: float
-        Reward for this action
-    gamma: float
-        Discount factor
+        V[s] = max(vs)
+        delta = max(delta, np.abs(v - V[s]))
 
-    Returns
-    -------
-    new_vf
-        Updated value function
-    has converged
-        Convergence Signal
-    """
-    new_vf = np.zeros(v.shape[0])
-    converged = True
-    return new_vf, converged
-
-
-# TODO: complete this method
-def run_value_iteration(
-    transition_probabilities: np.ndarray = np.ones((5, 2)) * 0.5,
-    rewards: list[float] = [1, 0, 0, 0, 10],
-    horizon: int = 10,
-):
-    """
-    Run Value iteration
-
-    Parameters
-    ----------
-    transition_probabilities: [Nx2]-Array
-        Environment Transition Probabilities
-    rewards: list[float]
-        Reward structure for environment
-    horizon: int
-        Environment horizon
-
-    Returns
-    -------
-    v
-        Final value function
-    i
-        Number of update steps
-    final_reward
-        Final accumulated reward
-    """
-    env = MarsRover(transition_probabilities, rewards, horizon)
-    n = len(rewards)
-
-    done = False
-    state, _ = env.reset()
-
-    v = np.zeros(n)
-
-    i = 0
-    while not done:
-        i += 1
-        print(f"This is step {i}")
-        action = 1
-        new_state, reward, done, _, _ = env.step(action)
-
-        # TODO: Use Value iteration to update Value function
-        update_value_function(v, state, ...)
-
-        if done:
-            new_state, _ = env.reset()
-
-        state = new_state
-
-    final_reward = evaluate_agent(v, env)
-
-    print(f"Your agent achieved a final accumulated reward of {final_reward} after {i} update steps.")
-
-    return v, i, final_reward
-
-
-def evaluate_agent(v: list[float] | np.ndarray, env: MarsRover) -> float:
-    """
-    Run Value iteration
-
-    Parameters
-    ----------
-    transition_probabilities: [Nx2]-Array
-        Environment Transition Probabilities
-    rewards: list[float]
-        Reward structure for environment
-    horizon: int
-        Environment horizon
-
-    Returns
-    -------
-    v
-        Final value function
-    i
-        Number of update steps
-    final_reward
-        Final accumulated reward
-    """
-    state, _ = env.reset()
-    done = False
-    r_acc: float = 0
-    while not done:
-        action = np.argmax([v[max(state - 1, 0)], v[min(state + 1, 4)]])
-        state, reward, done, _, _ = env.step(action)
-        r_acc += reward
-    return r_acc
-
-
-if __name__ == "__main__":
-    print(run_value_iteration())
+    converged = delta < epsilon
+    return V, converged

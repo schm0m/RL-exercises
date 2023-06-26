@@ -16,7 +16,7 @@ from typing import  List
 from tqdm import tqdm
 from functools import partial
 
-from rl_exercises.week_2.policy_iteration import PolicyIteration
+from rl_exercises.week_2 import PolicyIteration, ValueIteration
 from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
 from rl_exercises.week_5 import TabularQAgent, VFAQAgent, EpsilonGreedyPolicy
 from rl_exercises.week_6 import DQN
@@ -28,7 +28,7 @@ def train(cfg):
     printr(cfg)
     if cfg.agent == 'sb3':
         return train_sb3_sac(env, cfg)
-    elif cfg.agent == "policy_iteration":
+    elif cfg.agent in ["policy_iteration", "value_iteration"]:
         agent = eval(cfg.agent_class)(env=env, **cfg.agent_kwargs)
     elif cfg.agent in ["tabular_q_learning", "linear_q_learning", "dqn"]:
         policy_class = eval(cfg.policy_class)
