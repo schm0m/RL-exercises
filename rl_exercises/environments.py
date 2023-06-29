@@ -42,7 +42,7 @@ class MarsRover(gymnasium.Env):
 
     def __init__(
         self,
-        transition_probabilities: np.array = np.ones((5, 2)),
+        transition_probabilities: np.ndarray = np.ones((5, 2)),
         rewards: list[float] = [1, 0, 0, 0, 10],
         horizon: int = 10,
     ):
@@ -50,7 +50,7 @@ class MarsRover(gymnasium.Env):
 
         Parameters
         ----------
-        transition_probabilities : np.array, optional
+        transition_probabilities : np.ndarray, optional
             [Nx2] Array for N positions and 2 actions each, by default np.ones((5, 2)).
         rewards : list[float], optional
             [Nx1] Array for rewards. rewards[pos] determines the reward for a given position `pos`, by default [1, 0, 0, 0, 10].
@@ -58,7 +58,7 @@ class MarsRover(gymnasium.Env):
             Number of total steps for this environment until it is done (e.g. battery drained), by default 10.
         """
         self.rewards: list[float] = rewards
-        self.transition_probabilities: np.array = transition_probabilities
+        self.transition_probabilities: np.ndarray = transition_probabilities
         self.current_steps: int = 0
         self.horizon: int = horizon
         self.position: int = 2
@@ -67,29 +67,29 @@ class MarsRover(gymnasium.Env):
         self.observation_space = gymnasium.spaces.Discrete(n=n)
         self.action_space = gymnasium.spaces.Discrete(n=2)
 
-        self.S = states = np.arange(0, n)
-        self.A = actions = np.arange(0, 2)
+        self.states = np.arange(0, n)
+        self.actions = np.arange(0, 2)
         self.transition_matrix = self.T = self.get_transition_matrix(
-            S=self.S, A=self.A, P=self.transition_probabilities
+            S=self.states, A=self.actions, P=self.transition_probabilities
         )
 
     def get_reward_per_action(self):
-        R_sa = np.zeros((len(self.S), len(self.A)))  # same shape as P
+        R_sa = np.zeros((len(self.states), len(self.actions)))  # same shape as P
         for s in range(R_sa.shape[0]):
             for a in range(R_sa.shape[1]):
                 delta_s = -1 if a == 0 else 1
-                s_index = max(0, min(len(self.S) - 1, s + delta_s))
+                s_index = max(0, min(len(self.states) - 1, s + delta_s))
                 R_sa[s, a] = self.rewards[s_index]
 
         return R_sa
 
-    def get_next_state(self, s: int, a: int, S: np.array) -> int:
+    def get_next_state(self, s: int, a: int, S: np.ndarray) -> int:
         delta_s = -1 if a == 0 else 1
         s_next = s + delta_s
         s_next = max(min(s_next, len(S) - 1), 0)
         return s_next
 
-    def get_transition_matrix(self, S: np.array, A: np.array, P: np.array) -> np.array:
+    def get_transition_matrix(self, S: np.ndarray, A: np.ndarray, P: np.ndarray) -> np.ndarray:
         T = np.zeros((len(S), len(A), len(S)))
         for s in S:
             for a in A:
@@ -97,22 +97,22 @@ class MarsRover(gymnasium.Env):
                 probability = P[s, a]
                 T[s, a, s_next] = probability
 
-        T_ = np.array(
-            [
-                [1, 0, 0, 0, 0],
-                [0, 1, 0, 0, 0],
-                [1, 0, 0, 0, 0],
-                [0, 0, 1, 0, 0],
-                [0, 1, 0, 0, 0],
-                [0, 0, 0, 1, 0],
-                [0, 0, 1, 0, 0],
-                [0, 0, 0, 0, 1],
-                [0, 0, 0, 1, 0],
-                [0, 0, 0, 0, 1],
-            ]
-        ).reshape((len(S), len(A), len(S)))
+        # T_ = np.ndarray(
+        #     [
+        #         [1, 0, 0, 0, 0],
+        #         [0, 1, 0, 0, 0],
+        #         [1, 0, 0, 0, 0],
+        #         [0, 0, 1, 0, 0],
+        #         [0, 1, 0, 0, 0],
+        #         [0, 0, 0, 1, 0],
+        #         [0, 0, 1, 0, 0],
+        #         [0, 0, 0, 0, 1],
+        #         [0, 0, 0, 1, 0],
+        #         [0, 0, 0, 0, 1],
+        #     ]
+        # ).reshape((len(S), len(A), len(S)))
 
-        assert np.all(T == T_)
+        # assert np.all(T == T_)
         return T
 
     def reset(self, *, seed: int | None = None, options: dict[str, Any] | None = None) -> tuple[Any, dict[str, Any]]:
@@ -292,7 +292,7 @@ class MarsRover(gymnasium.Env):
 #     def _calculate_transition_prob(self, current, delta, prob):
 #         transitions = []
 #         for d, p in zip(delta, prob):
-#             new_position = np.array(current) + np.array(d)
+#             new_position = np.ndarray(current) + np.ndarray(d)
 #             new_position = self._check_bounds(new_position).astype(int)
 #             new_state = np.ravel_multi_index(tuple(new_position), self.shape)
 #             reward = 0.0

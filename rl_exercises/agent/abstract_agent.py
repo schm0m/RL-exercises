@@ -5,21 +5,21 @@ from typing import Any
 from abc import abstractmethod
 
 class AbstractAgent(object):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args: tuple[Any], **kwargs: dict) -> None:
         pass
 
     @abstractmethod
-    def predict(*args, **kwargs) -> tuple[Any, dict]:
+    def predict(self, *args: tuple[Any], **kwargs: dict) -> tuple[Any, dict]:
         ...
 
     @abstractmethod
-    def save(*args, **kwargs) -> Any:
+    def save(self, *args: tuple[Any], **kwargs: dict) -> Any:
         ...
 
     @abstractmethod
-    def load(*args, **kwargs) -> Any:
+    def load(self, *args: tuple[Any], **kwargs: dict) -> Any:
         ...
 
     @abstractmethod
-    def update(*args, **kwargs) -> Any:
+    def update(self, *args: tuple[Any], **kwargs: dict) -> Any | None:
         ...
