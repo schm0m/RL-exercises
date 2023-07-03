@@ -73,7 +73,14 @@ class MarsRover(gymnasium.Env):
             S=self.states, A=self.actions, P=self.transition_probabilities
         )
 
-    def get_reward_per_action(self):
+    def get_reward_per_action(self) -> np.ndarray:
+        """Determine the reward per action.
+
+        Returns
+        -------
+        np.ndarray
+            Reward per action as a |S|x|A| matrix.
+        """
         R_sa = np.zeros((len(self.states), len(self.actions)))  # same shape as P
         for s in range(R_sa.shape[0]):
             for a in range(R_sa.shape[1]):
@@ -84,12 +91,49 @@ class MarsRover(gymnasium.Env):
         return R_sa
 
     def get_next_state(self, s: int, a: int, S: np.ndarray) -> int:
+        """Get next state for deterministic action.
+
+        - Translate action into delta s
+        - Respect limits of the environment (min and max state).
+        
+        Parameters
+        ----------
+        s : int
+            Current state.
+        a : int
+            Action.
+        S : np.ndarray, |S|
+            All states.
+
+        Returns
+        -------
+        int
+            Next state.
+        """
         delta_s = -1 if a == 0 else 1
         s_next = s + delta_s
         s_next = max(min(s_next, len(S) - 1), 0)
         return s_next
 
     def get_transition_matrix(self, S: np.ndarray, A: np.ndarray, P: np.ndarray) -> np.ndarray:
+        """Get transition matrix T
+
+        Parameters
+        ----------
+        S : np.ndarray, |S|
+            States
+        A : np.ndarray, |A|
+            Actions
+        P : np.ndarray, |S|x|A|
+            Transition probabilities. One entry P[s,a] means the probability of applying the 
+            desired action a instead of the opposite action.
+
+        Returns
+        -------
+        np.ndarray, |S|x|A|x|S|
+            Transition matrix. T[s,a,s_next] means the probability of being in state s, applying 
+            action a and landing in state s_next.
+        """
         T = np.zeros((len(S), len(A), len(S)))
         for s in S:
             for a in A:
@@ -140,12 +184,20 @@ class MarsRover(gymnasium.Env):
 
         return observation, info
 
-    def step(self, action: Any) -> tuple[Any, SupportsFloat, bool, bool, dict[str, Any]]:
-        """
-        Executes an action and return next_state, reward and whether the environment is done (horizon reached)
+    def step(self, action: int) -> tuple[int, SupportsFloat, bool, bool, dict[str, Any]]:
+        """Step the environment
 
-        :param action: Defines action. Has to be either 0 (go left) or 1 (go right)
-        :return: tuple[next_state=position, reward, is_done]
+        Executes an action and return next_state, reward and whether the environment is done (horizon reached).
+
+        Parameters
+        ----------
+        action : int
+            Action. Has to be either 0 (go left) or 1 (go right).
+
+        Returns
+        -------
+        tuple[int, SupportsFloat, bool, bool, dict[str, Any]]
+            Next state, reward, terminated, truncated, info.
         """
         # Determine move given an action and transition probabilities for environment
         action = int(action)

@@ -28,7 +28,7 @@ class PolicyIteration(AbstractAgent):
         self, env: MarsRover, gamma: float = 0.9, seed: int = 333, filename: str = "policy.npy", **kwargs: dict
     ) -> None:
         if hasattr(env, "unwrapped"):
-            env = env.unwrapped
+            env = env.unwrapped  # type: ignore[assignment]
         self.env = env
         self.seed = seed
         self.filename = filename
@@ -99,6 +99,7 @@ class PolicyIteration(AbstractAgent):
     def load(self, *args: tuple[Any], **kwargs: dict) -> np.ndarray:
         self.pi = np.load(self.filename)
         self.policy_fitted = True
+        return self.pi
 
 
 def do_policy_evaluation(
@@ -141,7 +142,7 @@ def do_policy_evaluation(
             s_next = max(min(s_next, len(P) - 1), 0)
             # print(s, a, s_next)
             Q[s, a] = R_sa[s, a] + gamma * np.sum(P[s_next] * Q[s_next])
-        converged = np.all(np.linalg.norm(Q - Q_old, 1) < epsilon)
+        converged = bool(np.all(np.linalg.norm(Q - Q_old, 1) < epsilon))
 
     return Q
 
@@ -173,7 +174,7 @@ def do_policy_improvement(
 
     pi = np.argmax(Q, axis=1)
 
-    converged = np.all(np.linalg.norm(pi - pi_old, 1) < epsilon)
+    converged = bool(np.all(np.linalg.norm(pi - pi_old, 1) < epsilon))
     return pi, converged
 
 

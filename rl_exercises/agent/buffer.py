@@ -1,11 +1,10 @@
 from __future__ import annotations
-from typing_extensions import TypeAlias
 from abc import ABC, abstractmethod
 import numpy as np
 
 # TODO Do we use "done" here which is terminated | truncated or the latter two?
 # state, action, reward, next_state, done, info
-Transition = TypeAlias[tuple[np.ndarray, int | float, float, np.ndarray, bool, dict]]
+Transition = tuple[np.ndarray, int | float, float, np.ndarray, bool, dict]
 
 
 class AbstractBuffer(ABC):

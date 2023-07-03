@@ -17,6 +17,7 @@ class AbstractAgent(object):
         ...
 
     @abstractmethod
+    # TODO what is the return type? A callable?
     def load(self, *args: tuple[Any], **kwargs: dict) -> Any:
         ...
 
