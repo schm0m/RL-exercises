@@ -10,7 +10,7 @@ from rl_exercises.agent import AbstractAgent
 
 class EpsilonGreedyPolicy(object):
     """A Policy doing Epsilon Greedy Exploration."""
-    
+
     def __init__(
         self,
         Q: DefaultDict,
@@ -35,7 +35,7 @@ class EpsilonGreedyPolicy(object):
         self.env = env
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
-    
+
     def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
         """Select action
 
@@ -59,15 +59,14 @@ class EpsilonGreedyPolicy(object):
         action = np.argmax(q_values).item()
         return action
 
-#FIXME: I don't follow the AbstractAgent class
+
+# FIXME: I don't follow the AbstractAgent class
 class SARSAAgent(AbstractAgent):
     """SARSA algorithm"""
 
-    def __init__(self, 
-            env: gym.Env, 
-            policy, 
-            num_episodes: int, 
-            gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1) -> None:
+    def __init__(
+        self, env: gym.Env, policy, num_episodes: int, gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1
+    ) -> None:
         """Initialize the SARSA agent
 
         Parameters
@@ -100,12 +99,10 @@ class SARSAAgent(AbstractAgent):
         # create Q structure
         self.Q: DefaultDict[int, np.ndarray] = defaultdict(lambda: np.zeros(self.n_actions))
 
-
     def predict(self, state) -> Any:
-        """Predict the action for a given state
-        """
-        
-        # TODO 
+        """Predict the action for a given state"""
+
+        # TODO
         return self.policy(state)
 
     def save(self, path) -> Any:
@@ -113,7 +110,7 @@ class SARSAAgent(AbstractAgent):
 
         Parameters
         ----------
-        path : 
+        path :
             Path to save the Q table
 
         """
@@ -124,12 +121,11 @@ class SARSAAgent(AbstractAgent):
 
         Parameters
         ----------
-        path : 
+        path :
             Path to saved the Q table
 
         """
         self.Q = np.load(path)
-
 
     def update(
         transition: list[np.array],

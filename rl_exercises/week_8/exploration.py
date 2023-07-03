@@ -61,7 +61,7 @@ class EpsilonDecayPolicy(EpsilonGreedyPolicy):
         # TODO implement algorithm
 
         return action
-    
+
 
 class EZGreedyPolicy(EpsilonGreedyPolicy):
     """Policy for Exploration with ε(z)-greedy"""

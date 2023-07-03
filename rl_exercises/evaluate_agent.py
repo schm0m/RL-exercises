@@ -1,10 +1,11 @@
 import hydra
 from train_agent import make_env, evaluate
 
+
 @hydra.main("rl_exercises/configs", "eval", version_base="1.1")
 def evaluate_agent(cfg):
     env = make_env(cfg.env_name)
-    #TODO: make agent
+    # TODO: make agent
     agent = None
     agent.load(cfg.policy_path)
     return_mean = evaluate(env, agent, cfg.num_episodes)

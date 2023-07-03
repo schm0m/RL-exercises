@@ -45,7 +45,7 @@ class TabularQAgent(AbstractAgent):
         else:
             self.discretize_state = to_discrete_state
         self.num_bins = num_bins
- 
+
     def predict(self, state, info) -> Any:
         discrete_state = to_discrete_state(state, self.num_bins)
         return self.policy(discrete_state)
@@ -76,4 +76,3 @@ class TabularQAgent(AbstractAgent):
         # alpha = 1
         td_error = 0
         return td_error
-    

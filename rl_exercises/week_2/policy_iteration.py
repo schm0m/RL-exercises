@@ -23,7 +23,10 @@ class PolicyIteration(AbstractAgent):
     filename : str, optional
         Filename for the policy, by default "policy.npz"
     """
-    def __init__(self, env: MarsRover, gamma: float = 0.9, seed: int = 333, filename: str = "policy.npy", **kwargs: dict) -> None:
+
+    def __init__(
+        self, env: MarsRover, gamma: float = 0.9, seed: int = 333, filename: str = "policy.npy", **kwargs: dict
+    ) -> None:
         if hasattr(env, "unwrapped"):
             env = env.unwrapped
         self.env = env
@@ -36,10 +39,10 @@ class PolicyIteration(AbstractAgent):
         self.n_actions = self.env.action_space.n  # type: ignore[attr-defined]
 
         # Get the MDP from the env
-        self.S = states = self.env.states
-        self.A = actions = self.env.actions
-        self.P = transition_probabilites = self.env.transition_probabilities
-        self.R = rewards = self.env.rewards
+        self.S = self.env.states
+        self.A = self.env.actions
+        self.P = self.env.transition_probabilities
+        self.R = self.env.rewards
         self.gamma = gamma
         self.R_sa = self.env.get_reward_per_action()
 
@@ -52,7 +55,7 @@ class PolicyIteration(AbstractAgent):
 
         self.policy_fitted: bool = False
 
-    def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:
+    def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:  # type: ignore[override]
         """Predict action based on observation
 
         Parameters
@@ -71,7 +74,7 @@ class PolicyIteration(AbstractAgent):
         info = {}
         return action, info
 
-    def update(self, *args, **kwargs) -> None:
+    def update(self, *args: tuple, **kwargs: dict) -> None:
         """Update policy
 
         In this case, determine the policy once by policy iteration.
@@ -92,14 +95,16 @@ class PolicyIteration(AbstractAgent):
             np.save(self.filename, np.array(self.pi))
         else:
             warnings.warn("Tried to save policy but policy is not fitted yet.")
-        
+
     def load(self, *args: tuple[Any], **kwargs: dict) -> np.ndarray:
         self.pi = np.load(self.filename)
         self.policy_fitted = True
 
 
 def do_policy_evaluation(
-    Q: np.ndarray, pi: np.ndarray, MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float],
+    Q: np.ndarray,
+    pi: np.ndarray,
+    MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float],
     epsilon: float = 1e-8,
 ) -> np.ndarray:
     """Policy Evaluation
@@ -141,7 +146,11 @@ def do_policy_evaluation(
     return Q
 
 
-def do_policy_improvement(Q: np.ndarray, pi: np.ndarray, epsilon: float = 1e-8,) -> tuple[np.ndarray, bool]:
+def do_policy_improvement(
+    Q: np.ndarray,
+    pi: np.ndarray,
+    epsilon: float = 1e-8,
+) -> tuple[np.ndarray, bool]:
     """Policy Improvement
 
     Parameters
@@ -169,7 +178,9 @@ def do_policy_improvement(Q: np.ndarray, pi: np.ndarray, epsilon: float = 1e-8,)
 
 
 def do_policy_iteration(
-    Q: np.ndarray, pi: np.ndarray, MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float],
+    Q: np.ndarray,
+    pi: np.ndarray,
+    MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float],
     epsilon: float = 1e-8,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Policy Iteration

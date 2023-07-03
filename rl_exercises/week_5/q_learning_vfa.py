@@ -16,7 +16,7 @@ from rl_exercises.agent import AbstractAgent
 
 class EpsilonGreedyPolicy(object):
     """A Policy doing Epsilon Greedy Exploration."""
-    
+
     def __init__(
         self,
         Q: nn.Module,
@@ -41,7 +41,7 @@ class EpsilonGreedyPolicy(object):
         self.env = env
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
-    
+
     def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
         """Select action
 
@@ -88,7 +88,7 @@ class VFAQAgent(AbstractAgent):
         ----------
         env: gym.Env
             The environment the Q function is meant for
-        
+
         Returns
         -------
         Q
@@ -97,7 +97,7 @@ class VFAQAgent(AbstractAgent):
         # TODO: Create Q-Function from env.
         Q = ...
         return Q
- 
+
     def predict(self, state, info) -> Any:
         return self.policy(state)
 

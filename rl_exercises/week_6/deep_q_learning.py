@@ -66,14 +66,16 @@ class DQN(AbstractAgent):
             State-Value Function
         """
         # TODO create a deep network as a function approximator
-        Q = nn.Sequential([
-            ("input_layer", nn.Linear(self.env.observation_space.low.shape[0], 64)), 
-            ..., 
-            ("output_layer", self.env.action_space.n)
-        ])
+        Q = nn.Sequential(
+            [
+                ("input_layer", nn.Linear(self.env.observation_space.low.shape[0], 64)),
+                ...,
+                ("output_layer", self.env.action_space.n),
+            ]
+        )
 
         return Q
- 
+
     def predict(self, state, info) -> Any:
         return self.policy(state)
 
@@ -120,4 +122,3 @@ class DQN(AbstractAgent):
         self.optimizer.step()
 
         return loss
-    

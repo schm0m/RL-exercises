@@ -37,7 +37,7 @@ class ValueIteration(AbstractAgent):
         self.A = self.env.actions
         self.T = self.env.transition_matrix
         self.R_sa = self.env.get_reward_per_action()
-        self.gamma = gamma       
+        self.gamma = gamma
 
         # Value Function
         self.V = np.zeros_like(self.S)
@@ -163,7 +163,7 @@ def determine_pi(V: np.ndarray, seed: int | None = None) -> Callable:
         # What if values are equal?
         equal = v_left == v_right
         action = rng.integers(0, 1) if equal else np.argmax([v_left, v_right])
-        return action
+        return action  # type: ignore[return-value]
 
     return pi
 

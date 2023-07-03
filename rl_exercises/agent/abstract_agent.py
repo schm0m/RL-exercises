@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-import numpy as np
 from typing import Any
 from abc import abstractmethod
+
 
 class AbstractAgent(object):
     def __init__(self, *args: tuple[Any], **kwargs: dict) -> None:

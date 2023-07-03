@@ -70,7 +70,6 @@ class Policy(nn.Module):
 
 class REINFORCE(AbstractAgent):
     def __init__(self, env, learning_rate, gamma) -> None:
-
         self.env = env
         self.policy = Policy(self.env.state_space, self.env.action_space)
         self.learning_rate = learning_rate

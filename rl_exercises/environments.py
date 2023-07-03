@@ -136,7 +136,7 @@ class MarsRover(gymnasium.Env):
         self.position = 2
 
         observation = self.position
-        info = {}
+        info: dict = {}
 
         return observation, info
 

@@ -1,3 +1,5 @@
+# Ignore "imported but unused"
+# flake8: noqa: F401
 import hydra
 import numpy as np
 from rich import print as printr
@@ -5,6 +7,7 @@ import gymnasium as gym
 import rl_exercises
 from gymnasium.wrappers import TimeLimit
 import warnings
+
 try:
     import compiler_gym
 except:
@@ -12,7 +15,7 @@ except:
 from stable_baselines3.common.monitor import Monitor
 from rl_exercises.environments import MarsRover
 from stable_baselines3 import SAC
-from typing import  List
+from typing import List
 from tqdm import tqdm
 from functools import partial
 
@@ -26,7 +29,7 @@ from rl_exercises.week_6 import DQN
 def train(cfg):
     env = make_env(cfg.env_name)
     printr(cfg)
-    if cfg.agent == 'sb3':
+    if cfg.agent == "sb3":
         return train_sb3_sac(env, cfg)
     elif cfg.agent in ["policy_iteration", "value_iteration"]:
         agent = eval(cfg.agent_class)(env=env, **cfg.agent_kwargs)
@@ -38,7 +41,6 @@ def train(cfg):
     else:
         # TODO: add your agent options here
         raise NotImplementedError
-    
 
     buffer_cls = getattr(rl_exercises.agent.buffer, cfg.buffer_cls, None)
     if buffer_cls is not None:
@@ -64,11 +66,12 @@ def train(cfg):
         if step % cfg.eval_every_n_steps == 0:
             eval_performance = evaluate(env, agent, cfg.n_eval_episodes)
             print(f"Eval reward after {step} steps was {eval_performance}.")
-    
+
     agent.save(cfg.outpath)
     final_eval = evaluate(env, agent, cfg.n_eval_episodes)
     print(final_eval)
     return final_eval
+
 
 def train_sb3_sac(env, cfg):
     # Create agent
@@ -85,6 +88,7 @@ def train_sb3_sac(env, cfg):
     means = evaluate(env, model, n_episodes=cfg.n_eval_episodes)
     performance = np.mean(means)
     return performance
+
 
 def evaluate(env: gym.Env, agent, episodes=100):
     """
@@ -123,10 +127,16 @@ def evaluate(env: gym.Env, agent, episodes=100):
     env.close()
     return np.mean(episode_rewards)
 
+
 def make_env(env_name, env_kwargs={}):
     if "compiler" in env_name:
         benchmark = "cbench-v1/dijkstra"
-        env = gym.make("llvm-autophase-ic-v0", benchmark=benchmark, reward_space="IrInstructionCountNorm", apply_api_compatibility=True)
+        env = gym.make(
+            "llvm-autophase-ic-v0",
+            benchmark=benchmark,
+            reward_space="IrInstructionCountNorm",
+            apply_api_compatibility=True,
+        )
         env = TimeLimit(env, max_episode_steps=100)
     elif env_name == "MarsRover":
         env = MarsRover(**env_kwargs)

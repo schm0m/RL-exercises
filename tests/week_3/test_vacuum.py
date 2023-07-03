@@ -1,5 +1,4 @@
 import unittest
-import numpy as np
 from rl_exercises.week_3.vacuum import VacuumEnv
 
 
@@ -23,4 +22,4 @@ class TestVacuumEnv(unittest.TestCase):
 
             counter += 1
 
-        assert terminated or truncated, "Env did not terminate episode." 
+        assert terminated or truncated, "Env did not terminate episode."

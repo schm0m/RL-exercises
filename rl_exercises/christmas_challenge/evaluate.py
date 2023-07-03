@@ -55,7 +55,9 @@ if __name__ == "__main__":
         os.path.join(os.path.abspath(os.path.dirname(__file__)), "custom_benchmarks", "rot13.cpp")
     )
     benchmark = "cbench-v1/dijkstra"
-    env = gym.make("llvm-autophase-ic-v0", benchmark=benchmark, reward_space="IrInstructionCountNorm", apply_api_compatibility=True)
+    env = gym.make(
+        "llvm-autophase-ic-v0", benchmark=benchmark, reward_space="IrInstructionCountNorm", apply_api_compatibility=True
+    )
     env = TimeLimit(env, max_episode_steps=100)
     policy = create_policy(env)
     return_mean = evaluate(env, policy)
