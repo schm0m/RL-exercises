@@ -54,6 +54,7 @@ class PolicyIteration(AbstractAgent):
         self.Q = np.zeros_like(self.P)
 
         self.policy_fitted: bool = False
+        self.steps: int = 0  # Number of policy improvement steps
 
     def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:  # type: ignore[override]
         """Predict action based on observation
@@ -81,7 +82,7 @@ class PolicyIteration(AbstractAgent):
         """
         if not self.policy_fitted:
             printr("Initial policy: ", self.pi)
-            self.Q, self.pi = do_policy_iteration(
+            self.Q, self.pi, self.steps = do_policy_iteration(
                 Q=self.Q,
                 pi=self.pi,
                 MDP=(self.S, self.A, self.P, self.R_sa, self.gamma),
@@ -107,7 +108,7 @@ def do_policy_evaluation(
     pi: np.ndarray,
     MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float],
     epsilon: float = 1e-8,
-) -> np.ndarray:
+) -> tuple[np.ndarray, int]:
     """Policy Evaluation
 
     Parameters
@@ -127,12 +128,13 @@ def do_policy_evaluation(
 
     Returns
     -------
-    np.ndarray
-        Q, state-value function
+    np.ndarray, int
+        Q, state-value function. Number of policy evaluation steps.
     """
     S, A, P, R_sa, gamma = MDP
 
-    converged = False
+    converged: bool = False
+    steps: int = 0
     while not converged:
         Q_old = Q.copy()
         for s in S:
@@ -143,8 +145,9 @@ def do_policy_evaluation(
             # print(s, a, s_next)
             Q[s, a] = R_sa[s, a] + gamma * np.sum(P[s_next] * Q[s_next])
         converged = bool(np.all(np.linalg.norm(Q - Q_old, 1) < epsilon))
+        steps += 1
 
-    return Q
+    return Q, steps
 
 
 def do_policy_improvement(
@@ -183,7 +186,7 @@ def do_policy_iteration(
     pi: np.ndarray,
     MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float],
     epsilon: float = 1e-8,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray, int]:
     """Policy Iteration
 
     Parameters
@@ -203,15 +206,17 @@ def do_policy_iteration(
 
     Returns
     -------
-    np.ndarray, callable
-        Q, pi (the policy)
+    np.ndarray, callable, int
+        Q, pi (the policy), the number of iterations
     """
-    converged = False
+    converged: bool = False
+    steps: int = 0
     while not converged:
-        Q = do_policy_evaluation(Q, pi, MDP, epsilon=epsilon)
+        Q, steps = do_policy_evaluation(Q, pi, MDP, epsilon=epsilon)
         pi, converged = do_policy_improvement(Q, pi)
+        
 
-    return Q, pi
+    return Q, pi, steps
 
 
 if __name__ == "__main__":

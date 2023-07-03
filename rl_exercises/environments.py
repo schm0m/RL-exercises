@@ -45,6 +45,7 @@ class MarsRover(gymnasium.Env):
         transition_probabilities: np.ndarray = np.ones((5, 2)),
         rewards: list[float] = [1, 0, 0, 0, 10],
         horizon: int = 10,
+        seed: int | None = None,
     ):
         """Init the environment
 
@@ -72,6 +73,8 @@ class MarsRover(gymnasium.Env):
         self.transition_matrix = self.T = self.get_transition_matrix(
             S=self.states, A=self.actions, P=self.transition_probabilities
         )
+
+        self.rng = np.random.default_rng(seed=seed)
 
     def get_reward_per_action(self) -> np.ndarray:
         """Determine the reward per action.
@@ -202,7 +205,7 @@ class MarsRover(gymnasium.Env):
         # Determine move given an action and transition probabilities for environment
         action = int(action)
         self.current_steps += 1
-        follow_action = np.random.random() < self.transition_probabilities[self.position][action]
+        follow_action = self.rng.random() < self.transition_probabilities[self.position][action]
         if not follow_action:
             action = 1 - action
 
