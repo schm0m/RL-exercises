@@ -1,21 +1,10 @@
 """GridCore Env taken from https://github.com/automl/TabularTempoRL/"""
 from __future__ import annotations
 
-import sys
-import time
-from io import StringIO
-from typing import Any, SupportsFloat, Tuple
+from typing import Any, SupportsFloat
 
 import numpy as np
 import gymnasium
-
-# from gymnasium.envs.toy_text.discrete import DiscreteEnv
-
-# Actions
-LEFT = 0
-UP = 1
-RIGHT = 2
-DOWN = 3
 
 
 class MarsRover(gymnasium.Env):
@@ -54,7 +43,8 @@ class MarsRover(gymnasium.Env):
         transition_probabilities : np.ndarray, optional
             [Nx2] Array for N positions and 2 actions each, by default np.ones((5, 2)).
         rewards : list[float], optional
-            [Nx1] Array for rewards. rewards[pos] determines the reward for a given position `pos`, by default [1, 0, 0, 0, 10].
+            [Nx1] Array for rewards. rewards[pos] determines the reward for a given
+            position `pos`, by default [1, 0, 0, 0, 10].
         horizon : int, optional
             Number of total steps for this environment until it is done (e.g. battery drained), by default 10.
         """

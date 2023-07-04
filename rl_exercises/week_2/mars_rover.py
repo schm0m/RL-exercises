@@ -17,7 +17,8 @@ if __name__ == "__main__":
         action = actions[i]
         s_next, r, terminated, truncated, info = env.step(action)
         printr(
-            f"Step: {i}, state: {s}, action: {action}, next state: {s_next}, reward: {r}, terminated: {terminated}, truncated: {truncated}"
+            f"Step: {i}, state: {s}, action: {action}, next state: {s_next}, "
+            f"reward: {r}, terminated: {terminated}, truncated: {truncated}"
         )
         s = s_next
         states.append(s)

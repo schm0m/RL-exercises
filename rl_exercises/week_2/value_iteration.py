@@ -11,7 +11,7 @@ from rich import print as printr
 
 class ValueIteration(AbstractAgent):
     def __init__(self, env: MarsRover | gymnasium.Env, gamma: float = 0.9, seed: int = 333, **kwargs: dict) -> None:
-        """Value Iteration
+        """Value Iteration.
 
         Parameters
         ----------
@@ -45,7 +45,7 @@ class ValueIteration(AbstractAgent):
         self.policy_fitted: bool = False
 
     def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:  # type: ignore[override]
-        """Predict action based on observation
+        """Predict action based on observation.
 
         Parameters
         ----------
