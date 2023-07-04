@@ -175,7 +175,7 @@ def do_policy_improvement(
 
     pi_old = pi.copy()
 
-    pi = np.argmax(Q, axis=1)
+    pi = np.argmax(Q, axis=1) # TODO What if Q values equal?
 
     converged = bool(np.all(np.linalg.norm(pi - pi_old, 1) < epsilon))
     return pi, converged
