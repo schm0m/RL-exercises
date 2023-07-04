@@ -58,6 +58,8 @@ class MarsRover(gymnasium.Env):
         horizon : int, optional
             Number of total steps for this environment until it is done (e.g. battery drained), by default 10.
         """
+        self.rng = np.random.default_rng(seed=seed)
+
         self.rewards: list[float] = rewards
         self.transition_probabilities: np.ndarray = transition_probabilities
         self.current_steps: int = 0
@@ -73,8 +75,6 @@ class MarsRover(gymnasium.Env):
         self.transition_matrix = self.T = self.get_transition_matrix(
             S=self.states, A=self.actions, P=self.transition_probabilities
         )
-
-        self.rng = np.random.default_rng(seed=seed)
 
     def get_reward_per_action(self) -> np.ndarray:
         """Determine the reward per action.
@@ -93,9 +93,10 @@ class MarsRover(gymnasium.Env):
 
         return R_sa
 
-    def get_next_state(self, s: int, a: int, S: np.ndarray) -> int:
+    def get_next_state(self, s: int, a: int,  S: np.ndarray, p: float = 1) -> int:
         """Get next state for deterministic action.
 
+        - The action will always be followed = deterministic
         - Translate action into delta s
         - Respect limits of the environment (min and max state).
         
@@ -107,17 +108,24 @@ class MarsRover(gymnasium.Env):
             Action.
         S : np.ndarray, |S|
             All states.
+        p : float
+            Probability that action a is followed, by default 1.
 
         Returns
         -------
         int
             Next state.
         """
+        follow_action = self.rng.random() < p
+        if not follow_action:
+            # Reverse action
+            a = 1 - a
+
         delta_s = -1 if a == 0 else 1
         s_next = s + delta_s
         s_next = max(min(s_next, len(S) - 1), 0)
         return s_next
-
+    
     def get_transition_matrix(self, S: np.ndarray, A: np.ndarray, P: np.ndarray) -> np.ndarray:
         """Get transition matrix T
 
@@ -140,7 +148,7 @@ class MarsRover(gymnasium.Env):
         T = np.zeros((len(S), len(A), len(S)))
         for s in S:
             for a in A:
-                s_next = self.get_next_state(s, a, S)
+                s_next = self.get_next_state(s, a, S, p=1)
                 probability = P[s, a]
                 T[s, a, s_next] = probability
 
@@ -204,21 +212,18 @@ class MarsRover(gymnasium.Env):
         """
         # Determine move given an action and transition probabilities for environment
         action = int(action)
-        self.current_steps += 1
-        follow_action = self.rng.random() < self.transition_probabilities[self.position][action]
-        if not follow_action:
-            action = 1 - action
-
-        # Move and update position
-        if action == 0:
-            if self.position > 0:
-                self.position -= 1
-        elif action == 1:
-            if self.position < 4:
-                self.position += 1
-        else:
+        if action not in [0, 1]:
             raise RuntimeError(f"{action} is not a valid action (needs to be 0 or 1)")
+        
+        self.current_steps += 1
 
+        self.position = self.get_next_state(
+            s=self.position,
+            a=action,
+            S=self.states,
+            p=self.transition_probabilities[self.position][action]
+        )
+        
         # Get reward
         reward = self.rewards[self.position]
 
