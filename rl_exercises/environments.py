@@ -93,13 +93,13 @@ class MarsRover(gymnasium.Env):
 
         return R_sa
 
-    def get_next_state(self, s: int, a: int,  S: np.ndarray, p: float = 1) -> int:
+    def get_next_state(self, s: int, a: int, S: np.ndarray, p: float = 1) -> int:
         """Get next state for deterministic action.
 
         - The action will always be followed = deterministic
         - Translate action into delta s
         - Respect limits of the environment (min and max state).
-        
+
         Parameters
         ----------
         s : int
@@ -125,7 +125,7 @@ class MarsRover(gymnasium.Env):
         s_next = s + delta_s
         s_next = max(min(s_next, len(S) - 1), 0)
         return s_next
-    
+
     def get_transition_matrix(self, S: np.ndarray, A: np.ndarray, P: np.ndarray) -> np.ndarray:
         """Get transition matrix T
 
@@ -136,13 +136,13 @@ class MarsRover(gymnasium.Env):
         A : np.ndarray, |A|
             Actions
         P : np.ndarray, |S|x|A|
-            Transition probabilities. One entry P[s,a] means the probability of applying the 
+            Transition probabilities. One entry P[s,a] means the probability of applying the
             desired action a instead of the opposite action.
 
         Returns
         -------
         np.ndarray, |S|x|A|x|S|
-            Transition matrix. T[s,a,s_next] means the probability of being in state s, applying 
+            Transition matrix. T[s,a,s_next] means the probability of being in state s, applying
             action a and landing in state s_next.
         """
         T = np.zeros((len(S), len(A), len(S)))
@@ -214,16 +214,13 @@ class MarsRover(gymnasium.Env):
         action = int(action)
         if action not in [0, 1]:
             raise RuntimeError(f"{action} is not a valid action (needs to be 0 or 1)")
-        
+
         self.current_steps += 1
 
         self.position = self.get_next_state(
-            s=self.position,
-            a=action,
-            S=self.states,
-            p=self.transition_probabilities[self.position][action]
+            s=self.position, a=action, S=self.states, p=self.transition_probabilities[self.position][action]
         )
-        
+
         # Get reward
         reward = self.rewards[self.position]
 

@@ -8,8 +8,8 @@ class TestMarsRover(unittest.TestCase):
         print(env.rng)
         R_sa = env.get_reward_per_action()
 
-        self.assertEqual(R_sa[2,1], 0)
-        self.assertEqual(R_sa[3,1], 10)
+        self.assertEqual(R_sa[2, 1], 0)
+        self.assertEqual(R_sa[3, 1], 10)
 
     def test_get_next_state(self):
         env = MarsRover()
@@ -26,11 +26,10 @@ class TestMarsRover(unittest.TestCase):
     def test_get_transition_matrix(self):
         env = MarsRover()
         T = env.get_transition_matrix(env.states, env.actions, env.transition_probabilities)
-        self.assertEqual(T[0,0,0], 1)
-        self.assertEqual(T[4,1,4], 1)
-        self.assertEqual(T[2,1,4], 0)
+        self.assertEqual(T[0, 0, 0], 1)
+        self.assertEqual(T[4, 1, 4], 1)
+        self.assertEqual(T[2, 1, 4], 0)
 
 
 if __name__ == "__main__":
     unittest.main()
-    

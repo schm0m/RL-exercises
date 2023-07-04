@@ -6,7 +6,7 @@ from rl_exercises.train_agent import evaluate
 
 class TestValueIteration(unittest.TestCase):
     def test_value_quality(self):
-        seeds = range(1,11)
+        seeds = range(1, 11)
         r = []
         for seed in seeds:
             env = MarsRover()
@@ -16,7 +16,7 @@ class TestValueIteration(unittest.TestCase):
             mean_r = evaluate(env=env, agent=agent, episodes=1)  # deterministic policy
             r.append(mean_r)
 
-        self.assertTrue(sum(r) > 0)    
+        self.assertTrue(sum(r) > 0)
 
 
 if __name__ == "__main__":

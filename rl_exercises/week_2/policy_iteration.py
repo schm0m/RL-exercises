@@ -175,7 +175,7 @@ def do_policy_improvement(
 
     pi_old = pi.copy()
 
-    pi = np.argmax(Q, axis=1) # TODO What if Q values equal?
+    pi = np.argmax(Q, axis=1)  # TODO What if Q values equal?
 
     converged = bool(np.all(np.linalg.norm(pi - pi_old, 1) < epsilon))
     return pi, converged
@@ -214,7 +214,6 @@ def do_policy_iteration(
     while not converged:
         Q, steps = do_policy_evaluation(Q, pi, MDP, epsilon=epsilon)
         pi, converged = do_policy_improvement(Q, pi)
-        
 
     return Q, pi, steps
 

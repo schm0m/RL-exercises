@@ -13,7 +13,7 @@ def get_agent() -> PolicyIteration:
 
 class TestPolicyIteration(unittest.TestCase):
     def test_policy_quality(self):
-        seeds = range(1,11)
+        seeds = range(1, 11)
         r = []
         steps = []
         for seed in seeds:
@@ -26,17 +26,13 @@ class TestPolicyIteration(unittest.TestCase):
             # Get the number of policy improvement steps
             steps.append(agent.steps)
 
-        self.assertTrue(np.mean(steps) > 1)   
-        self.assertTrue(sum(r) > 0)    
+        self.assertTrue(np.mean(steps) > 1)
+        self.assertTrue(sum(r) > 0)
 
     def test_policy_improvement(self):
-        Q = np.array([
-            [1, 0],
-            [0, 1],
-            [1, 0]
-        ])
+        Q = np.array([[1, 0], [0, 1], [1, 0]])
         pi_before = [0, 1, 0]
-        pi, converged = do_policy_improvement(Q, pi_before) 
+        pi, converged = do_policy_improvement(Q, pi_before)
         self.assertTrue(np.all(pi_before == pi))
         self.assertTrue(converged)
 
