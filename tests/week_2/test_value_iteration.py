@@ -1,27 +1,22 @@
 import unittest
-import numpy as np
-from rl_exercises.week_2.value_iteration import run_value_iteration, update_value_function
+from rl_exercises.week_2.value_iteration import ValueIteration
+from rl_exercises.environments import MarsRover
+from rl_exercises.train_agent import evaluate
 
 
 class TestValueIteration(unittest.TestCase):
     def test_value_quality(self):
+        seeds = range(1,11)
         r = []
-        steps = []
-        for _ in range(10):
-            v, i, final_reward = run_value_iteration()
-            r.append(final_reward)
-            steps.append(i)
-        self.assertTrue(np.mean(steps) == 1)
-        self.assertTrue(sum(r) > 0)
+        for seed in seeds:
+            env = MarsRover()
+            agent = ValueIteration(env=env, seed=seed)
+            agent.update()
+            # Get mean reward per episode
+            mean_r = evaluate(env=env, agent=agent, episodes=1)  # deterministic policy
+            r.append(mean_r)
 
-    def test_single_update(self):
-        new_v, converged = update_value_function([0, 0], 0, 1, 1, 10)
-        self.assertTrue(new_v[0] > 0)
-        self.assertFalse(converged)
-
-    def test_convergence(self):
-        _, converged = update_value_function([0, 0], 0, 1, 1, 10)
-        self.assertFalse(converged)
+        self.assertTrue(sum(r) > 0)    
 
 
 if __name__ == "__main__":
