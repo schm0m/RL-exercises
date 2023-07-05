@@ -103,6 +103,7 @@ class PolicyIteration(AbstractAgent):
         return self.pi
 
 
+# TODO Complete `do_policy_evaluation` based on the formula from the lecture.
 def do_policy_evaluation(
     Q: np.ndarray,
     pi: np.ndarray,
@@ -133,19 +134,12 @@ def do_policy_evaluation(
     """
     S, A, T, R_sa, gamma = MDP
 
-    converged: bool = False
     steps: int = 0
-    while not converged:
-        Q_old = Q.copy()
-        for s in S:
-            a = pi[s]
-            Q[s, a] = R_sa[s, a] + gamma * np.sum(T[s, a, :] * Q[:, a])
-        converged = bool(np.all(np.linalg.norm(Q - Q_old, 1) < epsilon))
-        steps += 1
 
     return Q, steps
 
 
+# TODO Complete `do_policy_improvement` based on the formula from the lecture.
 def do_policy_improvement(
     Q: np.ndarray,
     pi: np.ndarray,
@@ -169,14 +163,12 @@ def do_policy_improvement(
         Pi, converged.
     """
 
-    pi_old = pi.copy()
+    converged: bool = False
 
-    pi = np.argmax(Q, axis=1)  # TODO What if Q values equal?
-
-    converged = bool(np.all(np.linalg.norm(pi - pi_old, 1) < epsilon))
     return pi, converged
 
 
+# TODO Complete `do_policy_iteration` bringing together policy evaluation and policy improvement.
 def do_policy_iteration(
     Q: np.ndarray,
     pi: np.ndarray,
@@ -207,10 +199,7 @@ def do_policy_iteration(
     """
     converged: bool = False
     steps: int = 0
-    while not converged:
-        Q, steps = do_policy_evaluation(Q, pi, MDP, epsilon=epsilon)
-        pi, converged = do_policy_improvement(Q, pi)
-
+    
     return Q, pi, steps
 
 

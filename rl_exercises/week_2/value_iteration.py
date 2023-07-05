@@ -144,6 +144,7 @@ def determine_pi(V: np.ndarray, seed: int | None = None) -> Callable:
     # Seed the random generator
     rng = np.random.default_rng(seed=seed)
 
+    # TODO Determine the policy based on the current value function.
     def pi(s: int) -> int:
         """Policy
 
@@ -157,17 +158,13 @@ def determine_pi(V: np.ndarray, seed: int | None = None) -> Callable:
         int
             Action
         """
-        # Values of possible follow-up states
-        v_left = V[max(s - 1, 0)]
-        v_right = V[min(s + 1, 0)]
-        # What if values are equal?
-        equal = v_left == v_right
-        action = rng.integers(0, 1) if equal else np.argmax([v_left, v_right])
+        action: int = 0
         return action  # type: ignore[return-value]
 
     return pi
 
 
+# TODO Complete `update_value_function`. This is what happens for each state s inside the while/convergence loop.
 def update_value_function(
     V: np.ndarray, MDP: tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, float], epsilon: float = 1e-8
 ) -> tuple[np.ndarray, bool]:
@@ -194,20 +191,6 @@ def update_value_function(
         V, converged
     """
     S, A, T, R_sa, gamma = MDP
-    delta = 0
-    for s in S:
-        v = V[s]
-        vs = []
-        for a in A:
-            r = R_sa[s, a]
-            v_sum = 0
-            for s_next in S:
-                p = T[s, a, s_next]
-                v_sum += p * gamma * V[s_next]
-            vs.append(r + v_sum)
+    converged: bool = False
 
-        V[s] = max(vs)
-        delta = max(delta, np.abs(v - V[s]))
-
-    converged = delta < epsilon
     return V, converged
