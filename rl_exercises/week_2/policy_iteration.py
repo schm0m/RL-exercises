@@ -41,7 +41,7 @@ class PolicyIteration(AbstractAgent):
         # Get the MDP from the env
         self.S = self.env.states
         self.A = self.env.actions
-        self.P = self.env.transition_probabilities
+        self.T = self.env.get_transition_matrix(S=self.S, A=self.A, P=self.env.transition_probabilities)
         self.R = self.env.rewards
         self.gamma = gamma
         self.R_sa = self.env.get_reward_per_action()
@@ -51,7 +51,7 @@ class PolicyIteration(AbstractAgent):
         self.pi: np.ndarray = rng.integers(0, self.n_actions, self.n_obs)
 
         # State-Value Function
-        self.Q = np.zeros_like(self.P)
+        self.Q = np.zeros_like(self.R_sa)
 
         self.policy_fitted: bool = False
         self.steps: int = 0  # Number of policy improvement steps
@@ -85,7 +85,7 @@ class PolicyIteration(AbstractAgent):
             self.Q, self.pi, self.steps = do_policy_iteration(
                 Q=self.Q,
                 pi=self.pi,
-                MDP=(self.S, self.A, self.P, self.R_sa, self.gamma),
+                MDP=(self.S, self.A, self.T, self.R_sa, self.gamma),
             )
             printr("Q: ", self.Q)
             printr("Final policy: ", self.pi)
@@ -131,7 +131,7 @@ def do_policy_evaluation(
     np.ndarray, int
         Q, state-value function. Number of policy evaluation steps.
     """
-    S, A, P, R_sa, gamma = MDP
+    S, A, T, R_sa, gamma = MDP
 
     converged: bool = False
     steps: int = 0
@@ -139,11 +139,7 @@ def do_policy_evaluation(
         Q_old = Q.copy()
         for s in S:
             a = pi[s]
-            action = -1 if a == 0 else 1  # TODO choose according to probability
-            s_next = s + action
-            s_next = max(min(s_next, len(P) - 1), 0)
-            # print(s, a, s_next)
-            Q[s, a] = R_sa[s, a] + gamma * np.sum(P[s_next] * Q[s_next])
+            Q[s, a] = R_sa[s, a] + gamma * np.sum(T[s, a, :] * Q[:, a])
         converged = bool(np.all(np.linalg.norm(Q - Q_old, 1) < epsilon))
         steps += 1
 
