@@ -67,7 +67,7 @@ class EpsilonGreedyPolicy(object):
 
 
 class VFAQAgent(AbstractAgent):
-    """DQN Agent Class."""
+    """VFA Agent Class."""
 
     def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
         self.env = env

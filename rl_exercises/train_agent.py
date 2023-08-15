@@ -33,7 +33,7 @@ def train(cfg):
         return train_sb3(env, cfg)
     elif cfg.agent in ["policy_iteration", "value_iteration"]:
         agent = eval(cfg.agent_class)(env=env, **cfg.agent_kwargs)
-    elif cfg.agent in ["tabular_q_learning", "linear_q_learning", "dqn"]:
+    elif cfg.agent in ["tabular_q_learning", "vfa_q_learning", "dqn"]:
         policy_class = eval(cfg.policy_class)
         policy = partial(policy_class, **cfg.policy_kwargs)
         agent_class = eval(cfg.agent_class)
