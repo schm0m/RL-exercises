@@ -1,4 +1,5 @@
 # @package _global_
+agent: dqn
 agent_class: DQN
 
 gamma: 0.99

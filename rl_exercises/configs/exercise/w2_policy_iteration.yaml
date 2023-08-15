@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - ../../agent: policy_iteration
+  - ../agent: policy_iteration
 
 env_name: MarsRover
 env_kwargs: {}

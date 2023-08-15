@@ -1,4 +1,5 @@
 # @package _global_
+agent: tabular_q_learning
 agent_class: TabularQAgent
 
 gamma: 1.0

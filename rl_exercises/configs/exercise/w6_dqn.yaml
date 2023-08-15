@@ -1,5 +1,5 @@
 defaults:
-  - ..agent: dqn
+  - ../agent: dqn
 
 env_name: LunarLander-v2
 max_episode_length: 1000

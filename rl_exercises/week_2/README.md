@@ -30,7 +30,7 @@ The code stub to be completed is in `policy_iteration.py`.
 You can run the exercise with:
 ```bash
 # Policy Iteration
-python rl_exercises/train_agent.py +week/w2=policy_iteration
+python rl_exercises/train_agent.py +exercise=w2_policy_iteration
 ```
 
 ### 3. Value Iteration for the probibalistic MarsRover
@@ -42,7 +42,7 @@ What happens if you different initial policies? Will you always converge to the 
 You can run the exercise with:
 ```bash
 # Value Iteration
-python rl_exercises/train_agent.py +week/w2=value_iteration
+python rl_exercises/train_agent.py +exercise=w2_value_iteration
 ```
 
 ## Level 2

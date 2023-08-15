@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - ../../agent: value_iteration
+  - ../agent: value_iteration
 
 env_name: MarsRover
 env_kwargs: {}

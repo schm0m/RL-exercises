@@ -1,4 +1,5 @@
 # @package _global_
+agent: linear_q_learning
 agent_class: LinearQAgent
 
 gamma: 1.0
