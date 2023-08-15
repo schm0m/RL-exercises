@@ -32,7 +32,7 @@ def to_discrete_state(obs: Tuple[float, float, float, float], num_bins) -> Tuple
 class TabularQAgent(AbstractAgent):
     """Q-Learning Agent Class."""
 
-    def __init__(self, env, policy, learning_rate, gamma, num_bins, **kwargs) -> None:
+    def __init__(self, env, policy, learning_rate: float, gamma: float, num_bins: int, **kwargs: dict) -> None:
         self.env = env
         self.Q = defaultdict(lambda: np.random.uniform(1, -1))
         self.policy = policy(self.env, self.Q)

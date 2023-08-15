@@ -1,5 +1,6 @@
 defaults:
   - agent: sb3
+  - buffer
   
 training_steps: 0
 env_name: Pendulum-v1
