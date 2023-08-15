@@ -72,7 +72,7 @@ class VFAQAgent(AbstractAgent):
     def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
         self.env = env
         self.Q = self.make_Q()
-        self.policy = policy(self.env, self.Q)
+        self.policy = policy(env=self.env, Q=self.Q)
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.optimizer = ...
