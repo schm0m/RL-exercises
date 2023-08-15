@@ -98,8 +98,10 @@ class VFAQAgent(AbstractAgent):
         Q = ...
         return Q
 
-    def predict(self, state, info) -> Any:
-        return self.policy(state)
+    def predict(self, state, info) -> tuple[Any, dict]:
+        action = self.policy(state)
+        info = {}
+        return action, info
 
     def save(self, path) -> Any:
         train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}

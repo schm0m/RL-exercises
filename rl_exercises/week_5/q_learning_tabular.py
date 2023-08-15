@@ -6,6 +6,7 @@ from typing import Any, Tuple
 import numpy as np
 
 from rl_exercises.agent import AbstractAgent
+from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
 
 
 def to_bins(value: np.ndarray, bins: np.ndarray) -> float:
@@ -35,7 +36,7 @@ def default_q_value() -> float:
 class TabularQAgent(AbstractAgent):
     """Q-Learning Agent Class."""
 
-    def __init__(self, env, policy, learning_rate: float, gamma: float, num_bins: int, **kwargs: dict) -> None:
+    def __init__(self, env, policy: TabularEpsilonGreedyPolicy, learning_rate: float, gamma: float, num_bins: int, **kwargs: dict) -> None:
         self.env = env
         self.Q = defaultdict(default_q_value)
         self.policy = policy(env=self.env, Q=self.Q)
@@ -49,10 +50,11 @@ class TabularQAgent(AbstractAgent):
             self.discretize_state = to_discrete_state
         self.num_bins = num_bins
 
-    def predict(self, state, info) -> Any:
+    def predict(self, state: tuple, info: dict) -> tuple[int, dict]:
         discrete_state = to_discrete_state(state, self.num_bins)
-        discrete_state = np.array(discrete_state)
-        return self.policy(discrete_state)
+        action = self.policy(discrete_state)
+        info = {}
+        return action, info
 
     def save(self, path) -> Any:
         np.save(path, self.Q)

@@ -6,6 +6,6 @@ agent_kwargs:
   learning_rate: 0.2
   num_bins: 20
 
-policy_class: EpsilonGreedyPolicy
+policy_class: TabularEpsilonGreedyPolicy
 policy_kwargs:
   epsilon: 0.1
