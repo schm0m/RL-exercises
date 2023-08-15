@@ -14,7 +14,7 @@ except:
     warnings.warn("Could not import compiler_gym. Probably it is not installed.")
 from stable_baselines3.common.monitor import Monitor
 from rl_exercises.environments import MarsRover
-from stable_baselines3 import SAC
+from stable_baselines3 import SAC, PPO
 from typing import List
 from tqdm import tqdm
 from functools import partial
@@ -30,7 +30,7 @@ def train(cfg):
     env = make_env(cfg.env_name)
     printr(cfg)
     if cfg.agent == "sb3":
-        return train_sb3_sac(env, cfg)
+        return train_sb3(env, cfg)
     elif cfg.agent in ["policy_iteration", "value_iteration"]:
         agent = eval(cfg.agent_class)(env=env, **cfg.agent_kwargs)
     elif cfg.agent in ["tabular_q_learning", "linear_q_learning", "dqn"]:
@@ -73,9 +73,9 @@ def train(cfg):
     return final_eval
 
 
-def train_sb3_sac(env, cfg):
+def train_sb3(env, cfg):
     # Create agent
-    model = SAC("MlpPolicy", env, verbose=cfg.verbose, tensorboard_log=cfg.log_dir, seed=cfg.seed)
+    model = eval(cfg.agent_class)("MlpPolicy", env, verbose=cfg.verbose, tensorboard_log=cfg.log_dir, seed=cfg.seed)
 
     # Train agent
     model.learn(total_timesteps=cfg.total_timesteps)
