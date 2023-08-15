@@ -1,6 +1,6 @@
 from __future__ import annotations
 from collections import defaultdict
-from typing import Callable, DefaultDict, Hashable, List, Tuple
+from typing import Callable, DefaultDict, Hashable, List, Tuple, Any
 
 import gymnasium as gym
 import numpy as np
@@ -36,12 +36,12 @@ class EpsilonGreedyPolicy(object):
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
 
-    def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
+    def __call__(self, state: tuple, exploration_rate: float = 0.0, eval: bool = False) -> int:
         """Select action
 
         Parameters
         ----------
-        state : np.array
+        state : tuple
             State
         exploration_rate : float, optional
             exploration rate (epsilon), by default 0.0
@@ -128,6 +128,7 @@ class SARSAAgent(AbstractAgent):
         self.Q = np.load(path)
 
     def update(
+        self,
         transition: list[np.array],
         next_action: int,
         done: bool,
