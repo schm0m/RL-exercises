@@ -28,14 +28,17 @@ def to_discrete_state(obs: Tuple[float, float, float, float], num_bins) -> Tuple
     )
     return state
 
+def default_q_value() -> float:
+    return np.random.uniform(1, -1)
+
 
 class TabularQAgent(AbstractAgent):
     """Q-Learning Agent Class."""
 
     def __init__(self, env, policy, learning_rate: float, gamma: float, num_bins: int, **kwargs: dict) -> None:
         self.env = env
-        self.Q = defaultdict(lambda: np.random.uniform(1, -1))
-        self.policy = policy(self.env, self.Q)
+        self.Q = defaultdict(default_q_value)
+        self.policy = policy(env=self.env, Q=self.Q)
         self.learning_rate = learning_rate
         self.gamma = gamma
         # This adds the option to pass a function via the kwargs
@@ -48,6 +51,7 @@ class TabularQAgent(AbstractAgent):
 
     def predict(self, state, info) -> Any:
         discrete_state = to_discrete_state(state, self.num_bins)
+        discrete_state = np.array(discrete_state)
         return self.policy(discrete_state)
 
     def save(self, path) -> Any:
