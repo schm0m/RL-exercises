@@ -12,6 +12,11 @@ This week’s exercise aims to develop an intuition about how adding deep learni
 
 *Note*: The tests provided for this exercise are only an indicator of whether the plots and answers were generated or not, and whether the Q network learned something or not. We will look into the plots as well as the code to determine the quality of the submitted solutions.
 
+You can run the exercise with
+```bash
+python rl_exercises/train_agent.py +exercise=w6_dqn
+```
+
 ## Level 2
 The seed can drastically impact your experiment outcome, so it is a common practice in Reinforcement Learning to repeat experiments across multiple seeds and record the training curves as mean values across these seeds with a standard deviation around this value. Mean and standard deviation are not always the best metrics, however, and there are new emerging best practices to report training outcomes. In preparation for your project and further RL experiments, use [RLiable](https://github.com/google-research/rliable), a library for more robust reporting, to improve your plots. What changes? Do you feel more confident in the results? Why? We will discuss these questions during the exercise session. 
 
