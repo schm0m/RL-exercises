@@ -76,7 +76,7 @@ class REINFORCE(AbstractAgent):
         self.gamma = gamma
         self.optimizer = ...
 
-    def predict(self, state: np.ndarray) -> Tuple[torch.Tensor, torch.Tensor]:
+    def predict(self, state: tuple) -> Tuple[torch.Tensor, torch.Tensor]:
         """Use policy to sample an action and return probability for gradient update
 
         Parameters
@@ -101,7 +101,10 @@ class REINFORCE(AbstractAgent):
         return action, log_prob
 
     def save(self, path) -> Any:
-        train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}
+        train_state = {
+                        "parameters": self.policy.state_dict(), 
+                        "optimizer_state": self.optimizer.state_dict()
+                    }
         torch.save(train_state, path)
         pass
 
@@ -129,7 +132,7 @@ class REINFORCE(AbstractAgent):
 
         return returns
 
-    def update(self, training_batch: list[np.array], log_probs: torch.Tensor) -> float:
+    def update(self, log_probs: torch.Tensor, rewards: list(float)) -> float:
         """Perform Policy Improvement using a batch op transitions from a rollout
 
         Parameters
@@ -145,19 +148,21 @@ class REINFORCE(AbstractAgent):
             Loss of the policy network
         """
 
-        rewards = torch.from_numpy(np.array(training_batch[2])).float()
-
         # TODO compute the returns
         returns = torch.tensor(self.compute_returns(rewards))  # ...
 
         # TODO compute advantages using returns and normalized them
         advantages = ...
 
-        # TODO Compute loss as the sum of log probs weighted by advantages
+
+        log_probs = torch.stack(log_probs)
+       
         self.optimizer.zero_grad()
-        loss = ...  # ..
+        
+         # TODO Compute loss as the sum of log probs weighted by advantages
+        loss = ...  
 
         loss.backward()
         self.optimizer.step()
 
-        return loss
+        return loss.item()

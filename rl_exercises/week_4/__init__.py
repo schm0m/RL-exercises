@@ -1,3 +1,3 @@
-from rl_exercises.week_4.sarsa import EpsilonGreedyPolicy
+from rl_exercises.week_4.sarsa import EpsilonGreedyPolicy, SARSAAgent
 
-__all__ = ["EpsilonGreedyPolicy"]
+__all__ = ["EpsilonGreedyPolicy", "SARSAAgent"]
