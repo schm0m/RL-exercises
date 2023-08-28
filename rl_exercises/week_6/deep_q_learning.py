@@ -1,11 +1,7 @@
 from __future__ import annotations
 from typing import Any
+from collections import OrderedDict
 
-# Both of these can be useful to you:
-# import random
-# from collections import deque
-
-import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -18,13 +14,13 @@ class ReplayBuffer(AbstractBuffer):
     """Buffer for storing and sampling transitions."""
 
     def __init__(self, capacity) -> None:
-        self.capacity = capacity
-        self.states = np.empty()
-        self.actions = np.empty()
-        self.rewards = np.empty()
-        self.next_states = np.empty()
-        self.dones = np.empty()
-        self.infos = np.empty()
+        self.capacity = int(capacity)
+        self.states = []
+        self.actions = []
+        self.rewards = []
+        self.next_states = []
+        self.dones = []
+        self.infos = []
 
     def add(self, state, action, reward, next_state, done, info):
         # TODO: add transitions to storage
@@ -40,6 +36,9 @@ class ReplayBuffer(AbstractBuffer):
         batch_infos = ...
         return (batch_states, batch_actions, batch_rewards, batch_next_states, batch_dones, batch_infos)
 
+    def __len__(self):
+        return len(self.states)
+
 
 class DQN(AbstractAgent):
     """DQN Agent Class."""
@@ -47,7 +46,7 @@ class DQN(AbstractAgent):
     def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
         self.env = env
         self.Q = self.make_Q()
-        self.policy = policy(self.env, self.Q)
+        self.policy = policy(self.env)
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.optimizer = ...
@@ -76,8 +75,8 @@ class DQN(AbstractAgent):
 
         return Q
 
-    def predict(self, state, info) -> Any:
-        return self.policy(state)
+    def predict(self, state, info, evaluate=False) -> Any:
+        return self.policy(self.Q, state, evaluate=evaluate), {}
 
     def save(self, path) -> Any:
         train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}
@@ -106,19 +105,12 @@ class DQN(AbstractAgent):
         float
             Loss
         """
-        states = torch.from_numpy(np.array(training_batch[0])).float()
-        actions = torch.from_numpy(np.array(training_batch[1])).unsqueeze(-1)
-        rewards = torch.from_numpy(np.array(training_batch[2])).float()
-        dones = torch.from_numpy(np.array(training_batch[3])).float()
-        next_states = torch.from_numpy(np.array(training_batch[4])).float()
+        states, actions, rewards, next_states, dones, infos = training_batch
+        # TODO: Implement update
+        # Convert data into torch tensors
 
-        # TODO: complete these lines to compute the loss
-        q_values = ...
-        target_q_values = ...
+        # Compute MSE loss
         loss = ...
+        # Optimize the model
 
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
-
-        return loss
+        return float(loss.item())

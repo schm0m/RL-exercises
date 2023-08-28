@@ -1,5 +1,4 @@
 from __future__ import annotations
-from functools import partial
 
 import gymnasium as gym
 import numpy as np
@@ -11,11 +10,7 @@ class EpsilonDecayPolicy(EpsilonGreedyPolicy):
     """Policy implementing Epsilon Greedy Exploration with decaying epsilon."""
 
     def __init__(
-        self,
-        Q: nn.Module,
-        env: gym.Env,
-        epsilon: float,
-        seed: int = None,
+        self, env: gym.Env, epsilon: float, total_timesteps: int = 1e5, final_epsilon: float = 0.05, seed: int = None
     ) -> None:
         """Init
 
@@ -30,26 +25,30 @@ class EpsilonDecayPolicy(EpsilonGreedyPolicy):
         seed : int, optional
             Seed, by default None
         """
-        self.Q = Q
         self.env = env
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
+        self.total_timesteps = total_timesteps
+        self.starting_epsilon = epsilon
+        self.final_epsilon = final_epsilon
+        self.timestep = 0
 
     def update_epsilon(self):
         """Decay the epsilon value."""
         # TODO: implement decay
         self.epsilon = ...
+        self.timestep += 1
 
-    def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
+    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> int:
         """Select action
 
         Parameters
         ----------
+        Q : nn.Module
+            State-Value function
         state : np.array
             State
-        exploration_rate : float, optional
-            exploration rate (epsilon), by default 0.0
-        eval: bool
+        evaluate: bool
             evaluation mode - if true, exploration should be turned off.
 
         Returns
@@ -68,9 +67,9 @@ class EZGreedyPolicy(EpsilonGreedyPolicy):
 
     def __init__(
         self,
-        Q: nn.Module,
         env: gym.Env,
         duration_max: int = 100,
+        epsilon: float = 0.1,
         mu: float = 3,
         seed: int = None,
     ) -> None:
@@ -78,10 +77,6 @@ class EZGreedyPolicy(EpsilonGreedyPolicy):
 
         Parameters
         ----------
-        Q : nn.Module
-            State-Value function
-        env : gym.Env
-            Environment
         duration_max : int, optional
             Maximum number of action repetition, by default 100
         mu : float, optional
@@ -89,14 +84,15 @@ class EZGreedyPolicy(EpsilonGreedyPolicy):
         seed : int, optional
             Seed, by default None
         """
-        self.Q = Q
         self.env = env
         self.duration_max = duration_max
         self.mu = mu
+        self.epsilon = epsilon
 
-        self.n: int = 0  # number of times left to perform action
+        self.n: int = 1  # number of times left to perform action
         self.w: int = -1  # random action in memory
         self.rng = np.random.default_rng(seed=seed)
+        self.step = -1
 
     def sample_duration(self) -> int:
         """Sample duration from a zeta/zipf distribution
@@ -112,7 +108,7 @@ class EZGreedyPolicy(EpsilonGreedyPolicy):
         # TODO implement sampling
         return duration
 
-    def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
+    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> int:
         """Select action
 
         εz-greedy algorithm B.1 [Dabney et al., 2020].
@@ -121,11 +117,11 @@ class EZGreedyPolicy(EpsilonGreedyPolicy):
 
         Parameters
         ----------
+        Q : nn.Module
+            State-Value function
         state : np.array
             State
-        exploration_rate : float, optional
-            exploration rate (epsilon), by default 0.0
-        eval: bool
+        evaluate: bool
             evaluation mode - if true, exploration should be turned off.
 
         Returns

@@ -1,11 +1,13 @@
 # Ignore "imported but unused"
 # flake8: noqa: F401
+import os
 import hydra
 import numpy as np
 from rich import print as printr
 import gymnasium as gym
 import rl_exercises
 from gymnasium.wrappers import TimeLimit
+from minigrid.wrappers import FlatObsWrapper
 import warnings
 
 try:
@@ -23,6 +25,7 @@ from rl_exercises.week_2 import PolicyIteration, ValueIteration
 from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
 from rl_exercises.week_5 import TabularQAgent, VFAQAgent, EpsilonGreedyPolicy
 from rl_exercises.week_6 import DQN
+from rl_exercises.week_8 import EpsilonDecayPolicy, EZGreedyPolicy
 
 
 @hydra.main("configs", "base", version_base="1.1")
@@ -42,9 +45,13 @@ def train(cfg):
         # TODO: add your agent options here
         raise NotImplementedError
 
+    # TODO: TE: this is not a smart way of doing this, why not import all buffers and handle like above?
+    # I know it's not ideal either because the imports aren't called explicitly, but at least we don't have to do this...
     buffer_cls = getattr(rl_exercises.agent.buffer, cfg.buffer_cls, None)
+    if buffer_cls is None:
+        buffer_cls = getattr(rl_exercises.week_6, cfg.buffer_cls, None)
     if buffer_cls is not None:
-        buffer = buffer_cls(cfg.buffer_kwargs)
+        buffer = buffer_cls(**cfg.buffer_kwargs)
     state, info = env.reset()
 
     num_episodes = 0
@@ -64,12 +71,12 @@ def train(cfg):
             state = env.reset()
 
         if step % cfg.eval_every_n_steps == 0:
-            eval_performance = evaluate(env, agent, cfg.n_eval_episodes)
+            eval_performance = evaluate(make_env(cfg.env_name, cfg.env_kwargs), agent, cfg.n_eval_episodes)
             print(f"Eval reward after {step} steps was {eval_performance}.")
 
-    agent.save(cfg.outpath)
+    agent.save(str(os.path.abspath("model.csv")))
     final_eval = evaluate(env, agent, cfg.n_eval_episodes)
-    print(final_eval)
+    print(f"Final eval reward was: {final_eval}")
     return final_eval
 
 
@@ -116,7 +123,7 @@ def evaluate(env: gym.Env, agent, episodes=100):
         done = False
         episode_steps = 0
         while not done:
-            action, _ = agent.predict(obs, info)
+            action, _ = agent.predict(obs, info, evaluate=True)
             obs, reward, terminated, truncated, _ = env.step(action)
             episode_rewards[-1] += reward
             episode_steps += 1
@@ -141,9 +148,13 @@ def make_env(env_name, env_kwargs={}):
     elif env_name == "MarsRover":
         env = MarsRover(**env_kwargs)
         # env = TimeLimit(env, max_episode_steps=env.horizon)
+    elif "MiniGrid" in env_name:
+        env = gym.make(env_name, **env_kwargs)
+        # env = RGBImgObsWrapper(env)
+        env = FlatObsWrapper(env)
     else:
         env = gym.make(env_name, **env_kwargs)
-    env = Monitor(env)
+    env = Monitor(env, filename="logs.csv")
     return env
 
 

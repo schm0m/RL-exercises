@@ -199,7 +199,7 @@ def do_policy_iteration(
     """
     converged: bool = False
     steps: int = 0
-    
+
     return Q, pi, steps
 
 

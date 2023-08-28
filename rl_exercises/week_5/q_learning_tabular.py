@@ -29,6 +29,7 @@ def to_discrete_state(obs: Tuple[float, float, float, float], num_bins) -> Tuple
     )
     return state
 
+
 def default_q_value() -> float:
     return np.random.uniform(1, -1)
 
@@ -36,7 +37,15 @@ def default_q_value() -> float:
 class TabularQAgent(AbstractAgent):
     """Q-Learning Agent Class."""
 
-    def __init__(self, env, policy: TabularEpsilonGreedyPolicy, learning_rate: float, gamma: float, num_bins: int, **kwargs: dict) -> None:
+    def __init__(
+        self,
+        env,
+        policy: TabularEpsilonGreedyPolicy,
+        learning_rate: float,
+        gamma: float,
+        num_bins: int = 20,
+        **kwargs: dict,
+    ) -> None:
         self.env = env
         self.Q = defaultdict(default_q_value)
         self.policy = policy(env=self.env, Q=self.Q)
@@ -51,8 +60,9 @@ class TabularQAgent(AbstractAgent):
         self.num_bins = num_bins
 
     def predict(self, state: tuple, info: dict) -> tuple[int, dict]:
-        discrete_state = to_discrete_state(state, self.num_bins)
-        action = self.policy(discrete_state)
+        discrete_state = self.discretize_state(state, self.num_bins)
+        # TODO: predict an action
+        action = ...
         info = {}
         return action, info
 
@@ -60,7 +70,9 @@ class TabularQAgent(AbstractAgent):
         np.save(path, self.Q)
 
     def load(self, path) -> Any:
-        self.Q = np.load(path)
+        self.Q = defaultdict(lambda: np.random.uniform(1, -1))
+        checkpoint = np.load(path)
+        self.Q.update(checkpoint.item())
 
     def update(
         self,
@@ -79,6 +91,5 @@ class TabularQAgent(AbstractAgent):
             TD-Error
         """
         # TODO: Implement Q-Learning Update
-        # alpha = 1
         td_error = 0
         return td_error

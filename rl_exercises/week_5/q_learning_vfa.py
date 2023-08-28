@@ -7,10 +7,6 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-# This could be useful to you:
-# import torch.nn.functional as F
-import torch.optim as optim
-
 from rl_exercises.agent import AbstractAgent
 
 
@@ -19,7 +15,6 @@ class EpsilonGreedyPolicy(object):
 
     def __init__(
         self,
-        Q: nn.Module,
         env: gym.Env,
         epsilon: float,
         seed: int = None,
@@ -28,8 +23,6 @@ class EpsilonGreedyPolicy(object):
 
         Parameters
         ----------
-        Q : nn.Module
-            State-Value function
         env : gym.Env
             Environment
         epsilon: float
@@ -37,21 +30,20 @@ class EpsilonGreedyPolicy(object):
         seed : int, optional
             Seed, by default None
         """
-        self.Q = Q
         self.env = env
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
 
-    def __call__(self, state: np.array, exploration_rate: float = 0.0, eval: bool = False) -> int:
+    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> int:
         """Select action
 
         Parameters
         ----------
+        Q : nn.Module
+            State-Value function
         state : np.array
             State
-        exploration_rate : float, optional
-            exploration rate (epsilon), by default 0.0
-        eval: bool
+        evaluate: bool
             evaluation mode - if true, exploration should be turned off.
 
         Returns
@@ -59,7 +51,7 @@ class EpsilonGreedyPolicy(object):
         int
             action
         """
-        if np.random.uniform(0, 1) < self.epsilon:
+        if not evaluate and np.random.uniform(0, 1) < self.epsilon:
             return self.env.action_space.sample()
         q_values = self.Q(torch.from_numpy(state).float()).detach().numpy()
         action = np.argmax(q_values)
@@ -72,22 +64,18 @@ class VFAQAgent(AbstractAgent):
     def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
         self.env = env
         self.Q = self.make_Q()
-        self.policy = policy(env=self.env, Q=self.Q)
+        self.policy = policy(self.env)
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.optimizer = ...
 
     def make_Q(self) -> nn.Module:
         """
-        The Q-function is of class `nn.Module`.
+        The Q-function is using linear function approximation for Q-value prediction.
 
+        You can use tensors with 'requires_grad=True' to represent the weights of the linear function.
         Use `env.observation_space.shape` to get the shape of the input data.
         Use `env.action_space.n` to get number of possible actions for this environment.
-
-        Parameters
-        ----------
-        env: gym.Env
-            The environment the Q function is meant for
 
         Returns
         -------
@@ -98,13 +86,14 @@ class VFAQAgent(AbstractAgent):
         Q = ...
         return Q
 
-    def predict(self, state, info) -> tuple[Any, dict]:
-        action = self.policy(state)
+    def predict(self, state, info, evaluate=False) -> tuple[Any, dict]:
+        # TODO: predict an action
+        action = ...
         info = {}
         return action, info
 
     def save(self, path) -> Any:
-        train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}
+        train_state = {"W": self.W, "b": self.b, "optimizer_state": self.optimizer.state_dict()}
         torch.save(train_state, path)
 
     def load(self, path) -> Any:

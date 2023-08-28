@@ -50,7 +50,7 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["tests"]),
     python_requires=">=3.8",
     install_requires=[
-        "numpy", 
+        "numpy",
         "gymnasium[box2d]",
         "torch",
         "tqdm",
