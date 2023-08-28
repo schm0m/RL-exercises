@@ -65,7 +65,11 @@ class SARSAAgent(AbstractAgent):
     """SARSA algorithm"""
 
     def __init__(
-        self, env: gym.Env, policy, num_episodes: int, gamma: float = 1.0, alpha: float = 0.5, epsilon: float = 0.1
+        self, 
+        env: gym.Env,
+        policy: EpsilonGreedyPolicy,
+        alpha: float = 0.5, 
+        gamma: float = 1.0
     ) -> None:
         """Initialize the SARSA agent
 
@@ -85,21 +89,20 @@ class SARSAAgent(AbstractAgent):
 
         # Check hyperparameter boundaries
         assert 0 <= gamma <= 1, "Gamma should be in [0, 1]"
-        assert 0 <= epsilon <= 1, "epsilon has to be in [0, 1]"
         assert alpha > 0, "Learning rate has to be greater than 0"
 
         self.env = env
-        self.num_episodes = num_episodes
         self.gamma = gamma
         self.alpha = alpha
-        self.epsilon = epsilon
-        self.policy = policy
+        
         self.n_actions = self.env.action_space.n
 
         # create Q structure
         self.Q: DefaultDict[int, np.ndarray] = defaultdict(lambda: np.zeros(self.n_actions))
+        
+        self.policy = policy(self.Q, self.env)
 
-    def predict(self, state) -> Any:
+    def predict(self, state) -> Any:    
         """Predict the action for a given state"""
 
         # TODO
