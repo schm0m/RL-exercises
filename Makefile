@@ -65,7 +65,22 @@ test:
 	$(PYTEST) ${TESTS_DIR}
 
 test-week-1:
-	$(PYTEST) $(PYTEST)/week_1
+	$(PYTEST) ${TESTS_DIR}/week_1
+
+test-week-2:
+	$(PYTEST) ${TESTS_DIR}/week_2
+
+test-week-3:
+	$(PYTEST) ${TESTS_DIR}/week_3
+
+test-week-5:
+	$(PYTEST) ${TESTS_DIR}/week_5
+
+test-week-6:
+	$(PYTEST) ${TESTS_DIR}/week_6
+
+test-week-8:
+	$(PYTEST) ${TESTS_DIR}/week_8
 
 clean-build:
 	$(PYTHON) setup.py clean
