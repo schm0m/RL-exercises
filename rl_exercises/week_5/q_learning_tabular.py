@@ -48,7 +48,7 @@ class TabularQAgent(AbstractAgent):
     ) -> None:
         self.env = env
         self.Q = defaultdict(default_q_value)
-        self.policy = policy(env=self.env, Q=self.Q)
+        self.policy = policy(self.env)
         self.learning_rate = learning_rate
         self.gamma = gamma
         # This adds the option to pass a function via the kwargs
