@@ -1,5 +1,4 @@
 numpy
-unittest
 pytest
 gymnasium
 torch
