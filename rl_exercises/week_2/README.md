@@ -10,7 +10,7 @@ Run your solution with
 
 
 ## Level 1
-### 1. The MarsRover Environment
+### 1. Complete the MarsRover Environment
 In the `mars_rover_env.py` file you’ll find the first environment we’ll work with: the MarsRover. 
 You have seen it as an example in the lecture: the agent can move left or right with each step and should ideally move to the rightmost state. 
 Your task here is to implement the environment dynamics `get_next_state` and determine
