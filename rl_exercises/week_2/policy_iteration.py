@@ -56,7 +56,7 @@ class PolicyIteration(AbstractAgent):
         self.policy_fitted: bool = False
         self.steps: int = 0  # Number of policy improvement steps
 
-    def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:  # type: ignore[override]
+    def predict(self, observation: int, info: dict | None = None, evaluate: bool| None = False) -> tuple[int, dict]:  # type: ignore[override]
         """Predict action based on observation
 
         Parameters
@@ -65,6 +65,8 @@ class PolicyIteration(AbstractAgent):
             Observation.
         info : dict | None, optional
             Info dict, by default None
+        evaluate : bool | None, optional
+            This parameter has to be ignored in this exercise. It is only here for compatibility with future exercises.
 
         Returns
         -------
