@@ -53,14 +53,13 @@ class EpsilonGreedyPolicy(object):
         int
             action
         """
-        if np.random.uniform(0, 1) < self.epsilon:
+        if not eval and self.rng.uniform(0, 1) < self.epsilon:
             return self.env.action_space.sample()
         q_values = [self.Q[(state, action)] for action in range(self.env.action_space.n)]
         action = np.argmax(q_values).item()
         return action
 
 
-# FIXME: I don't follow the AbstractAgent class
 class SARSAAgent(AbstractAgent):
     """SARSA algorithm"""
 
@@ -83,8 +82,6 @@ class SARSAAgent(AbstractAgent):
             Discount Factor , by default 1.0
         alpha : float, optional
             Learning Rate, by default 0.5
-        epsilon : float, optional
-            Exploration Parameter, by default 0.1
         """
 
         # Check hyperparameter boundaries
@@ -104,8 +101,6 @@ class SARSAAgent(AbstractAgent):
 
     def predict(self, state) -> Any:    
         """Predict the action for a given state"""
-
-        # TODO
         return self.policy(state)
 
     def save(self, path) -> Any:
@@ -152,7 +147,20 @@ class SARSAAgent(AbstractAgent):
         float
             New Q value for the state action pair
         """
-        # TODO: Impelment the TD update
-        new_Q = self.Q[transition[0]][transition[1]] + ...
-        self.Q[transition[0]][transition[1]] = new_Q
+        state = transition[0]
+        action = transition[1]
+        reward = transition[2]
+        next_state = transition[3]
+
+        # Calculate the TD error
+        delta = self.alpha * (
+            (reward + self.gamma * self.Q[next_state][next_action] * (not done)) - self.Q[state][action]
+        )
+
+        # Apply the update rule
+        new_Q = self.Q[state][action] + delta
+
+        # Update the Q table
+        self.Q[state][action] = new_Q
+
         return new_Q

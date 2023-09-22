@@ -15,10 +15,9 @@ from rl_exercises.week_4 import SARSAAgent, EpsilonGreedyPolicy
 class TestSARSA(unittest.TestCase):
     def test_no_exploration(self):
         env = MarsRover()
-        np.random.seed(0)
         _ = env.reset(seed=0)  # set the seed via reset once
         env.action_space.seed(0)
-        policy = partial(EpsilonGreedyPolicy, epsilon=0.0)
+        policy = partial(EpsilonGreedyPolicy, epsilon=0.0, seed = 10)
 
         agent = SARSAAgent(env, policy, 0.1, 0.99)
         rewards = []
@@ -29,7 +28,7 @@ class TestSARSA(unittest.TestCase):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
             
-            next_action = agent.predict(state)
+            next_action = agent.predict(next_state)
             
             agent.update(
                 (state, action, reward, next_state), 
@@ -42,10 +41,9 @@ class TestSARSA(unittest.TestCase):
     
     def test_low_exploration(self):
         env = MarsRover()
-        np.random.seed(42)
         _ = env.reset(seed=42)  # set the seed via reset once
         env.action_space.seed(42)
-        policy = partial(EpsilonGreedyPolicy, epsilon=0.2)
+        policy = partial(EpsilonGreedyPolicy, epsilon=0.2,  seed = 10)
 
         agent = SARSAAgent(env, policy, 0.1, 0.99)
         rewards = []
@@ -56,7 +54,7 @@ class TestSARSA(unittest.TestCase):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
             
-            next_action = agent.predict(state)
+            next_action = agent.predict(next_state)
             
             agent.update(
                 (state, action, reward, next_state), 
@@ -69,10 +67,9 @@ class TestSARSA(unittest.TestCase):
     
     def test_high_exploration(self):
         env = MarsRover()
-        np.random.seed(10)
         _ = env.reset(seed=10)  # set the seed via reset once
         env.action_space.seed(10)
-        policy = partial(EpsilonGreedyPolicy, epsilon=0.8)
+        policy = partial(EpsilonGreedyPolicy, epsilon=0.8, seed = 10)
 
         agent = SARSAAgent(env, policy, 0.1, 0.99)
         rewards = []
@@ -83,7 +80,7 @@ class TestSARSA(unittest.TestCase):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
             
-            next_action = agent.predict(state)
+            next_action = agent.predict(next_state)
             
             agent.update(
                 (state, action, reward, next_state), 
@@ -92,7 +89,7 @@ class TestSARSA(unittest.TestCase):
             )
             rewards.append(reward)
             
-        self.assertAlmostEqual(sum(rewards), 22)
+        self.assertAlmostEqual(sum(rewards), 5)
     
     
 if __name__ == "__main__":
