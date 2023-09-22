@@ -3,7 +3,7 @@ from __future__ import annotations
 import gymnasium as gym
 import numpy as np
 import torch.nn as nn
-from rl_exercises.week_6 import EpsilonGreedyPolicy
+from rl_exercises.week_5 import EpsilonGreedyPolicy
 
 
 class EpsilonDecayPolicy(EpsilonGreedyPolicy):
