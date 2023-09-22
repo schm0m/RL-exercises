@@ -11,8 +11,9 @@ Run your solution with
 
 ## Level 1
 ### 1. Complete the MarsRover Environment
-In `rl_exercises/environments.py` file you’ll find the first environment we’ll work with: the MarsRover. 
-You have seen it as an example in the lecture: the agent can move left or right with each step and should ideally move to the rightmost state. 
+In `rl_exercises/environments.py` file you’ll find a script that uses the first environment we’ll work with: the MarsRover.
+The environemnt itself is located in `rl_exercises/environments.py`.
+You have seen the MarsRover as an example in the lecture: the agent can move left or right with each step and should ideally move to the rightmost state. 
 Your task here is to implement the environment dynamics `get_next_state` and determine
 the transition matrix `get_transition_matrix`. This is needed for the algorithms policy and value iteration.
 The script `rl_exercises/week_2/mars_rover.py` is for you to play with and to check whether your implementation
