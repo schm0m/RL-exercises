@@ -8,6 +8,7 @@ import torch
 import torch.nn as nn
 
 from rl_exercises.agent import AbstractAgent
+from typing import Tuple
 
 
 class EpsilonGreedyPolicy(object):
@@ -34,7 +35,7 @@ class EpsilonGreedyPolicy(object):
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
 
-    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> int:
+    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> Tuple[int, dict]:
         """Select action
 
         Parameters
@@ -50,18 +51,21 @@ class EpsilonGreedyPolicy(object):
         -------
         int
             action
+        dict
+            info
         """
         if not evaluate and np.random.uniform(0, 1) < self.epsilon:
             return self.env.action_space.sample()
-        q_values = self.Q(torch.from_numpy(state).float()).detach().numpy()
+        q_values = Q(torch.from_numpy(state).float()).detach().numpy()
         action = np.argmax(q_values)
-        return action
+        return action, {}
 
 
 class VFAQAgent(AbstractAgent):
     """VFA Agent Class."""
 
     def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
+        #todo add optimizer
         self.env = env
         self.Q = self.make_Q()
         self.policy = policy(self.env)
@@ -93,7 +97,7 @@ class VFAQAgent(AbstractAgent):
         return action, info
 
     def save(self, path) -> Any:
-        train_state = {"W": self.W, "b": self.b, "optimizer_state": self.optimizer.state_dict()}
+        train_state = {"W": self.W, "b": self.b, "optimizer_state": self.optimizer.state_dict()} #todo Warum W und b?
         torch.save(train_state, path)
 
     def load(self, path) -> Any:

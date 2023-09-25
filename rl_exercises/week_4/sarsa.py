@@ -22,7 +22,7 @@ class EpsilonGreedyPolicy(object):
 
         Parameters
         ----------
-        Q : nn.Module
+        Q : nn.Module #todo Wrong Typehint
             State-Value function
         env : gym.Env
             Environment
