@@ -5,6 +5,7 @@ Since this is our transition to Deep Learning, it will also mean transitioning t
 
 ## Level 1
 ### Deep Q Learning
+#TODO Targets ?
 This week’s exercise aims to develop an intuition about how adding deep learning to value function approximation impacts the learning process. We will use the LunarLander-v2 environment for this week's experiments. Your tasks are the following:
 - Complete the DQN implementation in `deep_q_learning.py` by adding a deep network as a function approximator and a replay buffer to store and sample transitions from.
 - Create a configuration file for your DQN experiments settings. Start with a buffer large enough to store 1e6 samples and a batch size of 32.

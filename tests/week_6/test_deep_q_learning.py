@@ -15,7 +15,7 @@ def check_nets(model1, model2):
 
 
 class TestDeepQLearning(unittest.TestCase):
-    def test_init(self):
+    def test_init(self): #todo What is this testcase supposed to test?
         pass
 
     def test_buffer(self):
