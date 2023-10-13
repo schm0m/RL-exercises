@@ -3,7 +3,6 @@ from unittest.mock import Mock
 
 import numpy as np
 import torch
-
 from rl_exercises.week_5 import EpsilonGreedyPolicy
 from rl_exercises.week_8.exploration import EpsilonDecayPolicy, EZGreedyPolicy
 

@@ -71,18 +71,22 @@ class VFAQAgent(AbstractAgent):
 
     def make_Q(self) -> nn.Module:
         """
-        The Q-function is using linear function approximation for Q-value prediction.
+        Make Q-function approximator.
 
+        The Q-function is using linear function approximation for Q-value prediction.
         You can use tensors with 'requires_grad=True' to represent the weights of the linear function.
+        Q should then be a function combining the weights and state into a Q-value prediction.
         Use `env.observation_space.shape` to get the shape of the input data.
         Use `env.action_space.n` to get number of possible actions for this environment.
 
         Returns
         -------
         Q
-        An intialized policy
+            An prediction function
         """
         # TODO: Create Q-Function from env.
+        self.W = ...
+        self.b = ...
         Q = ...
         return Q
 

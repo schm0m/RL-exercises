@@ -1,9 +1,9 @@
 import unittest
-import gymnasium as gym
 from functools import partial
 
+import gymnasium as gym
 from rl_exercises.week_5 import EpsilonGreedyPolicy
-from rl_exercises.week_6.deep_q_learning import ReplayBuffer, DQN
+from rl_exercises.week_6.deep_q_learning import DQN, ReplayBuffer
 
 
 def check_nets(model1, model2):
@@ -16,7 +16,16 @@ def check_nets(model1, model2):
 
 class TestDeepQLearning(unittest.TestCase):
     def test_init(self):
-        pass
+        env = gym.make("LunarLander-v2")
+        policy = partial(EpsilonGreedyPolicy, epsilon=0.1)
+        dqn = DQN(env, policy, 0.1, 0.99)
+        assert dqn.Q is not None
+        assert dqn.target_Q is not None
+        assert dqn.optimizer is not None
+        assert dqn.policy is not None
+        assert dqn.learning_rate == 0.1
+        assert dqn.gamma == 0.99
+        assert dqn.n_updates == 0
 
     def test_buffer(self):
         buffer = ReplayBuffer(capacity=5)

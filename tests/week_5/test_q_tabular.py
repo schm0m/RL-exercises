@@ -3,7 +3,6 @@ from functools import partial
 
 import gymnasium as gym
 import numpy as np
-
 from rl_exercises.week_4 import EpsilonGreedyPolicy
 from rl_exercises.week_5.q_learning_tabular import TabularQAgent
 

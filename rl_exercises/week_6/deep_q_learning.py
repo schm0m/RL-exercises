@@ -1,55 +1,145 @@
+"""Implements a simple DQN agent with replay buffer."""
+
 from __future__ import annotations
-from typing import Any
+
+from typing import Any, Callable, Dict, List, Tuple
+
 from collections import OrderedDict
 
+import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from rl_exercises.agent import AbstractAgent, AbstractBuffer
+from rl_exercises.week_5 import EpsilonGreedyPolicy
 
 
-# TODO: implement the replay buffer
 class ReplayBuffer(AbstractBuffer):
     """Buffer for storing and sampling transitions."""
 
-    def __init__(self, capacity) -> None:
+    def __init__(self, capacity: int) -> None:
+        """
+        Make batch replay buffer.
+
+        Parameters
+        ----------
+        capacity : int
+            Max buffer size
+        """
         self.capacity = int(capacity)
-        self.states = []
-        self.actions = []
-        self.rewards = []
-        self.next_states = []
-        self.dones = []
-        self.infos = []
+        self.states: List[np.array] = []  # type: ignore
+        self.actions: List[Any[float, int, Tuple]] = []
+        self.rewards: List[float] = []
+        self.next_states: List[np.array] = []  # type: ignore
+        self.dones: List[bool] = []
+        self.infos: List[Dict] = []
 
-    def add(self, state, action, reward, next_state, done, info):
-        # TODO: add transitions to storage
-        ...
+    def add(
+        self,
+        state: np.array,
+        action: Any[float, int, Tuple],
+        reward: float,
+        next_state: np.array,  # type: ignore
+        done: bool,
+        info: Dict,
+    ) -> None:
+        """
+        Add transition to buffer.
 
-    def sample(self, batch_size=32):
+        Parameters
+        ----------
+        state : np.array
+            Env state
+        action: Any[float, int, Tuple]
+            Action taken
+        reward : float
+            Reward received
+        next_state : np.array
+            Next state
+        done : bool
+            Whether episode is done
+        info : Dict
+            Info dict
+        """
+        self.states.append(state)
+        self.actions.append(action)
+        self.rewards.append(reward)
+        self.next_states.append(next_state)
+        self.dones.append(done)
+        self.infos.append(info)
+        if len(self.states) > self.capacity:
+            self.states.pop(0)
+            self.actions.pop(0)
+            self.rewards.pop(0)
+            self.next_states.pop(0)
+            self.dones.pop(0)
+            self.infos.pop(0)
+
+    def sample(self, batch_size: int = 32) -> Tuple[List, List, List, List, List, List]:  # type: ignore
+        """
+        Sample batch.
+
+        Parameters
+        ----------
+        batch_size : int
+            Batch size to sample
+
+        Returns
+        -------
+        states, actions, rewards, next_states, dones, infos
+            Transition batch
+        """
         # TODO: sample transitions
-        batch_states = ...
-        batch_actions = ...
-        batch_rewards = ...
-        batch_next_states = ...
-        batch_dones = ...
-        batch_infos = ...
+        transition_ids = ...
+        batch_states = [self.states[i] for i in transition_ids]
+        batch_actions = [self.actions[i] for i in transition_ids]
+        batch_rewards = [self.rewards[i] for i in transition_ids]
+        batch_next_states = [self.next_states[i] for i in transition_ids]
+        batch_dones = [self.dones[i] for i in transition_ids]
+        batch_infos = [self.infos[i] for i in transition_ids]
         return (batch_states, batch_actions, batch_rewards, batch_next_states, batch_dones, batch_infos)
 
-    def __len__(self):
+    def __len__(self) -> int:
+        """Return current buffer size."""
         return len(self.states)
 
 
 class DQN(AbstractAgent):
     """DQN Agent Class."""
 
-    def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
+    def __init__(
+        self,
+        env: gym.Env,
+        policy: Callable[[gym.Env], EpsilonGreedyPolicy],
+        learning_rate: float,
+        gamma: float,
+        **kwargs: Dict,
+    ) -> None:
+        """
+        Make DQN agent.
+
+        Parameters
+        ----------
+        env : gym.Env
+            Environment to train on
+        policy : Callable[[gym.Env], EpsilonGreedyPolicy]
+            Make function for policy
+        learning_rate : float
+            Learning rate
+        gamma : float
+            Discount factor
+        """
         self.env = env
         self.Q = self.make_Q()
+        self.target_Q = self.make_Q()
+        self.target_Q.load_state_dict(self.Q.state_dict())
+
         self.policy = policy(self.env)
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.optimizer = ...
+        self.n_updates = 0
 
     def make_Q(self) -> nn.Module:
         """Create Q-Function from env.
@@ -64,34 +154,61 @@ class DQN(AbstractAgent):
         nn.Module
             State-Value Function
         """
-        # TODO create a deep network as a function approximator
-        Q = nn.Sequential(
-            [
-                ("input_layer", nn.Linear(self.env.observation_space.low.shape[0], 64)),
-                ...,
-                ("output_layer", self.env.action_space.n),
-            ]
-        )
+        # TODO: Make Q-network
+        Q = ...
 
         return Q
 
-    def predict(self, state, info, evaluate=False) -> Any:
+    def predict(self, state: np.array, info: Dict, evaluate: bool = False) -> Any:  # type: ignore
+        """
+        Predict action from state.
+
+        Parameters
+        ----------
+        state : np.array
+            Env state
+        info : Dict
+            Info dict
+        evaluate : bool, optional
+            Whether to predict in evaluation mode (i.e. without exploration)
+
+        Returns
+        -------
+        action, info
+            action to take and info dict
+        """
         return self.policy(self.Q, state, evaluate=evaluate), {}
 
-    def save(self, path) -> Any:
+    def save(self, path: str) -> Any:  # type: ignore
+        """
+        Save Q function and optimizer.
+
+        Parameters
+        ----------
+        path : str
+            Path to save to.
+        """
         train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}
         torch.save(train_state, path)
 
-    def load(self, path) -> Any:
+    def load(self, path: str) -> Any:  # type: ignore
+        """
+        Load Q function and optimizer.
+
+        Parameters
+        ----------
+        path : str
+            Path to checkpoint
+        """
         checkpoint = torch.load(path)
         self.Q.load_state_dict(checkpoint["parameters"])
         self.optimizer.load_state_dict(checkpoint["optimizer_state"])
 
-    def update(
+    def update(  # type: ignore
         self,
-        training_batch: list[np.array],
+        training_batch: list[np.array],  # type: ignore
     ) -> float:
-        """Value Function Update for a Batch of Transitions
+        """Value Function Update for a Batch of Transitions.
 
         Use MSE loss.
 
@@ -105,12 +222,25 @@ class DQN(AbstractAgent):
         float
             Loss
         """
-        states, actions, rewards, next_states, dones, infos = training_batch
-        # TODO: Implement update
         # Convert data into torch tensors
+        states, actions, rewards, next_states, dones, infos = training_batch
+        states = torch.tensor(np.array(states))
+        actions = torch.tensor(np.array(actions))[:, None]
+        rewards = torch.tensor(np.array(rewards))
+        next_states = torch.tensor(np.array(next_states))
 
-        # Compute MSE loss
+        # TODO: Compute MSE loss
+        pred = ...
+        target = ...
         loss = ...
-        # Optimize the model
+
+        # TODO: Optimize the model
+        self.optimizer.zero_grad()
+        ...
+
+        # TODO: Update target network
+        if self.n_updates % 100 == 0:
+            pass
+        self.n_updates += 1
 
         return float(loss.item())
