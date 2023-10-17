@@ -8,6 +8,7 @@ from gymnasium.core import ObsType, SupportsFloat
 # state, action, reward, next_state, done, info
 Transition = Tuple[ObsType, SupportsFloat, bool, bool, Dict[str, Any]]
 
+
 class AbstractBuffer(ABC):
     def __init__(self) -> None:
         pass
