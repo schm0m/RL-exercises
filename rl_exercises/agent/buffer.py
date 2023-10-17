@@ -1,12 +1,12 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
-from typing import Tuple, Any, Union, Dict
+from typing import Tuple, Any, Dict
+from gymnasium.core import ObsType, SupportsFloat
 
 # TODO Do we use "done" here which is terminated | truncated or the latter two?
 # state, action, reward, next_state, done, info
-Transition = Tuple[np.ndarray[Any, Any], Union[int, float], float, np.ndarray[Any, Any], bool, Dict[Any, Any]]
-
+Transition = Tuple[ObsType, SupportsFloat, bool, bool, Dict[str, Any]]
 
 class AbstractBuffer(ABC):
     def __init__(self) -> None:
@@ -35,7 +35,7 @@ class SimpleBuffer(AbstractBuffer):
     def add(
         self, state: np.ndarray, action: int | float, reward: float, next_state: np.ndarray, done: bool, info: dict
     ) -> None:
-        self.transition = (state, action, reward, next_state, done, info)
+        self.transition = (state, action, reward, next_state, done, info)  # type: ignore[assignment]
 
     def sample(self, *args: tuple, **kwargs: dict) -> list[None | Transition]:  # type: ignore[override]
         # Batch size 1
