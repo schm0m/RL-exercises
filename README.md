@@ -10,18 +10,6 @@ Each week, you'll have a task that corresponds to that week's lecture. Each task
 
 Apart from the levels, we will also link material of different sorts for each week. These are not mandatory, often go beyond the lecture and will not be the topic of your exams. There are two sorts of material we provide: academic material you can use as a reference to read deeper into a topic and guidance on practical aspects of RL. You can use both at your discretion, they are intended as resources in case you need to debug your method or possibly need a more advanced method in the first place.
 
-## Bonus Points
-For this module we offer bonus points. With those you can maximally improve one grade (e.g. 2.0->1.0).
-The scheme is as follows:
-For each level 1 you get 1 point.
-For level 1+2: 2 points.
-For level 1+2+3: 4 points.
-In addition you can get a bonus point if you present your solution, at most 3 (times).
-That means you can get a maximum of 35 bonus points.
-8-15: -0.3
-16-26: -0.7
-27-35: -1.0
-
 ## Repository Structure
 Each week's task and code stubs can be found in `rl_exercises`. This is where you code and where you should store the result for each week.
 
