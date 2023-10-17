@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 import gymnasium as gym
-from gymnasium.core import ActType, ObsType, SupportsFloat
+from gymnasium.core import ActType, ObsType
 from rl_exercises.agent.buffer import Transition
 
 

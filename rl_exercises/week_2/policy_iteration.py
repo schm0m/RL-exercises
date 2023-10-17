@@ -56,7 +56,9 @@ class PolicyIteration(AbstractAgent):
         self.policy_fitted: bool = False
         self.steps: int = 0  # Number of policy improvement steps
 
-    def predict_action(self, observation: int, info: dict | None = None, evaluate: bool = False) -> tuple[int, dict]:  # type: ignore[override]
+    def predict_action(
+        self, observation: int, info: dict | None = None, evaluate: bool = False  # type: ignore[override]
+    ) -> tuple[int, dict]:  # type: ignore[override]
         """Predict action based on observation
 
         Parameters
@@ -199,7 +201,7 @@ def do_policy_iteration(
     np.ndarray, callable, int
         Q, pi (the policy), the number of iterations
     """
-    converged: bool = False
+    converged: bool = False  # noqa: F841
     steps: int = 0
 
     return Q, pi, steps

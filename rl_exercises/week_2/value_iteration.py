@@ -44,7 +44,9 @@ class ValueIteration(AbstractAgent):
 
         self.policy_fitted: bool = False
 
-    def predict_action(self, observation: int, info: dict | None = None, evaluate: bool = False) -> tuple[int, dict]:  # type: ignore[override]
+    def predict_action(
+        self, observation: int, info: dict | None = None, evaluate: bool = False  # type: ignore[override]
+    ) -> tuple[int, dict]:  # type: ignore[override]
         """Predict action based on observation.
 
         Parameters
@@ -144,7 +146,7 @@ def determine_pi(V: np.ndarray, seed: int | None = None) -> Callable:
         Policy receiving the state and outputting action.
     """
     # Seed the random generator
-    rng = np.random.default_rng(seed=seed)
+    rng = np.random.default_rng(seed=seed)  # noqa: F841
 
     # TODO Determine the policy based on the current value function.
     def pi(s: int) -> int:
