@@ -56,7 +56,7 @@ class PolicyIteration(AbstractAgent):
         self.policy_fitted: bool = False
         self.steps: int = 0  # Number of policy improvement steps
 
-    def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:  # type: ignore[override]
+    def predict_action(self, observation: int, info: dict | None = None, evaluate: bool = False) -> tuple[int, dict]:  # type: ignore[override]
         """Predict action based on observation
 
         Parameters
@@ -65,6 +65,8 @@ class PolicyIteration(AbstractAgent):
             Observation.
         info : dict | None, optional
             Info dict, by default None
+        evaluate : bool, optional
+            Whether to predict in evaluation mode (i.e. without exploration)
 
         Returns
         -------
@@ -75,7 +77,7 @@ class PolicyIteration(AbstractAgent):
         info = {}
         return action, info
 
-    def update(self, *args: tuple, **kwargs: dict) -> None:
+    def update_agent(self, *args: tuple, **kwargs: dict) -> None:
         """Update policy
 
         In this case, determine the policy once by policy iteration.
@@ -205,4 +207,4 @@ def do_policy_iteration(
 
 if __name__ == "__main__":
     algo = PolicyIteration(env=MarsRover())
-    algo.update()
+    algo.update_agent()

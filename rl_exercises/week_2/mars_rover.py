@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # type: ignore[import]
 import numpy as np
+from matplotlib.offsetbox import AnnotationBbox, OffsetImage  # type: ignore[import]
 from rich import print as printr
 from rl_exercises.environments import MarsRover
-from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 if __name__ == "__main__":
     env = MarsRover()

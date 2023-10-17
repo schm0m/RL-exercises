@@ -217,6 +217,6 @@ class MarsRover(gymnasium.Env):
         terminated = False
         truncated = self.current_steps >= self.horizon
 
-        info = {}
+        info: dict = {}
 
         return self.position, reward, terminated, truncated, info

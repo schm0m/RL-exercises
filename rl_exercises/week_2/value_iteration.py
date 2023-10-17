@@ -44,7 +44,7 @@ class ValueIteration(AbstractAgent):
 
         self.policy_fitted: bool = False
 
-    def predict(self, observation: int, info: dict | None = None) -> tuple[int, dict]:  # type: ignore[override]
+    def predict_action(self, observation: int, info: dict | None = None, evaluate: bool = False) -> tuple[int, dict]: # type: ignore[override]
         """Predict action based on observation.
 
         Parameters
@@ -53,6 +53,8 @@ class ValueIteration(AbstractAgent):
             Observation.
         info : dict | None, optional
             Info dict, by default None
+        evaluate : bool, optional
+            Whether to predict in evaluation mode (i.e. without exploration)
 
         Returns
         -------
@@ -60,7 +62,7 @@ class ValueIteration(AbstractAgent):
             Action, info dict.
         """
         if not self.policy_fitted:
-            self.update()
+            self.update_agent()
         action = self.pi(observation)
         info = {}
         return action, info
