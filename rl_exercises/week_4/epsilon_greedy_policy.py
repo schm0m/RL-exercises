@@ -4,6 +4,7 @@ from typing import DefaultDict
 import gymnasium as gym
 import numpy as np
 
+
 class EpsilonGreedyPolicy(object):
     """A Policy doing Epsilon Greedy Exploration."""
 

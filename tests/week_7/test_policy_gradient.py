@@ -5,14 +5,13 @@ import gymnasium as gym
 
 from rl_exercises.week_7 import REINFORCE
 
+
 class TestPolicyGradient(unittest.TestCase):
-    
-    
     def test_compute_returns(self):
         env = gym.make("LunarLander-v2")
-  
+
         agent = REINFORCE(env, 0.1, 0.99)
-                    
+
         self.assertAlmostEqual(
             agent.compute_returns([1, 1, 1, 1, 1]),
             [4.90099501, 3.9403989999999998, 2.9701, 1.99, 1.0],
@@ -43,7 +42,7 @@ class TestPolicyGradient(unittest.TestCase):
                 action, log_prob = agent.predict(state)
 
                 # Take a step in the environment using this action
-                next_state, reward, terminated, truncated, _ = env.step(action.item())        
+                next_state, reward, terminated, truncated, _ = env.step(action.item())
 
                 # Append the log probability and reward to the trajectory
                 trajectory.append((log_prob, reward))
@@ -53,13 +52,14 @@ class TestPolicyGradient(unittest.TestCase):
                 # accumulate the reward for the given episode
                 rewards[-1] += reward
 
-                if (terminated or truncated):
+                if terminated or truncated:
                     break
-            
+
             # Policy improvement step
             agent.update(*zip(*trajectory))
-        
+
         self.assertAlmostEqual(sum(rewards), 262)
+
 
 if __name__ == "__main__":
     unittest.main()

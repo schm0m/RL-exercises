@@ -24,22 +24,18 @@ class TestSARSA(unittest.TestCase):
         rewards = []
         state, _ = env.reset()
         terminated, truncated = False, False
-        
+
         while not (terminated or truncated):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
-            
+
             next_action = agent.predict(state)
-            
-            agent.update(
-                (state, action, reward, next_state), 
-                next_action, 
-                (truncated or terminated)
-            )
+
+            agent.update((state, action, reward, next_state), next_action, (truncated or terminated))
             rewards.append(reward)
-        
+
         self.assertAlmostEqual(sum(rewards), 9)
-    
+
     def test_low_exploration(self):
         env = MarsRover()
         np.random.seed(42)
@@ -51,22 +47,18 @@ class TestSARSA(unittest.TestCase):
         rewards = []
         state, _ = env.reset()
         terminated, truncated = False, False
-        
+
         while not (terminated or truncated):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
-            
+
             next_action = agent.predict(state)
-            
-            agent.update(
-                (state, action, reward, next_state), 
-                next_action, 
-                (truncated or terminated)
-            )
+
+            agent.update((state, action, reward, next_state), next_action, (truncated or terminated))
             rewards.append(reward)
-            
+
         self.assertAlmostEqual(sum(rewards), 8)
-    
+
     def test_high_exploration(self):
         env = MarsRover()
         np.random.seed(10)
@@ -78,22 +70,18 @@ class TestSARSA(unittest.TestCase):
         rewards = []
         state, _ = env.reset()
         terminated, truncated = False, False
-        
+
         while not (terminated or truncated):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
-            
+
             next_action = agent.predict(state)
-            
-            agent.update(
-                (state, action, reward, next_state), 
-                next_action, 
-                (truncated or terminated)
-            )
+
+            agent.update((state, action, reward, next_state), next_action, (truncated or terminated))
             rewards.append(reward)
-            
+
         self.assertAlmostEqual(sum(rewards), 22)
-    
-    
+
+
 if __name__ == "__main__":
     unittest.main()

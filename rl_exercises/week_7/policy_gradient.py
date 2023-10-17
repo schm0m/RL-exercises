@@ -101,10 +101,7 @@ class REINFORCE(AbstractAgent):
         return action, log_prob
 
     def save(self, path) -> Any:
-        train_state = {
-                        "parameters": self.policy.state_dict(), 
-                        "optimizer_state": self.optimizer.state_dict()
-                    }
+        train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}
         torch.save(train_state, path)
         pass
 
@@ -154,13 +151,12 @@ class REINFORCE(AbstractAgent):
         # TODO compute advantages using returns and normalized them
         advantages = ...
 
-
         log_probs = torch.stack(log_probs)
-       
+
         self.optimizer.zero_grad()
-        
-         # TODO Compute loss as the sum of log probs weighted by advantages
-        loss = ...  
+
+        # TODO Compute loss as the sum of log probs weighted by advantages
+        loss = ...
 
         loss.backward()
         self.optimizer.step()

@@ -13,13 +13,7 @@ from rl_exercises.week_4 import EpsilonGreedyPolicy
 class SARSAAgent(AbstractAgent):
     """SARSA algorithm"""
 
-    def __init__(
-        self, 
-        env: gym.Env,
-        policy: EpsilonGreedyPolicy,
-        alpha: float = 0.5, 
-        gamma: float = 1.0
-    ) -> None:
+    def __init__(self, env: gym.Env, policy: EpsilonGreedyPolicy, alpha: float = 0.5, gamma: float = 1.0) -> None:
         """Initialize the SARSA agent
 
         Parameters
@@ -43,15 +37,15 @@ class SARSAAgent(AbstractAgent):
         self.env = env
         self.gamma = gamma
         self.alpha = alpha
-        
+
         self.n_actions = self.env.action_space.n
 
         # create Q structure
         self.Q: DefaultDict[int, np.ndarray] = defaultdict(lambda: np.zeros(self.n_actions))
-        
+
         self.policy = policy(self.Q, self.env)
 
-    def predict(self, state) -> Any:    
+    def predict(self, state) -> Any:
         """Predict the action for a given state"""
 
         # TODO
