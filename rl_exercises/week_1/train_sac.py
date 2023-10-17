@@ -31,7 +31,7 @@ def main(cfg: DictConfig) -> float:
     # Evaluate
     env = Monitor(gymnasium.make(cfg.env_id))
     means, stds = evaluate_policy(model, env, n_eval_episodes=cfg.n_eval_episodes)
-    performance = np.mean(means)
+    performance = float(np.mean(means))
 
     return performance
 
