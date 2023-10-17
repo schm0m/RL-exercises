@@ -96,12 +96,14 @@ class PolicyIteration(AbstractAgent):
             self.policy_fitted = True
 
     def save(self, *args: tuple[Any], **kwargs: dict) -> None:
+        """Save agent to file as an numpy array."""
         if self.policy_fitted:
             np.save(self.filename, np.array(self.pi))
         else:
             warnings.warn("Tried to save policy but policy is not fitted yet.")
 
     def load(self, *args: tuple[Any], **kwargs: dict) -> np.ndarray:
+        """Load agent from file"""
         self.pi = np.load(self.filename)
         self.policy_fitted = True
         return self.pi
@@ -166,7 +168,6 @@ def do_policy_improvement(
     tuple[np.ndarray, bool]
         Pi, converged.
     """
-
     converged: bool = False
 
     return pi, converged

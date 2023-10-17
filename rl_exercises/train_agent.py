@@ -2,6 +2,7 @@
 # flake8: noqa: F401
 import os
 import hydra
+from omegaconf import DictConfig
 import numpy as np
 from rich import print as printr
 import gymnasium as gym
@@ -31,7 +32,24 @@ from rl_exercises.week_8 import EpsilonDecayPolicy, EZGreedyPolicy
 
 
 @hydra.main("configs", "base", version_base="1.1")
-def train(cfg):
+def train(cfg: DictConfig) -> float:
+    """Train the agent
+
+    Parameters
+    ----------
+    cfg : DictConfig
+        Agent/experiment configuration
+
+    Returns
+    -------
+    float
+        Mean return of n eval episodes
+
+    Raises
+    ------
+    NotImplementedError
+        _description_
+    """
     env = make_env(cfg.env_name)
     printr(cfg)
     if cfg.agent == "sb3":
@@ -82,7 +100,21 @@ def train(cfg):
     return final_eval
 
 
-def train_sb3(env, cfg):
+def train_sb3(env: gym.Env, cfg: DictConfig) -> float:
+    """Train stablebaselines agent on env
+
+    Parameters
+    ----------
+    env : gym.Env
+        Environment
+    cfg : DictConfig
+        Agent/experiment configuration
+
+    Returns
+    -------
+    float
+        Mean rewards
+    """
     # Create agent
     model = eval(cfg.agent_class)("MlpPolicy", env, verbose=cfg.verbose, tensorboard_log=cfg.log_dir, seed=cfg.seed)
 
@@ -99,7 +131,7 @@ def train_sb3(env, cfg):
     return performance
 
 
-def evaluate(env: gym.Env, agent, episodes=100):
+def evaluate(env: gym.Env, agent, episodes=100) -> float:
     """
     Evaluate a given Policy on an Environment
 
@@ -114,7 +146,7 @@ def evaluate(env: gym.Env, agent, episodes=100):
 
     Returns
     -------
-    mean_rewards
+    float
         Mean evaluation rewards
     """
     episode_rewards: List[float] = []
