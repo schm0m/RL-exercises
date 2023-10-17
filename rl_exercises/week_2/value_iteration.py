@@ -67,7 +67,7 @@ class ValueIteration(AbstractAgent):
         info = {}
         return action, info
 
-    def update(self, *args: tuple[Any], **kwargs: dict) -> None:
+    def update_agent(self, *args: tuple[Any], **kwargs: dict) -> None:
         """Update policy
 
         In this case, determine the policy once by value iteration.
