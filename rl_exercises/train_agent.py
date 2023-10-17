@@ -22,6 +22,7 @@ from typing import List
 from tqdm import tqdm
 from functools import partial
 
+from rl_exercises.agent.abstract_agent import AbstractAgent
 from rl_exercises.week_2 import PolicyIteration, ValueIteration
 from rl_exercises.week_4 import EpsilonGreedyPolicy as TabularEpsilonGreedyPolicy
 from rl_exercises.week_4 import SARSAAgent
@@ -31,9 +32,9 @@ from rl_exercises.week_7 import REINFORCE
 from rl_exercises.week_8 import EpsilonDecayPolicy, EZGreedyPolicy
 
 
-@hydra.main("configs", "base", version_base="1.1")
+@hydra.main("configs", "base", version_base="1.1")  # type: ignore[misc]
 def train(cfg: DictConfig) -> float:
-    """Train the agent
+    """Train the agent.
 
     Parameters
     ----------
@@ -101,7 +102,7 @@ def train(cfg: DictConfig) -> float:
 
 
 def train_sb3(env: gym.Env, cfg: DictConfig) -> float:
-    """Train stablebaselines agent on env
+    """Train stablebaselines agent on env.
 
     Parameters
     ----------
@@ -126,14 +127,13 @@ def train_sb3(env: gym.Env, cfg: DictConfig) -> float:
 
     # Evaluate
     env = Monitor(gym.make(cfg.env_id))
-    means = evaluate(env, model, n_episodes=cfg.n_eval_episodes)
+    means = evaluate(env, model, episodes=cfg.n_eval_episodes)
     performance = np.mean(means)
     return performance
 
 
-def evaluate(env: gym.Env, agent, episodes=100) -> float:
-    """
-    Evaluate a given Policy on an Environment
+def evaluate(env: gym.Env, agent: AbstractAgent, episodes: int = 100) -> float:
+    """Evaluate a given Policy on an Environment.
 
     Parameters
     ----------
@@ -157,7 +157,7 @@ def evaluate(env: gym.Env, agent, episodes=100) -> float:
         done = False
         episode_steps = 0
         while not done:
-            action, _ = agent.predict(obs, info, evaluate=True)
+            action, _ = agent.predict_action(obs, info, evaluate=True)  # type: ignore[arg-type]
             obs, reward, terminated, truncated, _ = env.step(action)
             episode_rewards[-1] += reward
             episode_steps += 1
@@ -169,7 +169,21 @@ def evaluate(env: gym.Env, agent, episodes=100) -> float:
     return np.mean(episode_rewards)
 
 
-def make_env(env_name, env_kwargs={}):
+def make_env(env_name: str, env_kwargs: dict = {}) -> gym.Env:
+    """Make environment based on name and kwargs.
+
+    Parameters
+    ----------
+    env_name : str
+        Environment name
+    env_kwargs : dict, optional
+        Optional env config, by default {}
+
+    Returns
+    -------
+    gym.Env
+        Instantiated env
+    """
     if "compiler" in env_name:
         benchmark = "cbench-v1/dijkstra"
         env = gym.make(
