@@ -44,9 +44,9 @@ class ValueIteration(AbstractAgent):
 
         self.policy_fitted: bool = False
 
-    def predict_action(
-        self, observation: int, info: dict | None = None, evaluate: bool = False  # type: ignore[override]
-    ) -> tuple[int, dict]:  # type: ignore[override]
+    def predict_action(  # type: ignore[override]
+        self, observation: int, info: dict | None = None, evaluate: bool = False
+    ) -> tuple[int, dict]:
         """Predict action based on observation.
 
         Parameters
