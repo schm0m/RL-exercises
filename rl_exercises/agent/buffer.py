@@ -1,10 +1,11 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 import numpy as np
+from typing import Tuple, Any, Union, Dict
 
 # TODO Do we use "done" here which is terminated | truncated or the latter two?
 # state, action, reward, next_state, done, info
-Transition = tuple[np.ndarray, int | float, float, np.ndarray, bool, dict]
+Transition = Tuple[np.ndarray[Any, Any], Union[int, float], float, np.ndarray[Any, Any], bool, Dict[Any, Any]]
 
 
 class AbstractBuffer(ABC):
@@ -36,6 +37,6 @@ class SimpleBuffer(AbstractBuffer):
     ) -> None:
         self.transition = (state, action, reward, next_state, done, info)
 
-    def sample(self, *args: tuple, **kwargs: dict) -> list[Transition]:
+    def sample(self, *args: tuple, **kwargs: dict) -> list[None | Transition]:  # type: ignore[override]
         # Batch size 1
         return [self.transition]
