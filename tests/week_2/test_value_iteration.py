@@ -11,7 +11,7 @@ class TestValueIteration(unittest.TestCase):
         for seed in seeds:
             env = MarsRover()
             agent = ValueIteration(env=env, seed=seed)
-            agent.update()
+            agent.update_agent()
             # Get mean reward per episode
             mean_r = evaluate(env=env, agent=agent, episodes=1)  # deterministic policy
             r.append(mean_r)

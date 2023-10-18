@@ -39,7 +39,7 @@ class TestPolicyGradient(unittest.TestCase):
 
             for t in range(max_episode_length):
                 # Generate an action and its log_probability given a state
-                action, log_prob = agent.predict(state)
+                action, log_prob = agent.predict_action(state)
 
                 # Take a step in the environment using this action
                 next_state, reward, terminated, truncated, _ = env.step(action.item())
@@ -56,7 +56,7 @@ class TestPolicyGradient(unittest.TestCase):
                     break
 
             # Policy improvement step
-            agent.update(*zip(*trajectory))
+            agent.update_agent(*zip(*trajectory))
 
         self.assertAlmostEqual(sum(rewards), 262)
 

@@ -26,12 +26,12 @@ class TestSARSA(unittest.TestCase):
         terminated, truncated = False, False
 
         while not (terminated or truncated):
-            action = agent.predict(state)
+            action = agent.predict_action(state)
             next_state, reward, terminated, truncated, info = env.step(action)
 
-            next_action = agent.predict(state)
+            next_action = agent.predict_action(state)
 
-            agent.update((state, action, reward, next_state), next_action, (truncated or terminated))
+            agent.update_agent((state, action, reward, next_state), next_action, (truncated or terminated))
             rewards.append(reward)
 
         self.assertAlmostEqual(sum(rewards), 9)
@@ -52,9 +52,9 @@ class TestSARSA(unittest.TestCase):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
 
-            next_action = agent.predict(state)
+            next_action = agent.predict_action(state)
 
-            agent.update((state, action, reward, next_state), next_action, (truncated or terminated))
+            agent.update_agent((state, action, reward, next_state), next_action, (truncated or terminated))
             rewards.append(reward)
 
         self.assertAlmostEqual(sum(rewards), 8)
@@ -75,9 +75,9 @@ class TestSARSA(unittest.TestCase):
             action = agent.predict(state)
             next_state, reward, terminated, truncated, info = env.step(action)
 
-            next_action = agent.predict(state)
+            next_action = agent.predict_action(state)
 
-            agent.update((state, action, reward, next_state), next_action, (truncated or terminated))
+            agent.update_agent((state, action, reward, next_state), next_action, (truncated or terminated))
             rewards.append(reward)
 
         self.assertAlmostEqual(sum(rewards), 22)
