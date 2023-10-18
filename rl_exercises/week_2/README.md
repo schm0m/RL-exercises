@@ -4,11 +4,6 @@ This week you will implement the fundamental algorithms of policy and value iter
 ⚠ Before you start, make sure to have read the general `README.md`.
 You should add your solutions to the central train and eval script.
 
-Run your solution with
-
-
-
-
 ## Level 1
 ### 1. The MarsRover Environment
 In the `mars_rover_env.py` file you’ll find the first environment we’ll work with: the MarsRover. 
@@ -32,6 +27,8 @@ You can run the exercise with:
 # Policy Iteration
  python rl_exercises/train_agent.py +exercise=w2_policy_iteration
 ```
+
+Please note that in this exercise we work with the state-value / Q function. In principle, the same formula applies.
 
 ### 3. Value Iteration for the probibalistic MarsRover
 For this second exercise, we modify the MarsRover environment, now the rover may or may not execute the requested action, the probability is 50%. 
