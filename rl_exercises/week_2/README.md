@@ -30,7 +30,7 @@ The code stub to be completed is in `policy_iteration.py`.
 You can run the exercise with:
 ```bash
 # Policy Iteration
-python rl_exercises/train_agent.py +exercise=w2_policy_iteration
+ python rl_exercises/train_agent.py +exercise=w2_policy_iteration
 ```
 
 ### 3. Value Iteration for the probibalistic MarsRover
