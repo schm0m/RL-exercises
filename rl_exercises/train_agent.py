@@ -77,14 +77,14 @@ def train(cfg: DictConfig) -> float:
 
     num_episodes = 0
     for step in range(cfg.training_steps):
-        action, info = agent.predict(state, info)
+        action, info = agent.predict_action(state, info)
         next_state, reward, terminated, truncated, info = env.step(action)
 
         buffer.add(state, action, reward, next_state, (truncated or terminated), info)
 
         if len(buffer) > cfg.batch_size or (cfg.update_after_episode_end and (terminated or truncated)):
             batch = buffer.sample(cfg.batch_size)
-            agent.update(batch)
+            agent.update_agent(batch)
 
         state = next_state
 
