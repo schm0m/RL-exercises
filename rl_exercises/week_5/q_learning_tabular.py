@@ -32,6 +32,13 @@ def to_discrete_state(obs: Tuple[float, float, float, float], num_bins: int) -> 
 
 
 def default_q_value() -> float:
+    """Retrn a randomly sampled Q value
+
+    Returns
+    -------
+    float
+        Uniformly sampled float between 1 and -1
+    """
     return np.random.uniform(1, -1)
 
 
@@ -95,7 +102,7 @@ class TabularQAgent(AbstractAgent):
         action, info
             action to take and info dict
         """
-        discrete_state = self.discretize_state(state, self.num_bins)  # noqa: F841 # type: ignore
+        discrete_state = self.discretize_state(state, self.num_bins)  # type: ignore # noqa: F841 
 
         # TODO: predict an action
         action = ...
