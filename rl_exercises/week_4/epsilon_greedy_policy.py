@@ -30,7 +30,7 @@ class EpsilonGreedyPolicy(object):
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
 
-    def __call__(self, Q: DefaultDict, state: tuple, exploration_rate: float = 0.0, eval: bool = False) -> int:  # type: ignore
+    def __call__(self, Q: DefaultDict, state: tuple, exploration_rate: float = 0.0, eval: bool = False) -> int:  # type: ignore # noqa: E501
         """Select action
 
         Parameters

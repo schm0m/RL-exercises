@@ -102,7 +102,7 @@ class TabularQAgent(AbstractAgent):
         action, info
             action to take and info dict
         """
-        discrete_state = self.discretize_state(state, self.num_bins)  # type: ignore # noqa: F841 
+        discrete_state = self.discretize_state(state, self.num_bins)  # type: ignore # noqa: F841
 
         # TODO: predict an action
         action = ...
