@@ -61,7 +61,7 @@ class Policy(nn.Module):
         # TODO compute the softmax to normalize the probabilities
         probs = ...
 
-        return probs
+        return probs  # type: ignore
 
 
 # policy = Policy(env.observation_space, env.action_space)
@@ -98,7 +98,7 @@ class REINFORCE(AbstractAgent):
         # TODO compute the log probabilitiy of the action
         log_prob = ...
 
-        return action, log_prob
+        return action, log_prob  # type: ignore
 
     def save(self, path: str) -> Any:  # type: ignore
         """Save the policy
@@ -109,7 +109,7 @@ class REINFORCE(AbstractAgent):
             Path to save
 
         """
-        train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}
+        train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}  # type: ignore
         torch.save(train_state, path)
 
     def load(self, path: str) -> Any:  # type: ignore
@@ -123,7 +123,7 @@ class REINFORCE(AbstractAgent):
         """
         checkpoint = torch.load(path)
         self.policy.load_state_dict(checkpoint["parameters"])
-        self.optimizer.load_state_dict(checkpoint["optimizer_state"])
+        self.optimizer.load_state_dict(checkpoint["optimizer_state"])  # type: ignore
 
     def compute_returns(self, rewards: List[int]) -> List[float]:
         """Compute discounted returns
@@ -137,14 +137,14 @@ class REINFORCE(AbstractAgent):
         List[float]
             List of discounted returns
         """
-        returns = []
+        returns: list = []
 
         # Compute the returns_to_go by discounting rewardsand add them sequentially to the list
         ...
 
         return returns
 
-    def update(self, log_probs: torch.Tensor, rewards: list(float)) -> float:
+    def update(self, log_probs: torch.Tensor, rewards: list(float)) -> float:  # type: ignore
         """Perform Policy Improvement using a batch op transitions from a rollout
 
         Parameters
@@ -165,14 +165,14 @@ class REINFORCE(AbstractAgent):
         # TODO compute advantages using returns and normalized them
         advantages = ...
 
-        log_probs = torch.stack(log_probs)
+        log_probs = torch.stack(log_probs)  # type: ignore
 
-        self.optimizer.zero_grad()
+        self.optimizer.zero_grad()  # type: ignore
 
         # TODO Compute loss as the sum of log probs weighted by advantages
         loss = ...
 
-        loss.backward()
-        self.optimizer.step()
+        loss.backward()  # type: ignore
+        self.optimizer.step()  # type: ignore
 
-        return loss.item()
+        return loss.item()  # type: ignore

@@ -37,19 +37,19 @@ class SARSAAgent(AbstractAgent):
         self.gamma = gamma
         self.alpha = alpha
 
-        self.n_actions = self.env.action_space.n
+        self.n_actions = self.env.action_space.n  # type: ignore
 
         # create Q structure
         self.Q: DefaultDict[int, np.ndarray] = defaultdict(lambda: np.zeros(self.n_actions))
 
-        self.policy = policy(self.Q, self.env)
+        self.policy = policy(self.Q, self.env)  # type: ignore
 
     def predict_action(self, state: np.array, info: dict = {}, evaluate: bool = False) -> Any:  # type: ignore # noqa
         """Predict the action for a given state"""
         action = self.policy(self.Q, state, evaluate=evaluate)  # type: ignore
         info = {}
         return action, info
-    
+
     def save(self, path: str) -> Any:  # type: ignore
         """Save the Q table
 
@@ -72,9 +72,9 @@ class SARSAAgent(AbstractAgent):
         """
         self.Q = np.load(path)
 
-    def update(
+    def update(  # type: ignore
         self,
-        transition: list[np.array],
+        transition: list[np.array],  # type: ignore
         next_action: int,
         done: bool,
     ) -> float:
