@@ -24,7 +24,7 @@ help:
 
 PYTHON ?= python
 PYTEST ?= python -m pytest
-PIP ?= pip
+PIP ?= python -m pip
 MAKE ?= make
 BLACK ?= black
 PYDOCSTYLE ?= pydocstyle
