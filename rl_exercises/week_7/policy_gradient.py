@@ -100,12 +100,27 @@ class REINFORCE(AbstractAgent):
 
         return action, log_prob
 
-    def save(self, path) -> Any:
+    def save(self, path: str) -> Any:  # type: ignore
+        """Save the policy
+
+        Parameters
+        ----------
+        path :
+            Path to save
+
+        """
         train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}
         torch.save(train_state, path)
-        pass
 
-    def load(self, path) -> Any:
+    def load(self, path: str) -> Any:  # type: ignore
+        """Load the policy
+
+        Parameters
+        ----------
+        path :
+            Path to load
+
+        """
         checkpoint = torch.load(path)
         self.policy.load_state_dict(checkpoint["parameters"])
         self.optimizer.load_state_dict(checkpoint["optimizer_state"])
@@ -144,7 +159,6 @@ class REINFORCE(AbstractAgent):
         loss    : float
             Loss of the policy network
         """
-
         # TODO compute the returns
         returns = torch.tensor(self.compute_returns(rewards))  # ...
 
