@@ -1,8 +1,11 @@
-import gym
+from __future__ import annotations
+
+import gymnasium as gym
 import numpy as np
+from typing import Callable
 
 
-def create_policy(env: gym.Env):
+def create_policy(env: gym.Env) -> Callable:
     """
     Create Policy
 

@@ -10,9 +10,7 @@ class VacuumEnv(gym.Env):
     """So far, a non-functional env"""
 
     def __init__(self) -> None:
-        """
-        Use this function to initialize the environment
-        """
+        """Use this function to initialize the environment"""
         self.action_space: gym.spaces.Space = None  # type: ignore[assignment]
         self.observation_space: gym.spaces.Space = None  # type: ignore[assignment]
         self.reward_range: gym.spaces.Space = None  # type: ignore[assignment]
