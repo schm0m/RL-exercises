@@ -1,18 +1,19 @@
+from __future__ import annotations
+
 from typing import Callable, List
+
 import os
 
-import gymnasium as gym
-from gymnasium.wrappers import TimeLimit
 import compiler_gym
-from compiler_gym.envs.llvm import make_benchmark
-
+import gymnasium as gym
 import numpy as np
+from compiler_gym.envs.llvm import make_benchmark
+from gymnasium.wrappers import TimeLimit
+from policy import create_policy
 from tqdm import tqdm
 
-from policy import create_policy
 
-
-def evaluate(env: gym.Env, policy: Callable[[np.ndarray], int], episodes=100):
+def evaluate(env: gym.Env, policy: Callable[[np.ndarray], int], episodes: int = 100) -> float:
     """
     Evaluate a given Policy on an Environment
 
