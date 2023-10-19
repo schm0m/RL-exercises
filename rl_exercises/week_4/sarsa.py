@@ -29,7 +29,6 @@ class SARSAAgent(AbstractAgent):
         epsilon : float, optional
             Exploration Parameter, by default 0.1
         """
-
         # Check hyperparameter boundaries
         assert 0 <= gamma <= 1, "Gamma should be in [0, 1]"
         assert alpha > 0, "Learning rate has to be greater than 0"
@@ -45,13 +44,13 @@ class SARSAAgent(AbstractAgent):
 
         self.policy = policy(self.Q, self.env)
 
-    def predict(self, state) -> Any:
+    def predict_action(self, state: np.array, info: dict = {}, evaluate: bool = False) -> Any:  # type: ignore # noqa
         """Predict the action for a given state"""
-
-        # TODO
-        return self.policy(state)
-
-    def save(self, path) -> Any:
+        action = self.policy(self.Q, state, evaluate=evaluate)  # type: ignore
+        info = {}
+        return action, info
+    
+    def save(self, path: str) -> Any:  # type: ignore
         """Save the Q table
 
         Parameters
@@ -60,9 +59,9 @@ class SARSAAgent(AbstractAgent):
             Path to save the Q table
 
         """
-        np.save(path, self.Q)
+        np.save(path, self.Q)  # type: ignore
 
-    def load(self, path) -> Any:
+    def load(self, path) -> Any:  # type: ignore
         """Load the Q table
 
         Parameters
