@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Callable, Dict, Optional
 
 import gymnasium as gym
 import numpy as np
@@ -17,9 +17,10 @@ class EpsilonGreedyPolicy(object):
         self,
         env: gym.Env,
         epsilon: float,
-        seed: int = None,
+        seed: Optional[int] = None,
     ) -> None:
-        """Init
+        """
+        Make Epsilon Greedy Policy.
 
         Parameters
         ----------
@@ -34,8 +35,9 @@ class EpsilonGreedyPolicy(object):
         self.epsilon = epsilon
         self.rng = np.random.default_rng(seed=seed)
 
-    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> int:
-        """Select action
+    def __call__(self, Q: nn.Module, state: np.array, evaluate: bool = False) -> int:  # type: ignore
+        """
+        Select action.
 
         Parameters
         ----------
@@ -53,15 +55,36 @@ class EpsilonGreedyPolicy(object):
         """
         if not evaluate and np.random.uniform(0, 1) < self.epsilon:
             return self.env.action_space.sample()
-        q_values = self.Q(torch.from_numpy(state).float()).detach().numpy()
+        q_values = Q(torch.from_numpy(state).float()).detach().numpy()
         action = np.argmax(q_values)
-        return action
+        return action  # type: ignore
 
 
 class VFAQAgent(AbstractAgent):
     """VFA Agent Class."""
 
-    def __init__(self, env, policy, learning_rate, gamma, **kwargs) -> None:
+    def __init__(
+        self,
+        env: gym.Env,
+        policy: Callable[[gym.Env], EpsilonGreedyPolicy],
+        learning_rate: float,
+        gamma: float,
+        **kwargs: Dict,
+    ) -> None:
+        """
+        Make Q-Learning agent using linear function approximation.
+
+        Parameters
+        ----------
+        env : gym.Env
+            Environment to train on
+        policy : Callable[[gym.Env], EpsilonGreedyPolicy]
+            Make function for policy
+        learning_rate : float
+            Learning rate
+        gamma : float
+            Discount factor
+        """
         self.env = env
         self.Q = self.make_Q()
         self.policy = policy(self.env)
@@ -88,27 +111,57 @@ class VFAQAgent(AbstractAgent):
         self.W = ...
         self.b = ...
         Q = ...
-        return Q
+        return Q  # type: ignore
 
-    def predict(self, state, info, evaluate=False) -> tuple[Any, dict]:
+    def predict_action(self, state: np.array, info: Dict, evaluate: bool = False) -> Any:  # type: ignore
+        """
+        Predict action from state.
+
+        Parameters
+        ----------
+        state : np.array
+            Env state
+        info : Dict
+            Info dict
+        evaluate : bool, optional
+            Whether to predict in evaluation mode (i.e. without exploration)
+
+        Returns
+        -------
+        action, info
+            action to take and info dict
+        """
         # TODO: predict an action
         action = ...
         info = {}
         return action, info
 
-    def save(self, path) -> Any:
-        train_state = {"W": self.W, "b": self.b, "optimizer_state": self.optimizer.state_dict()}
+    def save(self, path: str) -> Any:  # type: ignore
+        """
+        Save Q function and optimizer.
+
+        Parameters
+        ----------
+        path : str
+            Path to save to.
+        """
+        train_state = {"W": self.W, "b": self.b, "optimizer_state": self.optimizer.state_dict()}  # type: ignore
         torch.save(train_state, path)
 
-    def load(self, path) -> Any:
-        checkpoint = torch.load(path)
-        self.Q.load_state_dict(checkpoint["parameters"])
-        self.optimizer.load_state_dict(checkpoint["optimizer_state"])
+    def load(self, path: str) -> Any:  # type: ignore
+        """
+        Load Q function and optimizer.
 
-    def update(
-        self,
-        training_batch: list[np.array],
-    ) -> float:
+        Parameters
+        ----------
+        path : str
+            Path to checkpoint
+        """
+        checkpoint = torch.load(path)
+        self.Q.load_state_dict(checkpoint["parameters"])  # type: ignore
+        self.optimizer.load_state_dict(checkpoint["optimizer_state"])  # type: ignore
+
+    def update(self, training_batch: list[np.array]) -> float:  # type: ignore
         """
         Value Function Update for a Batch of Transitions.
 

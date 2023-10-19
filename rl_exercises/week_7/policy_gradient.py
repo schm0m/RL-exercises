@@ -2,10 +2,10 @@ from __future__ import annotations
 from typing import List, Tuple, Any
 
 import gymnasium as gym
-import numpy as np
+import numpy as np  # noqa: F401
 import torch
 import torch.nn as nn
-import torch.optim as optim
+import torch.optim as optim  # noqa: F401
 
 # NOTE This could be useful to you:
 # import torch.nn.functional as F
@@ -13,7 +13,7 @@ import torch.optim as optim
 # NOTE This is potentially a helpful class:
 # from torch.distributions import Categorical
 
-from rl_exercises.agent import AbstractAgent, AbstractBuffer
+from rl_exercises.agent import AbstractAgent, AbstractBuffer  # noqa: F401
 
 
 class Policy(nn.Module):
@@ -69,9 +69,9 @@ class Policy(nn.Module):
 
 
 class REINFORCE(AbstractAgent):
-    def __init__(self, env, learning_rate, gamma) -> None:
+    def __init__(self, env: gym.Env, learning_rate: float, gamma: float) -> None:
         self.env = env
-        self.policy = Policy(self.env.state_space, self.env.action_space)
+        self.policy = Policy(self.env.observation_space, self.env.action_space)  # type: ignore
         self.learning_rate = learning_rate
         self.gamma = gamma
         self.optimizer = ...
@@ -90,13 +90,13 @@ class REINFORCE(AbstractAgent):
             computed action and log probability of the action
         """
         # TODO pass the state through the policy network
-        probs = ...
+        probs = ...  # noqa: F841
 
         # TODO create the outupt into a categorical distribution and sample and action from it
-        action = ...
+        action = ...  # noqa: F841
 
         # TODO compute the log probabilitiy of the action
-        log_prob = ...
+        log_prob = ...  # noqa: F841
 
         return action, log_prob  # type: ignore
 
@@ -109,7 +109,10 @@ class REINFORCE(AbstractAgent):
             Path to save
 
         """
-        train_state = {"parameters": self.policy.state_dict(), "optimizer_state": self.optimizer.state_dict()}  # type: ignore
+        train_state = {
+            "parameters": self.policy.state_dict(),  # type: ignore
+            "optimizer_state": self.optimizer.state_dict(),  # type: ignore
+        }  # type: ignore
         torch.save(train_state, path)
 
     def load(self, path: str) -> Any:  # type: ignore
@@ -160,10 +163,10 @@ class REINFORCE(AbstractAgent):
             Loss of the policy network
         """
         # TODO compute the returns
-        returns = torch.tensor(self.compute_returns(rewards))  # ...
+        returns = torch.tensor(self.compute_returns(rewards))  # noqa: F841
 
         # TODO compute advantages using returns and normalized them
-        advantages = ...
+        advantages = ...  # noqa: F841
 
         log_probs = torch.stack(log_probs)  # type: ignore
 

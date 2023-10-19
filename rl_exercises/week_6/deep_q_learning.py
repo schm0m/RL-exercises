@@ -4,8 +4,6 @@ from __future__ import annotations
 
 from typing import Any, Callable, Dict, List, Tuple
 
-from collections import OrderedDict
-
 import gymnasium as gym
 import numpy as np
 import torch
@@ -37,7 +35,7 @@ class ReplayBuffer(AbstractBuffer):
 
     def add(
         self,
-        state: np.array,
+        state: np.array,  # type: ignore
         action: Any[float, int, Tuple],
         reward: float,
         next_state: np.array,  # type: ignore
@@ -92,13 +90,13 @@ class ReplayBuffer(AbstractBuffer):
         """
         # TODO: sample transitions
         transition_ids = ...
-        batch_states = [self.states[i] for i in transition_ids]
-        batch_actions = [self.actions[i] for i in transition_ids]
-        batch_rewards = [self.rewards[i] for i in transition_ids]
-        batch_next_states = [self.next_states[i] for i in transition_ids]
-        batch_dones = [self.dones[i] for i in transition_ids]
-        batch_infos = [self.infos[i] for i in transition_ids]
-        return (batch_states, batch_actions, batch_rewards, batch_next_states, batch_dones, batch_infos)
+        batch_states = [self.states[i] for i in transition_ids]  # type: ignore
+        batch_actions = [self.actions[i] for i in transition_ids]  # type: ignore
+        batch_rewards = [self.rewards[i] for i in transition_ids]  # type: ignore
+        batch_next_states = [self.next_states[i] for i in transition_ids]  # type: ignore
+        batch_dones = [self.dones[i] for i in transition_ids]  # type: ignore
+        batch_infos = [self.infos[i] for i in transition_ids]  # type: ignore
+        return (batch_states, batch_actions, batch_rewards, batch_next_states, batch_dones, batch_infos)  # type: ignore
 
     def __len__(self) -> int:
         """Return current buffer size."""
@@ -138,7 +136,7 @@ class DQN(AbstractAgent):
         self.policy = policy(self.env)
         self.learning_rate = learning_rate
         self.gamma = gamma
-        self.optimizer = ...
+        self.optimizer = optim.Adam(self.Q.parameters(), lr=self.learning_rate)
         self.n_updates = 0
 
     def make_Q(self) -> nn.Module:
@@ -157,7 +155,7 @@ class DQN(AbstractAgent):
         # TODO: Make Q-network
         Q = ...
 
-        return Q
+        return Q  # type: ignore
 
     def predict(self, state: np.array, info: Dict, evaluate: bool = False) -> Any:  # type: ignore
         """
@@ -188,8 +186,11 @@ class DQN(AbstractAgent):
         path : str
             Path to save to.
         """
-        train_state = {"parameters": self.Q.state_dict(), "optimizer_state": self.optimizer.state_dict()}
-        torch.save(train_state, path)
+        train_state = {
+            "parameters": self.Q.state_dict(),  # type: ignore
+            "optimizer_state": self.optimizer.state_dict(),  # type: ignore
+        }
+        torch.save(train_state, path)  # type: ignore
 
     def load(self, path: str) -> Any:  # type: ignore
         """
@@ -202,7 +203,7 @@ class DQN(AbstractAgent):
         """
         checkpoint = torch.load(path)
         self.Q.load_state_dict(checkpoint["parameters"])
-        self.optimizer.load_state_dict(checkpoint["optimizer_state"])
+        self.optimizer.load_state_dict(checkpoint["optimizer_state"])  # type: ignore
 
     def update(  # type: ignore
         self,
@@ -230,12 +231,12 @@ class DQN(AbstractAgent):
         next_states = torch.tensor(np.array(next_states))
 
         # TODO: Compute MSE loss
-        pred = ...
-        target = ...
+        pred = ...  # noqa: F841
+        target = ...  # noqa: F841
         loss = ...
 
         # TODO: Optimize the model
-        self.optimizer.zero_grad()
+        self.optimizer.zero_grad()  # type: ignore
         ...
 
         # TODO: Update target network
@@ -243,4 +244,4 @@ class DQN(AbstractAgent):
             pass
         self.n_updates += 1
 
-        return float(loss.item())
+        return float(loss.item())  # type: ignore
